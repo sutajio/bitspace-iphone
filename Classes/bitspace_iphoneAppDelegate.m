@@ -18,7 +18,7 @@
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
     
 	// Configure ObjectiveResource
-	[ObjectiveResourceConfig setSite:@"http://bitspace.at/"];
+	[ObjectiveResourceConfig setSite:@"http://localhost:3000/api/"];
 	[ObjectiveResourceConfig setUser:@"admin"];
 	[ObjectiveResourceConfig setPassword:@"koneko"];
 	[ObjectiveResourceConfig setResponseType:JSONResponse];
