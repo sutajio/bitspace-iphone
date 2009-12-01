@@ -3,7 +3,7 @@
 //  bitspace-iphone
 //
 //  Created by Niklas Holmgren on 2009-11-30.
-//  Copyright __MyCompanyName__ 2009. All rights reserved.
+//  Copyright Koneko Collective Ltd. 2009. All rights reserved.
 //
 
 #import "FirstViewController.h"

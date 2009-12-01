@@ -3,11 +3,11 @@
 //  bitspace-iphone
 //
 //  Created by Niklas Holmgren on 2009-11-30.
-//  Copyright __MyCompanyName__ 2009. All rights reserved.
+//  Copyright Koneko Collective Ltd. 2009. All rights reserved.
 //
 
 #import "bitspace_iphoneAppDelegate.h"
-
+#import "ObjectiveResource.h"
 
 @implementation bitspace_iphoneAppDelegate
 
@@ -17,6 +17,12 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
     
+	// Configure ObjectiveResource
+	[ObjectiveResourceConfig setSite:@"http://bitspace.at/"];
+	[ObjectiveResourceConfig setUser:@"admin"];
+	[ObjectiveResourceConfig setPassword:@"koneko"];
+	[ObjectiveResourceConfig setResponseType:JSONResponse];
+	
     // Add the tab bar controller's current view as a subview of the window
     [window addSubview:tabBarController.view];
 }
