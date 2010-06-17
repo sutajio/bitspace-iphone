@@ -7,15 +7,18 @@
 //
 
 #import "ArtworkLoader.h"
+#import "Release.h"
 
 
 @implementation ArtworkLoader
 
-@synthesize url;
+@synthesize url, delegate;
 
 -(void)main {
+	NSLog(@"ArtworkLoader#main");
 	NSURL *artworkUrl = [NSURL URLWithString:self.url];
-	NSData *artwork = [NSData dataWithContentsOfURL:artworkUrl];
+	NSData *artworkData = [NSData dataWithContentsOfURL:artworkUrl];
+	[delegate loaderDidFinishLoadingArtwork:artworkData fromURL:self.url];
 }
 
 @end

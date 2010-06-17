@@ -9,6 +9,7 @@
 #import "ReleasesController.h"
 #import "ReleasesLoader.h"
 #import "Release.h"
+#import "ReleaseController.h"
 
 
 @implementation ReleasesController
@@ -129,22 +130,12 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	// Set up the cell...
 	Release *release = [fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = [release title];
-	cell.detailTextLabel.text = [release artist];
-	if(!cell.imageView.image) {
-		if(release.smallArtworkUrl) {
-			[release fetchSmallArtwork];
-			
-//			if(!release.smallArtwork) {
-//				NSURL *url = [NSURL URLWithString:release.smallArtworkUrl];
-//				release.smallArtwork = [NSData dataWithContentsOfURL:url];
-//			}
-//			UIImage *img = [[UIImage alloc] initWithData:release.smallArtwork];
-//			cell.imageView.image = img;
-		} //else {
-			cell.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
-		//}
-
+	cell.textLabel.text = release.title;
+	cell.detailTextLabel.text = release.artist;
+	if(release.smallArtworkImage == nil) {
+		cell.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
+	} else {
+		cell.imageView.image = release.smallArtworkImage;
 	}
 }
 
@@ -183,10 +174,12 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	/// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
+	Release *release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
+	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
+	releaseController.release = release;
+	releaseController.managedObjectContext = managedObjectContext;
+	[self.navigationController pushViewController:releaseController animated:YES];
+	[releaseController release];
 }
 
 

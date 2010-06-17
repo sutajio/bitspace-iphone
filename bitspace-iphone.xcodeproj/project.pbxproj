@@ -24,6 +24,8 @@
 		8541AE2A11C91C0D0004C4C9 /* cover-art-large.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8541AE2911C91C0D0004C4C9 /* cover-art-large.jpg */; };
 		8541AE4611C91DF60004C4C9 /* cover-art-small.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8541AE4511C91DF60004C4C9 /* cover-art-small.jpg */; };
 		8541AE6911C925D30004C4C9 /* ArtworkLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8541AE6811C925D30004C4C9 /* ArtworkLoader.m */; };
+		8541AEAF11C930830004C4C9 /* ReleaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8541AEAD11C930830004C4C9 /* ReleaseController.m */; };
+		8541AEB011C930830004C4C9 /* Release.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8541AEAE11C930830004C4C9 /* Release.xib */; };
 		85435694116D2DDE00438D2D /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 85435692116D2DDE00438D2D /* AudioStreamer.m */; };
 		854356BD116D314900438D2D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 854356BC116D314900438D2D /* MediaPlayer.framework */; };
 		854356C1116D315400438D2D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 854356C0116D315400438D2D /* AudioToolbox.framework */; };
@@ -88,6 +90,9 @@
 		8541AE4511C91DF60004C4C9 /* cover-art-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "cover-art-small.jpg"; sourceTree = "<group>"; };
 		8541AE6711C925D30004C4C9 /* ArtworkLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArtworkLoader.h; sourceTree = "<group>"; };
 		8541AE6811C925D30004C4C9 /* ArtworkLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArtworkLoader.m; sourceTree = "<group>"; };
+		8541AEAC11C930830004C4C9 /* ReleaseController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseController.h; sourceTree = "<group>"; };
+		8541AEAD11C930830004C4C9 /* ReleaseController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseController.m; sourceTree = "<group>"; };
+		8541AEAE11C930830004C4C9 /* Release.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Release.xib; path = Classes/Release.xib; sourceTree = "<group>"; };
 		85435692116D2DDE00438D2D /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		85435693116D2DDE00438D2D /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
 		854356BC116D314900438D2D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -227,6 +232,7 @@
 				851B46F91164C93D007F1E83 /* logo_200x200_inverted.png */,
 				28AD73870D9D96C1002E5188 /* MainWindow.xib */,
 				851B45E91163E1E1007F1E83 /* Player.xib */,
+				8541AEAE11C930830004C4C9 /* Release.xib */,
 				851B46D21164A9E1007F1E83 /* Bitspace.icns */,
 				8D1107310486CEB800E47090 /* bitspace_iphone-Info.plist */,
 			);
@@ -265,6 +271,8 @@
 				851B45E81163E1E1007F1E83 /* PlayerController.m */,
 				851B44721163A308007F1E83 /* ReleasesController.h */,
 				851B44731163A308007F1E83 /* ReleasesController.m */,
+				8541AEAC11C930830004C4C9 /* ReleaseController.h */,
+				8541AEAD11C930830004C4C9 /* ReleaseController.m */,
 			);
 			name = Controllers;
 			path = Classes;
@@ -475,6 +483,7 @@
 				858045A51164CBD900963147 /* logo_200x200.png in Resources */,
 				8541AE2A11C91C0D0004C4C9 /* cover-art-large.jpg in Resources */,
 				8541AE4611C91DF60004C4C9 /* cover-art-small.jpg in Resources */,
+				8541AEB011C930830004C4C9 /* Release.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -524,6 +533,7 @@
 				851D53B511C8DC9F00CAB951 /* Release.m in Sources */,
 				851D53B711C8DCB200CAB951 /* Bitspace.xcdatamodel in Sources */,
 				8541AE6911C925D30004C4C9 /* ArtworkLoader.m in Sources */,
+				8541AEAF11C930830004C4C9 /* ReleaseController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
