@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ArtworkLoader.h"
 
+
 @interface Release : NSManagedObject <ArtworkLoaderDelegate> {
 	NSOperationQueue *operationQueue;
 	UIImage *smallArtworkImage;
@@ -30,6 +31,7 @@
 @property (nonatomic, retain) NSData *smallArtwork;
 @property (nonatomic, retain) NSData *mediumArtwork;
 @property (nonatomic, retain) NSData *largeArtwork;
+@property (nonatomic, retain) NSSet *tracks;
 
 @property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
 @property (nonatomic, retain, readonly) UIImage *smallArtworkImage;
@@ -38,5 +40,7 @@
 @property (nonatomic, retain) ArtworkLoader *smallArtworkLoader;
 @property (nonatomic, retain) ArtworkLoader *mediumArtworkLoader;
 @property (nonatomic, retain) ArtworkLoader *largeArtworkLoader;
+
+-(BOOL) hasTrackWithURL:(NSString *)url;
 
 @end

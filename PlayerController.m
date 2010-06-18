@@ -8,9 +8,12 @@
 
 #import "PlayerController.h"
 #import "AudioStreamer.h"
+#import "AppDelegate.h"
 
 
 @implementation PlayerController
+
+@synthesize appDelegate;
 
 - (void)destroyStreamer
 {

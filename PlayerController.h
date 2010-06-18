@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class AudioStreamer;
+@class AppDelegate, AudioStreamer;
 
 @interface PlayerController : UIViewController {
+	AppDelegate *appDelegate;
 	IBOutlet UINavigationBar *navigationBar;
 	IBOutlet UIImageView *artwork;
 	IBOutlet UIProgressView *progress;
@@ -22,6 +23,8 @@
 	AudioStreamer *streamer;
 	NSTimer *progressUpdateTimer;
 }
+
+@property (nonatomic, retain) AppDelegate *appDelegate;
 
 - (IBAction)togglePlayback:(id)sender;
 - (IBAction)nextTrack:(id)sender;

@@ -8,15 +8,30 @@
 
 #import <UIKit/UIKit.h>
 
-@class Release;
+@class AppDelegate, Release, ReleaseLoader;
 
 @interface ReleaseController : UITableViewController {
+	AppDelegate *appDelegate;
 	Release *release;
-	NSManagedObjectContext *managedObjectContext;
-	IBOutlet UIImageView *artworkImage;
+	NSMutableArray *tracks;
+	
+	UIView *tableHeaderView;
+	UIImageView *artworkImage;
+	UIActivityIndicatorView *activityIndicator;
+	
+	NSOperationQueue *operationQueue;
+	ReleaseLoader *releaseLoader;
 }
 
+@property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) Release *release;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) NSMutableArray *tracks;
+
+@property (nonatomic, retain) IBOutlet UIView *tableHeaderView;
+@property (nonatomic, retain) IBOutlet UIImageView *artworkImage;
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
+
+@property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
+@property (nonatomic, retain, readonly) ReleaseLoader *releaseLoader;
 
 @end

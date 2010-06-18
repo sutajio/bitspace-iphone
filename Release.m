@@ -7,7 +7,7 @@
 //
 
 #import "Release.h"
-#import "ArtworkLoader.h"
+#import "Track.h"
 
 
 @implementation Release
@@ -23,8 +23,18 @@
 @dynamic smallArtwork;
 @dynamic mediumArtwork;
 @dynamic largeArtwork;
+@dynamic tracks;
 
 @synthesize smallArtworkLoader, mediumArtworkLoader, largeArtworkLoader;
+
+-(BOOL) hasTrackWithURL:(NSString *)url {
+	for(Track *track in self.tracks) {
+		if([track.url isEqualToString:url]) {
+			return YES;
+		}
+	}
+	return NO;
+}
 
 - (NSOperationQueue *)operationQueue {
     if (operationQueue == nil) {

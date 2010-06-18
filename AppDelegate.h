@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class ReleasesController;
+@class PlayerController, ReleasesController;
 
 @interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate> {
     NSString *siteURL;
@@ -17,6 +17,7 @@
 	
 	UIWindow *window;
     UITabBarController *tabBarController;
+	PlayerController *playerController;
 	ReleasesController *releasesController;
 	
 	NSManagedObjectModel *managedObjectModel;
@@ -30,6 +31,7 @@
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
+@property (nonatomic, retain) IBOutlet PlayerController *playerController;
 @property (nonatomic, retain) IBOutlet ReleasesController *releasesController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class ReleasesLoader;
+@class AppDelegate, ReleasesLoader;
 
 @protocol ReleasesLoaderDelegate <NSObject>
 @optional
@@ -19,19 +19,11 @@
 @end
 
 @interface ReleasesLoader : NSOperation {
-	NSString *siteURL;
-	NSString *username;
-	NSString *password;
-	
-@private
 	id <ReleasesLoaderDelegate> delegate;
-	NSManagedObjectContext *managedObjectContext;
+	AppDelegate *appDelegate;
 }
 
-@property (nonatomic, retain) NSString *siteURL;
-@property (nonatomic, retain) NSString *username;
-@property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) id <ReleasesLoaderDelegate> delegate;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) AppDelegate *appDelegate;
 
 @end

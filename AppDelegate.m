@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ObjectiveResource.h"
+#import "PlayerController.h"
 #import "ReleasesController.h"
 
 @implementation AppDelegate
@@ -16,6 +17,7 @@
 
 @synthesize window;
 @synthesize tabBarController;
+@synthesize playerController;
 @synthesize releasesController;
 
 
@@ -28,11 +30,15 @@
 	self.username = @"test";
 	self.password = @"test";
 	
-	// Pass the managed object context to the controllers
-	releasesController.siteURL = self.siteURL;
-	releasesController.username = self.username;
-	releasesController.password = self.password;
-	releasesController.managedObjectContext = self.managedObjectContext;
+	// Pass self to the controllers
+	playerController.appDelegate = self;
+	releasesController.appDelegate = self;
+	
+	// Add a global background for the app
+	UIView *backgroundView = [[UIView alloc] initWithFrame: window.frame];
+	backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"black-noise.jpg"]];
+	[window addSubview:backgroundView];
+	[backgroundView release];
 	
     // Add the tab bar controller's current view as a subview of the window
     [window addSubview:tabBarController.view];
@@ -110,7 +116,7 @@
         return persistentStoreCoordinator;
     }
 	
-    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"bitspace-v1.sqlite"]];
+    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"bitspace-v4.sqlite"]];
 	
 	NSError *error = nil;
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

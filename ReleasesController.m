@@ -10,12 +10,13 @@
 #import "ReleasesLoader.h"
 #import "Release.h"
 #import "ReleaseController.h"
+#import "AppDelegate.h"
 
 
 @implementation ReleasesController
 
-@synthesize siteURL, username, password;
-@synthesize fetchedResultsController, managedObjectContext;
+@synthesize appDelegate;
+@synthesize fetchedResultsController;
 
 
 #pragma mark -
@@ -24,11 +25,8 @@
 - (void)refresh {
 	if (loader == nil) {
 		loader = [[[ReleasesLoader alloc] init] autorelease];
-		loader.siteURL = self.siteURL;
-		loader.username = self.username;
-		loader.password = self.password;
 		loader.delegate = self;
-		loader.managedObjectContext = self.managedObjectContext;
+		loader.appDelegate = self.appDelegate;
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 		[self.operationQueue addOperation:loader];
 	}
@@ -177,7 +175,8 @@
 	Release *release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
 	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
 	releaseController.release = release;
-	releaseController.managedObjectContext = managedObjectContext;
+	releaseController.appDelegate = self.appDelegate;
+	releaseController.hidesBottomBarWhenPushed = YES;
 	[self.navigationController pushViewController:releaseController animated:YES];
 	[releaseController release];
 }
@@ -232,7 +231,7 @@
         // Create the fetch request for the entity.
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         // Edit the entity name as appropriate.
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Release" inManagedObjectContext:managedObjectContext];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Release" inManagedObjectContext:self.appDelegate.managedObjectContext];
         [fetchRequest setEntity:entity];
         
         // Edit the sort key as appropriate.
@@ -243,7 +242,7 @@
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
         aFetchedResultsController.delegate = self;
         self.fetchedResultsController = aFetchedResultsController;
         
@@ -344,7 +343,6 @@
 
 - (void)dealloc {
 	[fetchedResultsController release];
-	[managedObjectContext release];
 	[operationQueue release];
     [super dealloc];
 }

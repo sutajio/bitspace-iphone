@@ -9,23 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "ReleasesLoader.h"
 
+@class AppDelegate;
+
 @interface ReleasesController : UITableViewController <ReleasesLoaderDelegate, NSFetchedResultsControllerDelegate> {
-	NSString *siteURL;
-	NSString *username;
-	NSString *password;
-	
+	AppDelegate *appDelegate;
 	NSFetchedResultsController *fetchedResultsController;
-	NSManagedObjectContext *managedObjectContext;
-	
 	NSOperationQueue *operationQueue;
 	ReleasesLoader *loader;
 }
 
-@property (nonatomic, retain) NSString *siteURL;
-@property (nonatomic, retain) NSString *username;
-@property (nonatomic, retain) NSString *password;
+@property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
 @property (nonatomic, retain, readonly) ReleasesLoader *loader;
 

@@ -10,15 +10,15 @@
 #import "Connection.h"
 #import "Response.h"
 #import "Release.h"
+#import "AppDelegate.h"
 
 
 @implementation ReleasesLoader
 
-@synthesize siteURL, username, password;
-@synthesize delegate, managedObjectContext;
+@synthesize delegate, appDelegate;
 
-- (void)addRelease:(NSObject*)release {
-	Release *newRelease = [NSEntityDescription insertNewObjectForEntityForName:@"Release" inManagedObjectContext:self.managedObjectContext];
+- (void)addRelease:(NSDictionary*)release {
+	Release *newRelease = [NSEntityDescription insertNewObjectForEntityForName:@"Release" inManagedObjectContext:self.appDelegate.managedObjectContext];
 	newRelease.title = (NSString*)[release valueForKey:@"title"];
 	newRelease.artist = (NSString*)[release valueForKey:@"artist"];
 	newRelease.url = (NSString*)[release valueForKey:@"url"];
@@ -49,14 +49,14 @@
 	do {
 		// Request a page from the server...
 		NSLog([NSString stringWithFormat:@"Requesting page #%d", page]);
-		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?page=%d", self.siteURL, page]];
+		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?page=%d", self.appDelegate.siteURL, page]];
 		NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
 																cachePolicy:NSURLRequestReloadIgnoringCacheData
 															timeoutInterval:[Connection timeout]];
 		[request setHTTPMethod:@"GET"];
 		[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];	
 		[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-		Response *res = [Connection sendRequest:request withUser:self.username andPassword:self.password];
+		Response *res = [Connection sendRequest:request withUser:self.appDelegate.username andPassword:self.appDelegate.password];
 		if([res isError]) {
 			NSLog([res.error localizedDescription]);
 			break;

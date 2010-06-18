@@ -8,21 +8,41 @@
 
 #import "ReleaseController.h"
 #import "Release.h"
+#import "Track.h"
+#import "AppDelegate.h"
+#import "ReleaseLoader.h"
 
 
 @implementation ReleaseController
 
-@synthesize release, managedObjectContext;
+@synthesize appDelegate;
+@synthesize release, tracks;
+@synthesize tableHeaderView, artworkImage, activityIndicator;
+@synthesize releaseLoader;
 
 - (void)refreshRelease {
 	self.navigationItem.title = release.title;
 	if(release.largeArtworkImage) {
 		artworkImage.image = release.largeArtworkImage;
+		[activityIndicator stopAnimating];
 	}
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"trackNr" ascending:YES];
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:&sortDescriptor count:1];
+	NSMutableArray *sortedTracks = [[NSMutableArray alloc] initWithArray:[release.tracks allObjects]];
+	[sortedTracks sortUsingDescriptors:sortDescriptors];
+	self.tracks = sortedTracks;
 }
 
 - (void)releasesDidChange:(NSNotification *)notification {
 	[self refreshRelease];
+	[self.tableView reloadData];
+}
+
+- (NSOperationQueue *)operationQueue {
+    if (operationQueue == nil) {
+        operationQueue = [[NSOperationQueue alloc] init];
+    }
+    return operationQueue;
 }
 
 /*
@@ -34,19 +54,29 @@
 }
 */
 
-/*
 - (void)viewDidLoad {
-    [super viewDidLoad];
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	self.view.backgroundColor = [UIColor clearColor];
+	self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    if (tableHeaderView == nil) {
+        [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
+        self.tableView.tableHeaderView = tableHeaderView;
+        self.tableView.allowsSelectionDuringEditing = YES;
+    }
 }
-*/
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(releasesDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:managedObjectContext];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(releasesDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:self.appDelegate.managedObjectContext];
+	
+	releaseLoader = [[[ReleaseLoader alloc] init] autorelease];
+	releaseLoader.release = self.release;
+	releaseLoader.appDelegate = self.appDelegate;
+	[self.operationQueue addOperation:releaseLoader];
+	
+	if(self.release.largeArtworkUrl == nil) {
+		[activityIndicator stopAnimating];
+	}
 	
 	[self refreshRelease];
 }
@@ -97,7 +127,7 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return [release.tracks count];
 }
 
 
@@ -108,10 +138,13 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Set up the cell...
+	Track *track = [tracks objectAtIndex:indexPath.row];
+	cell.textLabel.text = track.title;
+	cell.detailTextLabel.text = track.artist;
 	
     return cell;
 }
@@ -167,7 +200,7 @@
 
 - (void)dealloc {
     [super dealloc];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextObjectsDidChangeNotification object:managedObjectContext];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextObjectsDidChangeNotification object:self.appDelegate.managedObjectContext];
 }
 
 

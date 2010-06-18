@@ -27,6 +27,10 @@
 		8541B0A411CA86290004C4C9 /* PlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8541B09F11CA86290004C4C9 /* PlayerController.m */; };
 		8541B0A511CA86290004C4C9 /* ReleaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8541B0A111CA86290004C4C9 /* ReleaseController.m */; };
 		8541B0A611CA86290004C4C9 /* ReleasesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8541B0A311CA86290004C4C9 /* ReleasesController.m */; };
+		8541B0A911CA86820004C4C9 /* ReleaseLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8541B0A811CA86820004C4C9 /* ReleaseLoader.m */; };
+		8541B0AE11CA8A7D0004C4C9 /* Track.m in Sources */ = {isa = PBXBuildFile; fileRef = 8541B0AD11CA8A7D0004C4C9 /* Track.m */; };
+		8541B19511CA9DCB0004C4C9 /* ReleaseHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8541B19411CA9DCB0004C4C9 /* ReleaseHeader.xib */; };
+		8541B2C611CB7D9D0004C4C9 /* black-noise.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8541B2C511CB7D9D0004C4C9 /* black-noise.jpg */; };
 		854356BD116D314900438D2D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 854356BC116D314900438D2D /* MediaPlayer.framework */; };
 		854356C1116D315400438D2D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 854356C0116D315400438D2D /* AudioToolbox.framework */; };
 		854356C5116D315D00438D2D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 854356C4116D315D00438D2D /* CFNetwork.framework */; };
@@ -95,6 +99,12 @@
 		8541B0A111CA86290004C4C9 /* ReleaseController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseController.m; sourceTree = "<group>"; };
 		8541B0A211CA86290004C4C9 /* ReleasesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesController.h; sourceTree = "<group>"; };
 		8541B0A311CA86290004C4C9 /* ReleasesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesController.m; sourceTree = "<group>"; };
+		8541B0A711CA86820004C4C9 /* ReleaseLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseLoader.h; sourceTree = "<group>"; };
+		8541B0A811CA86820004C4C9 /* ReleaseLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseLoader.m; sourceTree = "<group>"; };
+		8541B0AC11CA8A7D0004C4C9 /* Track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Track.h; sourceTree = "<group>"; };
+		8541B0AD11CA8A7D0004C4C9 /* Track.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Track.m; sourceTree = "<group>"; };
+		8541B19411CA9DCB0004C4C9 /* ReleaseHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReleaseHeader.xib; sourceTree = "<group>"; };
+		8541B2C511CB7D9D0004C4C9 /* black-noise.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "black-noise.jpg"; sourceTree = "<group>"; };
 		854356BC116D314900438D2D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		854356C0116D315400438D2D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		854356C4116D315D00438D2D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -226,6 +236,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8541B2C511CB7D9D0004C4C9 /* black-noise.jpg */,
 				8541AE4511C91DF60004C4C9 /* cover-art-small.jpg */,
 				8541AE2911C91C0D0004C4C9 /* cover-art-large.jpg */,
 				858045A41164CBD900963147 /* logo_200x200.png */,
@@ -233,6 +244,7 @@
 				28AD73870D9D96C1002E5188 /* MainWindow.xib */,
 				851B45E91163E1E1007F1E83 /* Player.xib */,
 				8541B09B11CA85F30004C4C9 /* Release.xib */,
+				8541B19411CA9DCB0004C4C9 /* ReleaseHeader.xib */,
 				851B46D21164A9E1007F1E83 /* Bitspace.icns */,
 				8D1107310486CEB800E47090 /* bitspace_iphone-Info.plist */,
 			);
@@ -260,6 +272,8 @@
 				851D52E311C8CA9000CAB951 /* ReleasesLoader.m */,
 				8541AE6711C925D30004C4C9 /* ArtworkLoader.h */,
 				8541AE6811C925D30004C4C9 /* ArtworkLoader.m */,
+				8541B0A711CA86820004C4C9 /* ReleaseLoader.h */,
+				8541B0A811CA86820004C4C9 /* ReleaseLoader.m */,
 			);
 			name = Loaders;
 			sourceTree = "<group>";
@@ -281,6 +295,8 @@
 				8541B09611CA85DF0004C4C9 /* Bitspace.xcdatamodel */,
 				8541B09711CA85DF0004C4C9 /* Release.h */,
 				8541B09811CA85DF0004C4C9 /* Release.m */,
+				8541B0AC11CA8A7D0004C4C9 /* Track.h */,
+				8541B0AD11CA8A7D0004C4C9 /* Track.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -481,6 +497,8 @@
 				8541AE2A11C91C0D0004C4C9 /* cover-art-large.jpg in Resources */,
 				8541AE4611C91DF60004C4C9 /* cover-art-small.jpg in Resources */,
 				8541B09C11CA85F30004C4C9 /* Release.xib in Resources */,
+				8541B19511CA9DCB0004C4C9 /* ReleaseHeader.xib in Resources */,
+				8541B2C611CB7D9D0004C4C9 /* black-noise.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,6 +549,8 @@
 				8541B0A411CA86290004C4C9 /* PlayerController.m in Sources */,
 				8541B0A511CA86290004C4C9 /* ReleaseController.m in Sources */,
 				8541B0A611CA86290004C4C9 /* ReleasesController.m in Sources */,
+				8541B0A911CA86820004C4C9 /* ReleaseLoader.m in Sources */,
+				8541B0AE11CA8A7D0004C4C9 /* Track.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
