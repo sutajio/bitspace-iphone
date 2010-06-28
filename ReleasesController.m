@@ -11,6 +11,7 @@
 #import "Release.h"
 #import "ReleaseController.h"
 #import "AppDelegate.h"
+#import "ObjectiveResourceDateFormatter.h"
 
 
 @implementation ReleasesController
@@ -24,7 +25,7 @@
 
 - (void)refresh {
 	if (loader == nil) {
-		loader = [[[ReleasesLoader alloc] init] autorelease];
+		loader = [[ReleasesLoader alloc] init];
 		loader.delegate = self;
 		loader.appDelegate = self.appDelegate;
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -61,6 +62,7 @@
 
 - (void)viewDidLoad {
 	self.title = @"Releases";
+	navigationBar.tintColor = [UIColor blackColor];
 	NSError *error = nil;
 	if (![[self fetchedResultsController] performFetch:&error]) {
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
@@ -174,9 +176,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	Release *release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
 	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
-	releaseController.release = release;
+	releaseController.theRelease = release;
 	releaseController.appDelegate = self.appDelegate;
-	releaseController.hidesBottomBarWhenPushed = YES;
+	//releaseController.hidesBottomBarWhenPushed = YES;
 	[self.navigationController pushViewController:releaseController animated:YES];
 	[releaseController release];
 }
@@ -326,15 +328,56 @@
 
 
 - (void)handlePageCompletion {
-    // Store the current time as the time of the last import. This will be used to determine whether an
-    // import is necessary when the application runs.
-    //[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesUpdate"];
-    //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	NSError *error = nil;
+	if(![self.appDelegate.managedObjectContext save:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	}
 }
 
 
 - (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader {
-    [self performSelectorOnMainThread:@selector(handlePageCompletion) withObject:nil waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(handlePageCompletion) withObject:nil waitUntilDone:YES];
+}
+
+
+- (void)addRelease:(NSDictionary*)release {
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url == %@", (NSString*)[release valueForKey:@"url"]];
+	NSSet *filteredSet = [[self.appDelegate.managedObjectContext registeredObjects] filteredSetUsingPredicate:predicate];
+	
+	Release *newRelease;
+	
+	if([filteredSet count] == 0) {
+		newRelease = [[NSEntityDescription insertNewObjectForEntityForName:@"Release" inManagedObjectContext:self.appDelegate.managedObjectContext] retain];
+	} else {
+		newRelease = [[filteredSet anyObject] retain];
+	}
+	
+	newRelease.title = (NSString*)[release valueForKey:@"title"];
+	newRelease.artist = (NSString*)[release valueForKey:@"artist"];
+	newRelease.url = (NSString*)[release valueForKey:@"url"];
+	newRelease.createdAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[release valueForKey:@"created_at"]];
+	
+	if([release valueForKey:@"year"] != [NSNull null]) {
+		newRelease.year = [NSString stringWithFormat:@"%d", (NSDecimalNumber*)[release valueForKey:@"year"]];
+	}
+	
+	if([release valueForKey:@"small_artwork_url"] != [NSNull null]) {
+		newRelease.smallArtworkUrl = (NSString*)[release valueForKey:@"small_artwork_url"];
+	}
+	
+	if([release valueForKey:@"medium_artwork_url"] != [NSNull null]) {
+		newRelease.mediumArtworkUrl = (NSString*)[release valueForKey:@"medium_artwork_url"];
+	}
+	
+	if([release valueForKey:@"large_artwork_url"] != [NSNull null]) {
+		newRelease.largeArtworkUrl = (NSString*)[release valueForKey:@"large_artwork_url"];
+	}
+}
+
+
+- (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON {
+	[self performSelectorOnMainThread:@selector(addRelease:) withObject:releaseJSON waitUntilDone:YES];
 }
 
 

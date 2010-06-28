@@ -56,6 +56,10 @@
 				<object class="IBUINavigationController" key="IBUISelectedViewController" id="392583133">
 					<object class="IBUITabBarItem" key="IBUITabBarItem" id="608933607">
 						<string key="IBUITitle">Releases</string>
+						<object class="NSCustomResource" key="IBUIImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">disc.png</string>
+						</object>
 						<reference key="IBUITabBar"/>
 					</object>
 					<reference key="IBUIParentViewController" ref="1034742383"/>
@@ -85,6 +89,10 @@
 					<object class="IBUIViewController" id="1024858337">
 						<object class="IBUITabBarItem" key="IBUITabBarItem" id="765670903">
 							<string key="IBUITitle">Player</string>
+							<object class="NSCustomResource" key="IBUIImage">
+								<string key="NSClassName">NSImage</string>
+								<string key="NSResourceName">headphones.png</string>
+							</object>
 							<reference key="IBUITabBar"/>
 						</object>
 						<reference key="IBUIParentViewController" ref="1034742383"/>
@@ -146,6 +154,14 @@
 						<reference key="destination" ref="1024858337"/>
 					</object>
 					<int key="connectionID">185</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">navigationBar</string>
+						<reference key="source" ref="695859006"/>
+						<reference key="destination" ref="193088134"/>
+					</object>
+					<int key="connectionID">205</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -325,7 +341,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">185</int>
+			<int key="maxID">205</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -407,9 +423,15 @@
 							<string>nextTrack:</string>
 							<string>previousTrack:</string>
 							<string>togglePlayback:</string>
+							<string>togglePlaybackControls:</string>
+							<string>toggleRepeat:</string>
+							<string>toggleShuffle:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -421,23 +443,31 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>activityIndicator</string>
 							<string>artwork</string>
+							<string>currentTimeLabel</string>
 							<string>navigationBar</string>
 							<string>nextTrackButton</string>
 							<string>previousTrackButton</string>
 							<string>progress</string>
-							<string>togglePlaybackButton</string>
-							<string>toolbar</string>
+							<string>repeatButton</string>
+							<string>shuffleButton</string>
+							<string>statusBar</string>
+							<string>toolBar</string>
+							<string>totalTimeLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UIActivityIndicatorView</string>
 							<string>UIImageView</string>
+							<string>UILabel</string>
 							<string>UINavigationBar</string>
 							<string>UIBarButtonItem</string>
 							<string>UIBarButtonItem</string>
 							<string>UIProgressView</string>
 							<string>UIBarButtonItem</string>
+							<string>UIBarButtonItem</string>
+							<string>UIView</string>
 							<string>UIToolbar</string>
+							<string>UILabel</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -448,6 +478,10 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">ReleasesController</string>
 					<string key="superclassName">UITableViewController</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">navigationBar</string>
+						<string key="NS.object.0">UINavigationBar</string>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">ReleasesController.h</string>

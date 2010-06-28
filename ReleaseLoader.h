@@ -8,14 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
-@class AppDelegate, Release;
+@class AppDelegate, Release, ReleaseLoader;
+
+@protocol ReleaseLoaderDelegate <NSObject>
+@optional
+- (void)loaderDidFinish:(NSDictionary *)releaseJSON;
+- (void)loader:(ReleaseLoader *)loader didFailWithError:(NSError *)error;
+@end
 
 @interface ReleaseLoader : NSOperation {
 	AppDelegate *appDelegate;
-	Release *release;
+	NSString *releaseURL;
+	id <ReleaseLoaderDelegate> delegate;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
-@property (nonatomic, retain) Release *release;
+@property (nonatomic, retain) NSString *releaseURL;
+@property (nonatomic, assign) id <ReleaseLoaderDelegate> delegate;
 
 @end

@@ -7,29 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ReleaseLoader.h"
 
-@class AppDelegate, Release, ReleaseLoader;
+@class AppDelegate, Release, ReleaseLoader, ReleaseLoaderDelegate;
 
-@interface ReleaseController : UITableViewController {
+@interface ReleaseController : UITableViewController <ReleaseLoaderDelegate, NSFetchedResultsControllerDelegate> {
 	AppDelegate *appDelegate;
-	Release *release;
-	NSMutableArray *tracks;
+	Release *theRelease;
+	NSFetchedResultsController *fetchedResultsController;
 	
 	UIView *tableHeaderView;
-	UIImageView *artworkImage;
-	UIActivityIndicatorView *activityIndicator;
 	
 	NSOperationQueue *operationQueue;
 	ReleaseLoader *releaseLoader;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
-@property (nonatomic, retain) Release *release;
-@property (nonatomic, retain) NSMutableArray *tracks;
+@property (nonatomic, retain) Release *theRelease;
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 @property (nonatomic, retain) IBOutlet UIView *tableHeaderView;
-@property (nonatomic, retain) IBOutlet UIImageView *artworkImage;
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
 @property (nonatomic, retain, readonly) ReleaseLoader *releaseLoader;

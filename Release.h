@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NSString *year;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSDate *createdAt;
+@property (nonatomic, readonly) NSString *monthCreatedAt;
 @property (nonatomic, retain) NSString *smallArtworkUrl;
 @property (nonatomic, retain) NSString *mediumArtworkUrl;
 @property (nonatomic, retain) NSString *largeArtworkUrl;
@@ -42,5 +43,7 @@
 @property (nonatomic, retain) ArtworkLoader *largeArtworkLoader;
 
 -(BOOL) hasTrackWithURL:(NSString *)url;
+-(NSInteger) numberOfSets;
+-(NSInteger) numberOfTracksInSet:(NSInteger)setNr;
 
 @end

@@ -9,14 +9,20 @@
 #import "PlayerController.h"
 #import "AudioStreamer.h"
 #import "AppDelegate.h"
+#import "Track.h"
+#import "Release.h"
 
 
 @implementation PlayerController
 
 @synthesize appDelegate;
 
+
+#pragma mark Streamer methods
+
 - (void)destroyStreamer
 {
+	NSLog(@"Destroying streamer...");
 	if (streamer)
 	{
 		[[NSNotificationCenter defaultCenter]
@@ -32,25 +38,11 @@
 	}
 }
 
-- (void)createStreamer
-{
-	if (streamer)
-	{
-		return;
-	}
-	
+- (void)createStreamer:(NSString *)sourceUrl {
 	[self destroyStreamer];
 	
-	NSString *escapedValue =
-	[(NSString *)CFURLCreateStringByAddingPercentEscapes(
-														 nil,
-														 (CFStringRef)@"http://cdn.bitspace.at/tracks/926a59b9e64da70773cad93973e9d8b980751963.mp3",
-														 NULL,
-														 NULL,
-														 kCFStringEncodingUTF8)
-	 autorelease];
-	
-	NSURL *url = [NSURL URLWithString:escapedValue];
+	NSLog(@"Creating streamer...");
+	NSURL *url = [NSURL URLWithString:sourceUrl];
 	streamer = [[AudioStreamer alloc] initWithURL:url];
 	
 	progressUpdateTimer =
@@ -65,7 +57,165 @@
 	 selector:@selector(playbackStateChanged:)
 	 name:ASStatusChangedNotification
 	 object:streamer];
+	
+	[streamer start];
 }
+
+
+#pragma mark Playback helper methods
+
+- (Track *)currentTrack {
+	if(playlistPosition >= 0 && playlistPosition < [playlist count]) {
+		return [playlist objectAtIndex:playlistPosition];
+	} else {
+		return nil;
+	}
+}
+
+- (NSString *)secondsToTime:(NSNumber *)seconds {
+	if([seconds intValue] < 3600) {
+		NSInteger minutes = [seconds intValue] / 60;
+		NSInteger secs = [seconds intValue] % 60;
+		return [NSString stringWithFormat:@"%d:%02d", minutes, secs];
+	} else if([seconds intValue] < 86400) {
+		NSInteger hours = [seconds intValue] / 3600;
+		NSInteger minutes = ([seconds intValue] % 3600) / 60;
+		NSInteger secs = [seconds intValue] % 60;
+		return [NSString stringWithFormat:@"%d:%02d:%02d", hours, minutes, secs];
+	} else {
+		NSInteger days = [seconds intValue] / 60 / 60 / 24;
+		if(days == 1) {
+			return @"1 day";
+		} else {
+			return [NSString stringWithFormat:@"%d days", days];
+		}
+	}
+}
+
+- (void)updateProgress:(NSTimer *)updatedTimer
+{
+	Track *track = [self currentTrack];
+	if(track) {
+		progress.progress = streamer.progress / [track.length doubleValue];
+		currentTimeLabel.text = [self secondsToTime:[NSNumber numberWithDouble:streamer.progress]];
+		totalTimeLabel.text = [self secondsToTime:track.length];
+	} else {
+		progress.progress = 0;
+		currentTimeLabel.text = @"0:00";
+		totalTimeLabel.text = @"0:00";
+	}
+	
+	if(track.parent.largeArtworkImage) {
+		artwork.image = track.parent.largeArtworkImage;
+		artwork.hidden = NO;
+	}
+}
+
+- (BOOL)isPaused {
+	return [streamer isPaused];
+}
+
+- (BOOL)isPlayingFirstTrack {
+	return playlistPosition == 0;
+}
+
+- (BOOL)isPlayingLastTrack {
+	return playlistPosition == ([playlist count] - 1);
+}
+
+- (BOOL)hasQueuedTracks {
+	return [playlist count] == 0 ? NO : YES;
+}
+
+- (void)showPlaybackControls {
+	if([self hasQueuedTracks]) {
+		statusBar.hidden = NO;
+		toolBar.hidden = NO;
+		playbackControlsState = PL_CTRLS_STATE_VISIBLE;
+		[[NSUserDefaults standardUserDefaults] setInteger:PL_CTRLS_STATE_VISIBLE forKey:@"PlaybackControlsState"];
+	}
+}
+
+- (void)hidePlaybackControls {
+	statusBar.hidden = YES;
+	toolBar.hidden = YES;
+	playbackControlsState = PL_CTRLS_STATE_HIDDEN;
+	[[NSUserDefaults standardUserDefaults] setInteger:PL_CTRLS_STATE_HIDDEN forKey:@"PlaybackControlsState"];
+}
+
+- (void)updatePlayerUIBasedOnPlaybackState {
+	
+	// Setup the track info
+	Track *track = [self currentTrack];
+	if(track) {
+		if(track.artist) {
+			navigationBar.topItem.prompt = track.artist;
+		} else {
+			navigationBar.topItem.prompt = track.parent.artist;
+		}
+		navigationBar.topItem.title = track.title;
+		navigationBar.hidden = NO;
+		
+		// Show the artwork for the release
+		if(track.parent.largeArtworkUrl != nil) {
+			artwork.image = track.parent.largeArtworkImage;
+			artwork.hidden = NO;
+		} else {
+			artwork.image = [UIImage imageNamed:@"cover-art-large.jpg"];
+			artwork.hidden = NO;
+		}
+	}
+	
+	// Set the play/pause button according to the current state
+	NSMutableArray *tbItems = [NSMutableArray arrayWithArray:toolBar.items];
+	if([self isPaused]) {
+		UIBarButtonItem *b = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemPlay target:self action:@selector(togglePlayback:)] autorelease];
+		[tbItems replaceObjectAtIndex:4 withObject:b];
+	} else {
+		UIBarButtonItem *b = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemPause target:self action:@selector(togglePlayback:)] autorelease];
+		[tbItems replaceObjectAtIndex:4 withObject:b];
+	}
+	[toolBar setItems:tbItems];	
+
+	// Enable or disbale the previous/next buttons
+	if([self isPlayingFirstTrack] && repeatState != PL_REPEAT_ALL && shuffleState != PL_SHUFFLE_ON) {
+		previousTrackButton.enabled = NO;
+	} else {
+		previousTrackButton.enabled = YES;
+	}
+	
+	if([self isPlayingLastTrack] && repeatState != PL_REPEAT_ALL && shuffleState != PL_SHUFFLE_ON) {
+		nextTrackButton.enabled = NO;
+	} else {
+		nextTrackButton.enabled = YES;
+	}
+	
+	// Show or hide playback controls based on configuration if state is undefined
+	if(playbackControlsState == PL_CTRLS_STATE_UNDEFINED || playbackControlsState == PL_CTRLS_STATE_VISIBLE) {
+		[self showPlaybackControls];
+	} else {
+		[self hidePlaybackControls];
+	}
+	
+	// Set the correct repeat/shuffle state
+	if(repeatState == PL_REPEAT_ALL) {
+		repeatButton.image = [UIImage imageNamed:@"repeat-all.png"];
+	} else if(repeatState == PL_REPEAT_TRACK) {
+		repeatButton.image = [UIImage imageNamed:@"repeat-track.png"];
+	} else {
+		repeatButton.image = [UIImage imageNamed:@"repeat-off.png"];
+	}
+		
+	if(shuffleState == PL_SHUFFLE_ON) {
+		shuffleButton.image = [UIImage imageNamed:@"shuffle-on.png"];
+	} else {
+		shuffleButton.image = [UIImage imageNamed:@"shuffle-off.png"];
+	}
+}
+
+
+#pragma mark View methods
+
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -78,14 +228,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-	NSURL *url = [NSURL URLWithString:@"http://cdn.bitspace.at/releases/artworks/large/000/003/523-1269973952.png"];
-	NSData *data = [NSData dataWithContentsOfURL:url];
-	UIImage *img = [[UIImage alloc] initWithData:data];
-	artwork.image = img;
 	
-	[self createStreamer];
-	//[streamer start];
+	playlist = [[NSMutableArray alloc] init];
+	playlistPosition = -1;
+	playbackControlsState = [[NSUserDefaults standardUserDefaults] integerForKey:@"PlaybackControlsState"];
+	repeatState = [[NSUserDefaults standardUserDefaults] integerForKey:@"PlayerRepeatState"];
+	shuffleState = [[NSUserDefaults standardUserDefaults] integerForKey:@"PlayerShuffleState"];
 }
 
 /*
@@ -130,19 +278,13 @@
 }
 
 - (void)dealloc {
+	[playlist release];
 	[self destroyStreamer];
-	if (progressUpdateTimer)
-	{
-		[progressUpdateTimer invalidate];
-		progressUpdateTimer = nil;
-	}
     [super dealloc];
 }
 
-- (void)updateProgress:(NSTimer *)updatedTimer
-{
-	progress.progress = streamer.progress / 100.0;
-}
+
+#pragma mark Playback controls and callbacks
 
 - (void)playbackStateChanged:(id)notification {
 	NSLog(@"playbackStateChanged");
@@ -150,17 +292,28 @@
 		case AS_PLAYING:
 			NSLog(@"AS_PLAYING");
 			[activityIndicator stopAnimating];
-			[togglePlaybackButton initWithBarButtonSystemItem: UIBarButtonSystemItemPause target:self action:@selector(togglePlayback:)];
+			[self updatePlayerUIBasedOnPlaybackState];
 			break;
 		case AS_PAUSED:
 			NSLog(@"AS_PAUSED");
-			[togglePlaybackButton initWithBarButtonSystemItem: UIBarButtonSystemItemPlay target:self action:@selector(togglePlayback:)];
+			[self updatePlayerUIBasedOnPlaybackState];
 			break;
 		case AS_STOPPING:
 			NSLog(@"AS_STOPPING");
 			break;
 		case AS_STOPPED:
 			NSLog(@"AS_STOPPED");
+			if([self isPlayingLastTrack]) {
+				if(repeatState == PL_REPEAT_ALL ||
+				   repeatState == PL_REPEAT_TRACK ||
+				   shuffleState == PL_SHUFFLE_ON) {
+					[self nextTrack:nil];
+				} else {
+					[self clearQueue];
+				}
+			} else {
+				[self nextTrack:nil];
+			}
 			break;
 		case AS_BUFFERING:
 			NSLog(@"AS_BUFFERING");
@@ -184,6 +337,25 @@
 	}
 }
 
+- (void)playCurrentTrack {
+	NSLog(@"Playing current track...");
+	
+	Track *track = [self currentTrack];
+	if(track) {
+		[self createStreamer:track.url];
+	}
+	
+	[self updatePlayerUIBasedOnPlaybackState];
+}
+
+- (void)togglePlaybackControls:(id)sender {
+	if(playbackControlsState == PL_CTRLS_STATE_VISIBLE) {
+		[self hidePlaybackControls];
+	} else {
+		[self showPlaybackControls];
+	}
+}
+
 - (void)togglePlayback:(id)sender {
 	NSLog(@"togglePlayback");
 	if([streamer isPaused]) {
@@ -191,14 +363,86 @@
 	} else {
 		[streamer pause];
 	}
+	[self updatePlayerUIBasedOnPlaybackState];
 }
 
 - (void)nextTrack:(id)sender {
 	NSLog(@"nextTrack");
+	if(shuffleState == PL_SHUFFLE_ON) {
+		playlistPosition = rand() % [playlist count];
+	} else if(repeatState == PL_REPEAT_TRACK) {
+		if(sender == nil) {
+			playlistPosition = playlistPosition;
+		} else {
+			playlistPosition++;
+		}
+	} else if(repeatState == PL_REPEAT_ALL && [self isPlayingLastTrack]) {
+		playlistPosition = 0;
+	} else {
+		playlistPosition++;
+	}
+	[self playCurrentTrack];
 }
 
 - (void)previousTrack:(id)sender {
 	NSLog(@"previousTrack");
+	if(shuffleState == PL_SHUFFLE_ON) {
+		playlistPosition = rand() % [playlist count];
+	} else if(repeatState == PL_REPEAT_TRACK) {
+		if(sender == nil) {
+			playlistPosition = playlistPosition;
+		} else {
+			playlistPosition--;
+		}
+	} else if(repeatState == PL_REPEAT_ALL && playlistPosition == 0) {
+		playlistPosition = [playlist count] - 1;
+	} else {
+		playlistPosition--;
+	}
+	[self playCurrentTrack];
+}
+
+- (void)toggleRepeat:(id)sender {
+	if(repeatState == PL_REPEAT_ALL) {
+		repeatState = PL_REPEAT_TRACK;
+		[[NSUserDefaults standardUserDefaults] setInteger:PL_REPEAT_TRACK forKey:@"PlayerRepeatState"];
+	} else if(repeatState == PL_REPEAT_TRACK) {
+		repeatState = PL_REPEAT_OFF;
+		[[NSUserDefaults standardUserDefaults] setInteger:PL_REPEAT_OFF forKey:@"PlayerRepeatState"];
+	} else {
+		repeatState = PL_REPEAT_ALL;
+		[[NSUserDefaults standardUserDefaults] setInteger:PL_REPEAT_ALL forKey:@"PlayerRepeatState"];
+	}
+	[self updatePlayerUIBasedOnPlaybackState];
+}
+
+- (void)toggleShuffle:(id)sender {
+	if(shuffleState == PL_SHUFFLE_ON) {
+		shuffleState = PL_SHUFFLE_OFF;
+		[[NSUserDefaults standardUserDefaults] setInteger:PL_SHUFFLE_OFF forKey:@"PlayerShuffleState"];
+	} else {
+		shuffleState = PL_SHUFFLE_ON;
+		[[NSUserDefaults standardUserDefaults] setInteger:PL_SHUFFLE_ON forKey:@"PlayerShuffleState"];
+	}
+	[self updatePlayerUIBasedOnPlaybackState];
+}
+
+- (void)enqueueTrack:(Track *)track fromTheRelease:(Release *)release andPlay:(BOOL)play {
+	NSLog(@"Enqueueing track...");
+	
+	[playlist addObject:track];
+	if(play == YES) {
+		playlistPosition = [playlist count] - 1;
+		[self playCurrentTrack];
+	} else {
+		[self updatePlayerUIBasedOnPlaybackState];
+	}
+}
+
+- (void)clearQueue {
+	[playlist removeAllObjects];
+	playlistPosition = -1;
+	[self updatePlayerUIBasedOnPlaybackState];
 }
 
 

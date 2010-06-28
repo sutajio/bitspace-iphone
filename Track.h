@@ -14,7 +14,7 @@
 
 }
 
-@property (nonatomic, retain) Release *release;
+@property (nonatomic, retain) Release *parent;
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSString *artist;
@@ -23,5 +23,6 @@
 @property (nonatomic, retain) NSNumber *length;
 @property (nonatomic, retain) NSString *nowPlayingUrl;
 @property (nonatomic, retain) NSString *scrobbleUrl;
+@property (nonatomic, retain) NSDate *lovedAt;
 
 @end

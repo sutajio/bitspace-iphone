@@ -26,9 +26,9 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
-	self.siteURL = @"http://localhost:3001/";
-	self.username = @"test";
-	self.password = @"test";
+	self.siteURL = @"http://bitspace.at/";
+	self.username = @"niklas";
+	self.password = @"q29yunh";
 	
 	// Pass self to the controllers
 	playerController.appDelegate = self;
@@ -87,6 +87,7 @@
     if (coordinator != nil) {
         managedObjectContext = [[NSManagedObjectContext alloc] init];
         [managedObjectContext setPersistentStoreCoordinator: coordinator];
+		[managedObjectContext setRetainsRegisteredObjects:YES];
     }
     return managedObjectContext;
 }
@@ -116,7 +117,7 @@
         return persistentStoreCoordinator;
     }
 	
-    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"bitspace-v4.sqlite"]];
+    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"bitspace.sqlite"]];
 	
 	NSError *error = nil;
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

@@ -11,7 +11,7 @@
 
 @implementation Track
 
-@dynamic release;
+@dynamic parent;
 @dynamic title;
 @dynamic url;
 @dynamic artist;
@@ -20,5 +20,6 @@
 @dynamic length;
 @dynamic nowPlayingUrl;
 @dynamic scrobbleUrl;
+@dynamic lovedAt;
 
 @end

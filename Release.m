@@ -27,6 +27,14 @@
 
 @synthesize smallArtworkLoader, mediumArtworkLoader, largeArtworkLoader;
 
+-(NSString *)monthCreatedAt {
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"MMM ''yy"];
+	NSString *formatedDate = [dateFormatter stringFromDate:self.createdAt];
+	[dateFormatter release];
+	return formatedDate;
+}
+
 -(BOOL) hasTrackWithURL:(NSString *)url {
 	for(Track *track in self.tracks) {
 		if([track.url isEqualToString:url]) {
@@ -34,6 +42,26 @@
 		}
 	}
 	return NO;
+}
+
+-(NSInteger) numberOfSets {
+	NSInteger i = 1;
+	for(Track *track in self.tracks) {
+		if([track.setNr integerValue] > i) {
+			i = [track.setNr integerValue];
+		}
+	}
+	return i;
+}
+
+-(NSInteger) numberOfTracksInSet:(NSInteger)setNr {
+	NSInteger i = 0;
+	for(Track *track in self.tracks) {
+		if([track.setNr integerValue] == setNr) {
+			i++;
+		}
+	}
+	return i;
 }
 
 - (NSOperationQueue *)operationQueue {
@@ -47,7 +75,7 @@
 	if(smallArtworkImage == nil) {
 		if(self.smallArtwork == nil) {
 			if(smallArtworkLoader == nil) {
-				smallArtworkLoader = [[[ArtworkLoader alloc] init] autorelease];
+				smallArtworkLoader = [[ArtworkLoader alloc] init];
 				smallArtworkLoader.url = self.smallArtworkUrl;
 				smallArtworkLoader.delegate = self;
 				[self.operationQueue addOperation:smallArtworkLoader];
@@ -63,7 +91,7 @@
 	if(mediumArtworkImage == nil) {
 		if(self.mediumArtwork == nil) {
 			if(mediumArtworkLoader == nil) {
-				mediumArtworkLoader = [[[ArtworkLoader alloc] init] autorelease];
+				mediumArtworkLoader = [[ArtworkLoader alloc] init];
 				mediumArtworkLoader.url = self.mediumArtworkUrl;
 				mediumArtworkLoader.delegate = self;
 				[self.operationQueue addOperation:mediumArtworkLoader];
@@ -79,7 +107,7 @@
 	if(largeArtworkImage == nil) {
 		if(self.largeArtwork == nil) {
 			if(largeArtworkLoader == nil) {
-				largeArtworkLoader = [[[ArtworkLoader alloc] init] autorelease];
+				largeArtworkLoader = [[ArtworkLoader alloc] init];
 				largeArtworkLoader.url = self.largeArtworkUrl;
 				largeArtworkLoader.delegate = self;
 				[self.operationQueue addOperation:largeArtworkLoader];
@@ -103,15 +131,15 @@
 	}
 }
 
--(void)dealloc {
-	[super dealloc];
-	[operationQueue release];
-	[smallArtworkLoader release];
-	[mediumArtworkLoader release];
-	[largeArtworkLoader release];
-	[smallArtworkImage release];
-	[mediumArtworkImage release];
-	[largeArtworkImage release];
-}
+//-(void)dealloc {
+//	[super dealloc];
+//	[operationQueue release];
+//	[smallArtworkLoader release];
+//	[mediumArtworkLoader release];
+//	[largeArtworkLoader release];
+//	[smallArtworkImage release];
+//	[mediumArtworkImage release];
+//	[largeArtworkImage release];
+//}
 
 @end

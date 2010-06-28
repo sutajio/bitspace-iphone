@@ -12,9 +12,9 @@
 
 @protocol ReleasesLoaderDelegate <NSObject>
 @optional
-- (void)loaderDidSave:(NSNotification *)saveNotification;
 - (void)loaderDidFinish:(ReleasesLoader *)loader;
 - (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader;
+- (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON;
 - (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error;
 @end
 

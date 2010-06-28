@@ -16,6 +16,8 @@
 	NSFetchedResultsController *fetchedResultsController;
 	NSOperationQueue *operationQueue;
 	ReleasesLoader *loader;
+	
+	IBOutlet UINavigationBar *navigationBar;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;

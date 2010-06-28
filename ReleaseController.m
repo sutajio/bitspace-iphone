@@ -11,31 +11,42 @@
 #import "Track.h"
 #import "AppDelegate.h"
 #import "ReleaseLoader.h"
+#import "PlayerController.h"
+#import "TrackTableViewCell.h"
+#import "ObjectiveResourceDateFormatter.h"
 
 
 @implementation ReleaseController
 
 @synthesize appDelegate;
-@synthesize release, tracks;
-@synthesize tableHeaderView, artworkImage, activityIndicator;
+@synthesize theRelease, fetchedResultsController;
+@synthesize tableHeaderView;
 @synthesize releaseLoader;
 
-- (void)refreshRelease {
-	self.navigationItem.title = release.title;
-	if(release.largeArtworkImage) {
-		artworkImage.image = release.largeArtworkImage;
-		[activityIndicator stopAnimating];
-	}
-	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"trackNr" ascending:YES];
-	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:&sortDescriptor count:1];
-	NSMutableArray *sortedTracks = [[NSMutableArray alloc] initWithArray:[release.tracks allObjects]];
-	[sortedTracks sortUsingDescriptors:sortDescriptors];
-	self.tracks = sortedTracks;
+
+#pragma mark Release helper methods
+
+- (void)loadTracks {
+	releaseLoader = [[ReleaseLoader alloc] init];
+	releaseLoader.releaseURL = self.theRelease.url;
+	releaseLoader.appDelegate = self.appDelegate;
+	releaseLoader.delegate = self;
+	[self.operationQueue addOperation:releaseLoader];
 }
 
-- (void)releasesDidChange:(NSNotification *)notification {
-	[self refreshRelease];
-	[self.tableView reloadData];
+- (void)refreshRelease {
+	//NSSortDescriptor *sortDescriptorSetNr = [[NSSortDescriptor alloc] initWithKey:@"setNr" ascending:YES selector:@selector(compare:)];
+//	NSSortDescriptor *sortDescriptorTrackNr = [[NSSortDescriptor alloc] initWithKey:@"trackNr" ascending:YES selector:@selector(compare:)];
+//	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptorSetNr, sortDescriptorTrackNr, nil];
+//	NSMutableArray *sortedTracks = [[NSMutableArray alloc] initWithArray:[release.tracks allObjects]];
+//	[sortedTracks sortUsingDescriptors:sortDescriptors];
+//	self.tracks = sortedTracks;
+	
+	NSError *error = nil;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		abort();
+	}
 }
 
 - (NSOperationQueue *)operationQueue {
@@ -44,6 +55,9 @@
     }
     return operationQueue;
 }
+
+
+#pragma mark View methods
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -55,30 +69,21 @@
 */
 
 - (void)viewDidLoad {
-	self.view.backgroundColor = [UIColor clearColor];
 	self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	self.navigationItem.title = theRelease.title;
     if (tableHeaderView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
         self.tableView.tableHeaderView = tableHeaderView;
         self.tableView.allowsSelectionDuringEditing = YES;
     }
+	self.tableView.backgroundColor = [UIColor clearColor];
+	
+	[self loadTracks];
+	[self refreshRelease];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(releasesDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:self.appDelegate.managedObjectContext];
-	
-	releaseLoader = [[[ReleaseLoader alloc] init] autorelease];
-	releaseLoader.release = self.release;
-	releaseLoader.appDelegate = self.appDelegate;
-	[self.operationQueue addOperation:releaseLoader];
-	
-	if(self.release.largeArtworkUrl == nil) {
-		[activityIndicator stopAnimating];
-	}
-	
-	[self refreshRelease];
 }
 
 /*
@@ -121,13 +126,20 @@
 #pragma mark Table view methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return [[fetchedResultsController sections] count];
 }
 
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [release.tracks count];
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
+}
+
+
+- (void)configureCell:(TrackTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+	// Set up the cell...
+	cell.track = [fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 
@@ -135,26 +147,45 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+
+	TrackTableViewCell *cell = (TrackTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
-    }
+        cell = [[[TrackTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+	}
     
-    // Set up the cell...
-	Track *track = [tracks objectAtIndex:indexPath.row];
-	cell.textLabel.text = track.title;
-	cell.detailTextLabel.text = track.artist;
+	// Set up the cell...
+	[self configureCell:cell atIndexPath:indexPath];
 	
     return cell;
 }
 
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { 
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo name];
+}
+
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    return [fetchedResultsController sectionIndexTitles];
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+    return [fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
+	[self.appDelegate.playerController clearQueue];
+	for(Track *track in [fetchedResultsController fetchedObjects]) {
+		if([fetchedResultsController objectAtIndexPath:indexPath] == track) {
+			[self.appDelegate.playerController enqueueTrack:track fromTheRelease:theRelease andPlay:YES];
+		} else {
+			[self.appDelegate.playerController enqueueTrack:track fromTheRelease:theRelease andPlay:NO];
+		}
+	}
+	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
 }
 
 
@@ -198,9 +229,158 @@
 */
 
 
+#pragma mark -
+#pragma mark Fetched results controller
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    // Set up the fetched results controller if needed.
+    if (fetchedResultsController == nil) {
+        // Create the fetch request for the entity.
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        // Edit the entity name as appropriate.
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:self.appDelegate.managedObjectContext];
+        [fetchRequest setEntity:entity];
+        
+        // Edit the sort keys as appropriate.
+		NSSortDescriptor *sortDescriptorSetNr = [[NSSortDescriptor alloc] initWithKey:@"setNr" ascending:YES selector:@selector(compare:)];
+		NSSortDescriptor *sortDescriptorTrackNr = [[NSSortDescriptor alloc] initWithKey:@"trackNr" ascending:YES selector:@selector(compare:)];
+		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptorSetNr, sortDescriptorTrackNr, nil];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+		
+		// Edit the filter predicate as appropriate.
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", theRelease];
+		[fetchRequest setPredicate:predicate];
+        
+        // Edit the section name key path and cache name if appropriate.
+        // nil for section name key path means "no sections".
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        aFetchedResultsController.delegate = self;
+        self.fetchedResultsController = aFetchedResultsController;
+        
+        [aFetchedResultsController release];
+        [fetchRequest release];
+        [sortDescriptorSetNr release];
+		[sortDescriptorTrackNr release];
+        [sortDescriptors release];
+    }
+	
+	return fetchedResultsController;
+}    
+
+
+/**
+ Delegate methods of NSFetchedResultsController to respond to additions, removals and so on.
+ */
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+	// The fetch controller is about to start sending change notifications, so prepare the table view for updates.
+	[self.tableView beginUpdates];
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+	UITableView *tableView = self.tableView;
+	
+	switch(type) {
+		case NSFetchedResultsChangeInsert:
+			[tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeDelete:
+			[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeUpdate:
+			[self configureCell:(TrackTableViewCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+			break;
+			
+		case NSFetchedResultsChangeMove:
+			[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+	}
+}
+
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+	switch(type) {
+		case NSFetchedResultsChangeInsert:
+			[self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+			
+		case NSFetchedResultsChangeDelete:
+			[self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			break;
+	}
+}
+
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+	// The fetch controller has sent all current change notifications, so tell the table view to process all updates.
+	[self.tableView endUpdates];
+}
+
+
+#pragma mark <ReleaseLoaderDelegate> Implementation
+
+
+-(void)updateRelease:(NSDictionary *)releaseJSON {
+	NSArray *tracksArray = (NSArray *)[releaseJSON valueForKey:@"tracks"];
+	NSInteger i = 1;
+	for(NSDictionary *trackJSON in tracksArray) {
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url == %@", (NSString*)[trackJSON valueForKey:@"url"]];
+		NSSet *filteredSet = [[self.appDelegate.managedObjectContext registeredObjects] filteredSetUsingPredicate:predicate];
+
+		if([filteredSet count] == 0) {
+			Track *track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.appDelegate.managedObjectContext];
+			track.title = (NSString *)[trackJSON valueForKey:@"title"];
+			track.url = (NSString *)[trackJSON valueForKey:@"url"];
+			track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
+			track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
+			track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
+			if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
+				track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
+			} else {
+				track.trackNr = [NSNumber numberWithInt:i];
+			}
+			
+			if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
+				track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
+			} else {
+				track.setNr = [NSNumber numberWithInt:1];
+			}
+			if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
+				track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
+			}
+			if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
+				track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
+			}
+			
+			track.parent = self.theRelease;
+		}
+		i++;
+	}
+	
+	NSError *error = nil;
+	if(![self.appDelegate.managedObjectContext save:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	}
+	
+	[self refreshRelease];
+	[self.tableView reloadData];
+}
+
+
+- (void)loaderDidFinish:(NSDictionary *)releaseJSON {
+	[self performSelectorOnMainThread:@selector(updateRelease:) withObject:releaseJSON waitUntilDone:YES];
+}
+
+
+#pragma mark Dealloc
+
 - (void)dealloc {
+	[fetchedResultsController release];
     [super dealloc];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextObjectsDidChangeNotification object:self.appDelegate.managedObjectContext];
 }
 
 
