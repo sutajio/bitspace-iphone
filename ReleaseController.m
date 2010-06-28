@@ -45,7 +45,7 @@
 */
 
 - (void)viewDidLoad {
-	self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	//self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	self.navigationItem.title = theRelease.title;
     if (tableHeaderView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
@@ -135,20 +135,20 @@
 }
 
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { 
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
-    return [sectionInfo name];
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { 
+//    id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
+//    return [sectionInfo name];
+//}
 
 
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    return [fetchedResultsController sectionIndexTitles];
-}
+//- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+//    return [fetchedResultsController sectionIndexTitles];
+//}
 
 
-- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    return [fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
-}
+//- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+//    return [fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
+//}
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -228,7 +228,7 @@
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:@"setNr" cacheName:nil];
         aFetchedResultsController.delegate = self;
         self.fetchedResultsController = aFetchedResultsController;
         
