@@ -38,7 +38,8 @@
 	// Parse the returned response
 	NSString *responseString = [[NSString alloc] initWithData:res.body encoding:NSUTF8StringEncoding];
 	NSDictionary *releaseJSON = [responseString JSONValue];
-	[delegate loaderDidFinish:releaseJSON];
+	[delegate loaderDidFinishParsingRelease:releaseJSON];
+	[delegate loaderDidFinish:self];
 }
 
 @end

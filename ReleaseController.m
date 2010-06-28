@@ -13,7 +13,6 @@
 #import "ReleaseLoader.h"
 #import "PlayerController.h"
 #import "TrackTableViewCell.h"
-#import "ObjectiveResourceDateFormatter.h"
 
 
 @implementation ReleaseController
@@ -21,39 +20,16 @@
 @synthesize appDelegate;
 @synthesize theRelease, fetchedResultsController;
 @synthesize tableHeaderView;
-@synthesize releaseLoader;
 
 
 #pragma mark Release helper methods
 
-- (void)loadTracks {
-	releaseLoader = [[ReleaseLoader alloc] init];
-	releaseLoader.releaseURL = self.theRelease.url;
-	releaseLoader.appDelegate = self.appDelegate;
-	releaseLoader.delegate = self;
-	[self.operationQueue addOperation:releaseLoader];
-}
-
 - (void)refreshRelease {
-	//NSSortDescriptor *sortDescriptorSetNr = [[NSSortDescriptor alloc] initWithKey:@"setNr" ascending:YES selector:@selector(compare:)];
-//	NSSortDescriptor *sortDescriptorTrackNr = [[NSSortDescriptor alloc] initWithKey:@"trackNr" ascending:YES selector:@selector(compare:)];
-//	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptorSetNr, sortDescriptorTrackNr, nil];
-//	NSMutableArray *sortedTracks = [[NSMutableArray alloc] initWithArray:[release.tracks allObjects]];
-//	[sortedTracks sortUsingDescriptors:sortDescriptors];
-//	self.tracks = sortedTracks;
-	
 	NSError *error = nil;
 	if (![[self fetchedResultsController] performFetch:&error]) {
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 		abort();
 	}
-}
-
-- (NSOperationQueue *)operationQueue {
-    if (operationQueue == nil) {
-        operationQueue = [[NSOperationQueue alloc] init];
-    }
-    return operationQueue;
 }
 
 
@@ -77,8 +53,7 @@
         self.tableView.allowsSelectionDuringEditing = YES;
     }
 	self.tableView.backgroundColor = [UIColor clearColor];
-	
-	[self loadTracks];
+
 	[self refreshRelease];
 }
 
@@ -318,61 +293,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	// The fetch controller has sent all current change notifications, so tell the table view to process all updates.
 	[self.tableView endUpdates];
-}
-
-
-#pragma mark <ReleaseLoaderDelegate> Implementation
-
-
--(void)updateRelease:(NSDictionary *)releaseJSON {
-	NSArray *tracksArray = (NSArray *)[releaseJSON valueForKey:@"tracks"];
-	NSInteger i = 1;
-	for(NSDictionary *trackJSON in tracksArray) {
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url == %@", (NSString*)[trackJSON valueForKey:@"url"]];
-		NSSet *filteredSet = [[self.appDelegate.managedObjectContext registeredObjects] filteredSetUsingPredicate:predicate];
-
-		if([filteredSet count] == 0) {
-			Track *track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.appDelegate.managedObjectContext];
-			track.title = (NSString *)[trackJSON valueForKey:@"title"];
-			track.url = (NSString *)[trackJSON valueForKey:@"url"];
-			track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
-			track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
-			track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
-			if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
-				track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
-			} else {
-				track.trackNr = [NSNumber numberWithInt:i];
-			}
-			
-			if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
-				track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
-			} else {
-				track.setNr = [NSNumber numberWithInt:1];
-			}
-			if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
-				track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
-			}
-			if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
-				track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
-			}
-			
-			track.parent = self.theRelease;
-		}
-		i++;
-	}
-	
-	NSError *error = nil;
-	if(![self.appDelegate.managedObjectContext save:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	}
-	
-	[self refreshRelease];
-	[self.tableView reloadData];
-}
-
-
-- (void)loaderDidFinish:(NSDictionary *)releaseJSON {
-	[self performSelectorOnMainThread:@selector(updateRelease:) withObject:releaseJSON waitUntilDone:YES];
 }
 
 

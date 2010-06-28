@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "ArtworkLoader.h"
+#import "ReleaseLoader.h"
 
 
-@interface Release : NSManagedObject <ArtworkLoaderDelegate> {
+@interface Release : NSManagedObject <ArtworkLoaderDelegate, ReleaseLoaderDelegate> {
 	NSOperationQueue *operationQueue;
 	UIImage *smallArtworkImage;
 	UIImage *mediumArtworkImage;
@@ -18,6 +19,7 @@
 	ArtworkLoader *smallArtworkLoader;
 	ArtworkLoader *mediumArtworkLoader;
 	ArtworkLoader *largeArtworkLoader;
+	ReleaseLoader *releaseLoader;
 }
 
 @property (nonatomic, retain) NSString *title;
@@ -41,9 +43,11 @@
 @property (nonatomic, retain) ArtworkLoader *smallArtworkLoader;
 @property (nonatomic, retain) ArtworkLoader *mediumArtworkLoader;
 @property (nonatomic, retain) ArtworkLoader *largeArtworkLoader;
+@property (nonatomic, retain) ReleaseLoader *releaseLoader;
 
--(BOOL) hasTrackWithURL:(NSString *)url;
--(NSInteger) numberOfSets;
--(NSInteger) numberOfTracksInSet:(NSInteger)setNr;
+- (BOOL)hasTrackWithURL:(NSString *)url;
+- (NSInteger)numberOfSets;
+- (NSInteger)numberOfTracksInSet:(NSInteger)setNr;
+- (void)loadTracks:(AppDelegate *)appDelegate;
 
 @end

@@ -12,6 +12,7 @@
 #import "ReleaseController.h"
 #import "AppDelegate.h"
 #import "ObjectiveResourceDateFormatter.h"
+#import "ReleaseTableViewCell.h"
 
 
 @implementation ReleasesController
@@ -31,13 +32,6 @@
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 		[self.operationQueue addOperation:loader];
 	}
-}
-
-- (void)fetch {
-    NSError *error = nil;
-    BOOL success = [self.fetchedResultsController performFetch:&error];
-    NSAssert2(success, @"Unhandled error performing fetch at Artists.m, line %d: %@", __LINE__, [error localizedDescription]);
-    [self.tableView reloadData];
 }
 
 - (NSOperationQueue *)operationQueue {
@@ -127,16 +121,9 @@
 }
 
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(ReleaseTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	// Set up the cell...
-	Release *release = [fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = release.title;
-	cell.detailTextLabel.text = release.artist;
-	if(release.smallArtworkImage == nil) {
-		cell.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
-	} else {
-		cell.imageView.image = release.smallArtworkImage;
-	}
+	cell.release = [fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 
@@ -145,9 +132,9 @@
     
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[ReleaseTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	}
     
@@ -174,13 +161,20 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView cellForRowAtIndexPath: indexPath];
+	[NSThread detachNewThreadSelector:@selector(showActivity) toTarget:cell withObject:nil];
+	
 	Release *release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
+	[release loadTracks:self.appDelegate];
+
 	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
 	releaseController.theRelease = release;
 	releaseController.appDelegate = self.appDelegate;
 	//releaseController.hidesBottomBarWhenPushed = YES;
 	[self.navigationController pushViewController:releaseController animated:YES];
 	[releaseController release];
+	
+	[cell hideActivity];
 }
 
 
@@ -281,7 +275,7 @@
 			break;
 			
 		case NSFetchedResultsChangeUpdate:
-			[self configureCell:(UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+			[self configureCell:(ReleaseTableViewCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
 			break;
 			
 		case NSFetchedResultsChangeMove:

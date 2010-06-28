@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "ReleasesLoader.h"
+#import "ReleaseLoader.h"
 
 @class AppDelegate;
 
-@interface ReleasesController : UITableViewController <ReleasesLoaderDelegate, NSFetchedResultsControllerDelegate> {
+@interface ReleasesController : UITableViewController <ReleasesLoaderDelegate, ReleaseLoaderDelegate, NSFetchedResultsControllerDelegate> {
 	AppDelegate *appDelegate;
 	NSFetchedResultsController *fetchedResultsController;
 	NSOperationQueue *operationQueue;

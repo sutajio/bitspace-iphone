@@ -12,7 +12,8 @@
 
 @protocol ReleaseLoaderDelegate <NSObject>
 @optional
-- (void)loaderDidFinish:(NSDictionary *)releaseJSON;
+- (void)loaderDidFinish:(ReleaseLoader *)loader;
+- (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON;
 - (void)loader:(ReleaseLoader *)loader didFailWithError:(NSError *)error;
 @end
 

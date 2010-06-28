@@ -77,6 +77,7 @@
 		854A9A9A10C507F00007D0F8 /* NSString+XMLSerializableSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7710C507F00007D0F8 /* NSString+XMLSerializableSupport.m */; };
 		854A9A9B10C507F00007D0F8 /* ObjectiveResourceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7C10C507F00007D0F8 /* ObjectiveResourceConfig.m */; };
 		854A9A9C10C507F00007D0F8 /* Response.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7E10C507F00007D0F8 /* Response.m */; };
+		8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8559112E11D946B200583C21 /* ReleaseTableViewCell.m */; };
 		858045A51164CBD900963147 /* logo_200x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 858045A41164CBD900963147 /* logo_200x200.png */; };
 		85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EE799011CBAD5A00714380 /* TrackTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -203,6 +204,8 @@
 		854A9A7C10C507F00007D0F8 /* ObjectiveResourceConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveResourceConfig.m; sourceTree = "<group>"; };
 		854A9A7D10C507F00007D0F8 /* Response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Response.h; sourceTree = "<group>"; };
 		854A9A7E10C507F00007D0F8 /* Response.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Response.m; sourceTree = "<group>"; };
+		8559112D11D946B200583C21 /* ReleaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseTableViewCell.h; sourceTree = "<group>"; };
+		8559112E11D946B200583C21 /* ReleaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseTableViewCell.m; sourceTree = "<group>"; };
 		858045A41164CBD900963147 /* logo_200x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_200x200.png; sourceTree = "<group>"; };
 		85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackTableViewCell.h; sourceTree = "<group>"; };
 		85EE799011CBAD5A00714380 /* TrackTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackTableViewCell.m; sourceTree = "<group>"; };
@@ -492,6 +495,8 @@
 				8541B19411CA9DCB0004C4C9 /* ReleaseHeader.xib */,
 				85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */,
 				85EE799011CBAD5A00714380 /* TrackTableViewCell.m */,
+				8559112D11D946B200583C21 /* ReleaseTableViewCell.h */,
+				8559112E11D946B200583C21 /* ReleaseTableViewCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -613,6 +618,7 @@
 				8541B0A911CA86820004C4C9 /* ReleaseLoader.m in Sources */,
 				8541B0AE11CA8A7D0004C4C9 /* Track.m in Sources */,
 				85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */,
+				8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,6 +8,8 @@
 
 #import "Release.h"
 #import "Track.h"
+#import "ReleaseLoader.h"
+#import "ObjectiveResourceDateFormatter.h"
 
 
 @implementation Release
@@ -25,7 +27,7 @@
 @dynamic largeArtwork;
 @dynamic tracks;
 
-@synthesize smallArtworkLoader, mediumArtworkLoader, largeArtworkLoader;
+@synthesize smallArtworkLoader, mediumArtworkLoader, largeArtworkLoader, releaseLoader;
 
 -(NSString *)monthCreatedAt {
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -79,6 +81,7 @@
 				smallArtworkLoader.url = self.smallArtworkUrl;
 				smallArtworkLoader.delegate = self;
 				[self.operationQueue addOperation:smallArtworkLoader];
+				[smallArtworkLoader release];
 			}
 		} else {
 			smallArtworkImage = [[UIImage imageWithData:self.smallArtwork] retain];
@@ -95,6 +98,7 @@
 				mediumArtworkLoader.url = self.mediumArtworkUrl;
 				mediumArtworkLoader.delegate = self;
 				[self.operationQueue addOperation:mediumArtworkLoader];
+				[mediumArtworkLoader release];
 			}
 		} else {
 			mediumArtworkImage = [[UIImage imageWithData:self.mediumArtwork] retain];
@@ -111,6 +115,7 @@
 				largeArtworkLoader.url = self.largeArtworkUrl;
 				largeArtworkLoader.delegate = self;
 				[self.operationQueue addOperation:largeArtworkLoader];
+				[largeArtworkLoader release];
 			}
 		} else {
 			largeArtworkImage = [[UIImage imageWithData:self.largeArtwork] retain];
@@ -131,15 +136,78 @@
 	}
 }
 
+- (void)loadTracks:(AppDelegate *)appDelegate {
+	releaseLoader = [[ReleaseLoader alloc] init];
+	releaseLoader.releaseURL = self.url;
+	releaseLoader.appDelegate = appDelegate;
+	releaseLoader.delegate = self;
+	[self.operationQueue addOperation:releaseLoader];
+	[self.operationQueue waitUntilAllOperationsAreFinished];
+	[releaseLoader release];
+}
+
+-(void)updateRelease:(NSDictionary *)releaseJSON {
+	NSArray *tracksArray = (NSArray *)[releaseJSON valueForKey:@"tracks"];
+	NSInteger i = 1;
+	for(NSDictionary *trackJSON in tracksArray) {
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url == %@", (NSString*)[trackJSON valueForKey:@"url"]];
+		NSSet *filteredSet = [[self.managedObjectContext registeredObjects] filteredSetUsingPredicate:predicate];
+		
+		if([filteredSet count] == 0) {
+			Track *track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.managedObjectContext];
+			track.title = (NSString *)[trackJSON valueForKey:@"title"];
+			track.url = (NSString *)[trackJSON valueForKey:@"url"];
+			track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
+			track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
+			track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
+			if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
+				track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
+			} else {
+				track.trackNr = [NSNumber numberWithInt:i];
+			}
+			
+			if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
+				track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
+			} else {
+				track.setNr = [NSNumber numberWithInt:1];
+			}
+			if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
+				track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
+			}
+			if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
+				track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
+			}
+			
+			track.parent = self;
+		}
+		i++;
+	}
+	
+	NSError *error = nil;
+	if(![self.managedObjectContext save:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	}
+}
+
+
+- (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON {
+	[self performSelectorOnMainThread:@selector(updateRelease:) withObject:releaseJSON waitUntilDone:NO];
+}
+
+- (void)finishedLoading {
+	
+}
+
+- (void)loaderDidFinish:(ReleaseLoader *)loader {
+	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
+}
+
 //-(void)dealloc {
+//	if(operationQueue) { [operationQueue release]; }
+//	if(smallArtworkImage) { [smallArtworkImage release]; }
+//	if(mediumArtworkImage) { [mediumArtworkImage release]; }
+//	if(largeArtworkImage) { [largeArtworkImage release]; }
 //	[super dealloc];
-//	[operationQueue release];
-//	[smallArtworkLoader release];
-//	[mediumArtworkLoader release];
-//	[largeArtworkLoader release];
-//	[smallArtworkImage release];
-//	[mediumArtworkImage release];
-//	[largeArtworkImage release];
 //}
 
 @end
