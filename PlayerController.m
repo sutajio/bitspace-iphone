@@ -11,6 +11,8 @@
 #import "AppDelegate.h"
 #import "Track.h"
 #import "Release.h"
+#import "Connection.h"
+#import "Response.h"
 
 
 @implementation PlayerController
@@ -89,6 +91,32 @@
 		} else {
 			return [NSString stringWithFormat:@"%d days", days];
 		}
+	}
+}
+
+- (void)scrobbleCurrentTrack:(BOOL)nowPlaying {
+	Track *track = [self currentTrack];
+	if(track == nil) {
+		return;
+	}
+	
+	NSURL *url;
+	if(nowPlaying == YES) {
+		url = [NSURL URLWithString:track.nowPlayingUrl];
+	} else {
+		url = [NSURL URLWithString:track.scrobbleUrl];
+	}
+	
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+														   cachePolicy:NSURLRequestReloadIgnoringCacheData
+													   timeoutInterval:[Connection timeout]];
+	[request setHTTPMethod:@"POST"];
+	[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+	Response *res = [Connection sendRequest:request withUser:self.appDelegate.username andPassword:self.appDelegate.password];
+	if([res isError]) {
+		NSLog([res.error localizedDescription]);
+		return;
 	}
 }
 
@@ -319,6 +347,7 @@
 			break;
 		case AS_STOPPED:
 			NSLog(@"AS_STOPPED");
+			[self scrobbleCurrentTrack:NO];
 			if([self isPlayingLastTrack]) {
 				if(repeatState == PL_REPEAT_ALL ||
 				   repeatState == PL_REPEAT_TRACK ||
@@ -359,6 +388,7 @@
 	Track *track = [self currentTrack];
 	if(track) {
 		[self createStreamer:track.url];
+		[self scrobbleCurrentTrack:YES];
 	}
 	
 	[self updatePlayerUIBasedOnPlaybackState];
