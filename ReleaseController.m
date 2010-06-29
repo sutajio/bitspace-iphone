@@ -19,7 +19,7 @@
 
 @synthesize appDelegate;
 @synthesize theRelease, fetchedResultsController;
-@synthesize tableHeaderView;
+@synthesize tableHeaderView, tableFooterView, releasedAtLabel, releasedByLabel;
 
 
 #pragma mark Release helper methods
@@ -50,8 +50,21 @@
     if (tableHeaderView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
         self.tableView.tableHeaderView = tableHeaderView;
-        self.tableView.allowsSelectionDuringEditing = YES;
     }
+	if (tableFooterView == nil) {
+        [[NSBundle mainBundle] loadNibNamed:@"ReleaseFooter" owner:self options:nil];
+        self.tableView.tableFooterView = tableFooterView;
+    }
+	if(self.theRelease.releaseDate) {
+		self.releasedAtLabel.text = [NSString stringWithFormat:@"Released: %@", self.theRelease.releaseDate];
+	} else {
+		self.releasedAtLabel.text = @"";
+	}
+	if(self.theRelease.label) {
+		self.releasedByLabel.text = [NSString stringWithFormat:@"Label: %@", self.theRelease.label];
+	} else {
+		self.releasedByLabel.text = @"";
+	}
 	self.tableView.backgroundColor = [UIColor clearColor];
 
 	[self refreshRelease];

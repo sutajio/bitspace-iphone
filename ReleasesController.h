@@ -26,7 +26,4 @@
 @property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
 @property (nonatomic, retain, readonly) ReleasesLoader *loader;
 
-- (void)refresh;
-- (void)fetch;
-
 @end

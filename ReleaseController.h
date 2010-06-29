@@ -16,6 +16,9 @@
 	NSFetchedResultsController *fetchedResultsController;
 	
 	UIView *tableHeaderView;
+	UIView *tableFooterView;
+	UILabel *releasedAtLabel;
+	UILabel *releasedByLabel;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
@@ -23,5 +26,8 @@
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 @property (nonatomic, retain) IBOutlet UIView *tableHeaderView;
+@property (nonatomic, retain) IBOutlet UIView *tableFooterView;
+@property (nonatomic, retain) IBOutlet UILabel *releasedAtLabel;
+@property (nonatomic, retain) IBOutlet UILabel *releasedByLabel;
 
 @end

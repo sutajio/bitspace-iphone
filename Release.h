@@ -28,6 +28,8 @@
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSDate *createdAt;
 @property (nonatomic, readonly) NSString *monthCreatedAt;
+@property (nonatomic, retain) NSString *releaseDate;
+@property (nonatomic, retain) NSString *label;
 @property (nonatomic, retain) NSString *smallArtworkUrl;
 @property (nonatomic, retain) NSString *mediumArtworkUrl;
 @property (nonatomic, retain) NSString *largeArtworkUrl;
@@ -48,6 +50,6 @@
 - (BOOL)hasTrackWithURL:(NSString *)url;
 - (NSInteger)numberOfSets;
 - (NSInteger)numberOfTracksInSet:(NSInteger)setNr;
-- (void)loadTracks:(AppDelegate *)appDelegate;
+- (void)loadTracksWithAppDelegate:(AppDelegate *)appDelegate;
 
 @end

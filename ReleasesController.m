@@ -160,21 +160,29 @@
 }
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView cellForRowAtIndexPath: indexPath];
-	[NSThread detachNewThreadSelector:@selector(showActivity) toTarget:cell withObject:nil];
+- (void)showRelease:(NSNotification *)notification {
+	Release *release = (Release *)[notification object];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishedLoadingRelease" object:release];
 	
-	Release *release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
-	[release loadTracks:self.appDelegate];
-
 	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
 	releaseController.theRelease = release;
 	releaseController.appDelegate = self.appDelegate;
-	//releaseController.hidesBottomBarWhenPushed = YES;
 	[self.navigationController pushViewController:releaseController animated:YES];
 	[releaseController release];
 	
+	NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[self.tableView cellForRowAtIndexPath: indexPath];
 	[cell hideActivity];
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView cellForRowAtIndexPath: indexPath];
+	[cell showActivity];
+	
+	Release *release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRelease:) name:@"finishedLoadingRelease" object:release];
+	[release loadTracksWithAppDelegate:self.appDelegate];
 }
 
 

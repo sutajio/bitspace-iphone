@@ -19,6 +19,8 @@
 @dynamic year;
 @dynamic url;
 @dynamic createdAt;
+@dynamic releaseDate;
+@dynamic label;
 @dynamic smallArtworkUrl;
 @dynamic mediumArtworkUrl;
 @dynamic largeArtworkUrl;
@@ -136,13 +138,12 @@
 	}
 }
 
-- (void)loadTracks:(AppDelegate *)appDelegate {
+- (void)loadTracksWithAppDelegate:(AppDelegate *)appDelegate {
 	releaseLoader = [[ReleaseLoader alloc] init];
 	releaseLoader.releaseURL = self.url;
 	releaseLoader.appDelegate = appDelegate;
 	releaseLoader.delegate = self;
 	[self.operationQueue addOperation:releaseLoader];
-	[self.operationQueue waitUntilAllOperationsAreFinished];
 	[releaseLoader release];
 }
 
@@ -183,6 +184,14 @@
 		i++;
 	}
 	
+	if([releaseJSON valueForKey:@"release_date"] != [NSNull null]) {
+		self.releaseDate = (NSString *)[releaseJSON valueForKey:@"release_date"];
+	}
+	
+	if([releaseJSON valueForKey:@"label"] != [NSNull null]) {
+		self.label = (NSString *)[releaseJSON valueForKey:@"label"];
+	}
+	
 	NSError *error = nil;
 	if(![self.managedObjectContext save:&error]) {
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
@@ -195,7 +204,7 @@
 }
 
 - (void)finishedLoading {
-	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingRelease" object:self];
 }
 
 - (void)loaderDidFinish:(ReleaseLoader *)loader {
