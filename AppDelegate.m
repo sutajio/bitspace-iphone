@@ -10,6 +10,9 @@
 #import "ObjectiveResource.h"
 #import "PlayerController.h"
 #import "ReleasesController.h"
+#import "SignInController.h"
+#import "Connection.h"
+#import "Response.h"
 
 @implementation AppDelegate
 
@@ -27,8 +30,8 @@
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
 	self.siteURL = @"http://bitspace.at/";
-	self.username = @"niklas";
-	self.password = @"q29yunh";
+	self.username = [[NSUserDefaults standardUserDefaults] stringForKey:@"Username"];
+	self.password = [[NSUserDefaults standardUserDefaults] stringForKey:@"Password"];
 	
 	// Pass self to the controllers
 	playerController.appDelegate = self;
@@ -43,6 +46,11 @@
     // Add the tab bar controller's current view as a subview of the window
     [window addSubview:tabBarController.view];
 	[window makeKeyAndVisible];
+	
+	// Show sign in screen
+	if(!(self.username && self.password)) {
+		[self requestAuthenticationFromUser];
+	}
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -68,6 +76,45 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed {
 }
 */
+
+
+#pragma mark -
+#pragma mark Authentication
+
+
+- (void)requestAuthenticationFromUser {
+	SignInController *signInController = [[SignInController alloc] init];
+	signInController.appDelegate = self;
+	tabBarController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	[tabBarController presentModalViewController:signInController animated:YES];
+	[signInController release];
+}
+
+
+- (BOOL)validateUsername:(NSString *)usernameValue andPassword:(NSString *)passwordValue {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+	
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@account", self.siteURL]];
+	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
+															cachePolicy:NSURLRequestReloadIgnoringCacheData
+														timeoutInterval:[Connection timeout]];
+	[request setHTTPMethod:@"GET"];
+	[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];	
+	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+	Response *res = [Connection sendRequest:request withUser:usernameValue andPassword:passwordValue];
+	if([res isError]) {
+		NSLog([res.error localizedDescription]);
+		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+		return NO;
+	}
+	
+	self.username = usernameValue;
+	self.password = passwordValue;
+	[[NSUserDefaults standardUserDefaults] setValue:usernameValue forKey:@"Username"];
+	[[NSUserDefaults standardUserDefaults] setValue:passwordValue forKey:@"Password"];
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	return YES;
+}
 
 
 #pragma mark -

@@ -79,6 +79,8 @@
 		854A9A9C10C507F00007D0F8 /* Response.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7E10C507F00007D0F8 /* Response.m */; };
 		8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8559112E11D946B200583C21 /* ReleaseTableViewCell.m */; };
 		8559121711D95C0200583C21 /* ReleaseFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8559121611D95C0200583C21 /* ReleaseFooter.xib */; };
+		855913DD11DA059B00583C21 /* SignIn.xib in Resources */ = {isa = PBXBuildFile; fileRef = 855913DC11DA059B00583C21 /* SignIn.xib */; };
+		855913EA11DA0A3C00583C21 /* SignInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 855913E911DA0A3C00583C21 /* SignInController.m */; };
 		858045A51164CBD900963147 /* logo_200x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 858045A41164CBD900963147 /* logo_200x200.png */; };
 		85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EE799011CBAD5A00714380 /* TrackTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -208,6 +210,9 @@
 		8559112D11D946B200583C21 /* ReleaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseTableViewCell.h; sourceTree = "<group>"; };
 		8559112E11D946B200583C21 /* ReleaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseTableViewCell.m; sourceTree = "<group>"; };
 		8559121611D95C0200583C21 /* ReleaseFooter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReleaseFooter.xib; sourceTree = "<group>"; };
+		855913DC11DA059B00583C21 /* SignIn.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignIn.xib; sourceTree = "<group>"; };
+		855913E811DA0A3C00583C21 /* SignInController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInController.h; sourceTree = "<group>"; };
+		855913E911DA0A3C00583C21 /* SignInController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInController.m; sourceTree = "<group>"; };
 		858045A41164CBD900963147 /* logo_200x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_200x200.png; sourceTree = "<group>"; };
 		85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackTableViewCell.h; sourceTree = "<group>"; };
 		85EE799011CBAD5A00714380 /* TrackTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackTableViewCell.m; sourceTree = "<group>"; };
@@ -351,6 +356,8 @@
 				8541B0A111CA86290004C4C9 /* ReleaseController.m */,
 				8541B0A211CA86290004C4C9 /* ReleasesController.h */,
 				8541B0A311CA86290004C4C9 /* ReleasesController.m */,
+				855913E811DA0A3C00583C21 /* SignInController.h */,
+				855913E911DA0A3C00583C21 /* SignInController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -500,6 +507,7 @@
 				8559112D11D946B200583C21 /* ReleaseTableViewCell.h */,
 				8559112E11D946B200583C21 /* ReleaseTableViewCell.m */,
 				8559121611D95C0200583C21 /* ReleaseFooter.xib */,
+				855913DC11DA059B00583C21 /* SignIn.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -569,6 +577,7 @@
 				85065C5211D37597003773DA /* repeat-off.png in Resources */,
 				85065C5311D37597003773DA /* shuffle-off.png in Resources */,
 				8559121711D95C0200583C21 /* ReleaseFooter.xib in Resources */,
+				855913DD11DA059B00583C21 /* SignIn.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -623,6 +632,7 @@
 				8541B0AE11CA8A7D0004C4C9 /* Track.m in Sources */,
 				85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */,
 				8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */,
+				855913EA11DA0A3C00583C21 /* SignInController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
