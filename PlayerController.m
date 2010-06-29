@@ -104,11 +104,6 @@
 		currentTimeLabel.text = @"0:00";
 		totalTimeLabel.text = @"0:00";
 	}
-	
-	if(track.parent.largeArtworkImage) {
-		artwork.image = track.parent.largeArtworkImage;
-		artwork.hidden = NO;
-	}
 }
 
 - (BOOL)isPaused {
@@ -143,6 +138,21 @@
 	[[NSUserDefaults standardUserDefaults] setInteger:PL_CTRLS_STATE_HIDDEN forKey:@"PlaybackControlsState"];
 }
 
+- (void)showArtwork:(NSNotification *)notification {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishedLoadingLargeArtwork" object:[notification object]];
+	Track *track = [self currentTrack];
+	Release *release = (Release *)[notification object];
+	if(release == track.parent) {
+		artwork.image = track.parent.largeArtworkImage;
+		artwork.hidden = NO;
+	}
+	
+	NSError *error = nil;
+	if(![self.appDelegate.managedObjectContext save:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	}
+}
+
 - (void)updatePlayerUIBasedOnPlaybackState {
 	
 	// Setup the track info
@@ -158,8 +168,14 @@
 		
 		// Show the artwork for the release
 		if(track.parent.largeArtworkUrl != nil) {
-			artwork.image = track.parent.largeArtworkImage;
-			artwork.hidden = NO;
+			if(track.parent.largeArtwork) {
+				artwork.image = track.parent.largeArtworkImage;
+				artwork.hidden = NO;
+			} else {
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArtwork:) name:@"finishedLoadingLargeArtwork" object:track.parent];
+				artwork.image = track.parent.largeArtworkImage;
+				artwork.hidden = NO;
+			}
 		} else {
 			artwork.image = [UIImage imageNamed:@"cover-art-large.jpg"];
 			artwork.hidden = NO;

@@ -66,6 +66,9 @@
 		self.releasedByLabel.text = @"";
 	}
 	self.tableView.backgroundColor = [UIColor clearColor];
+	
+	// Prefetch the large artwork for the release
+	self.theRelease.largeArtworkImage;
 
 	[self refreshRelease];
 }

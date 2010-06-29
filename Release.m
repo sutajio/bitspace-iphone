@@ -129,12 +129,15 @@
 -(void)loaderDidFinishLoadingArtwork:(NSData *)artworkData fromURL:(NSString *)url {
 	if([url isEqualToString:self.smallArtworkUrl]) {
 		self.smallArtwork = artworkData;
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingSmallArtwork" object:self];
 	}
 	if([url isEqualToString:self.mediumArtworkUrl]) {
 		self.mediumArtwork = artworkData;
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingMediumArtwork" object:self];
 	}
 	if([url isEqualToString:self.largeArtworkUrl]) {
 		self.largeArtwork = artworkData;
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingLargeArtwork" object:self];
 	}
 }
 
