@@ -18,7 +18,6 @@
 	track = value;
 	self.textLabel.text = track.title;
 	self.detailTextLabel.text = track.artist;
-	self.selectionStyle = UITableViewCellSelectionStyleGray;
 	self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	self.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 	UIButton *loveButton = [UIButton buttonWithType:UIButtonTypeInfoDark];

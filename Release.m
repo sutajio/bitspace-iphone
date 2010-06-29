@@ -204,6 +204,7 @@
 
 - (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON {
 	[self performSelectorOnMainThread:@selector(updateRelease:) withObject:releaseJSON waitUntilDone:NO];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedParsingRelease" object:self];
 }
 
 - (void)finishedLoading {
@@ -211,6 +212,11 @@
 }
 
 - (void)loaderDidFinish:(ReleaseLoader *)loader {
+	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
+}
+
+- (void)loader:(ReleaseLoader *)loader didFailWithError:(NSError *)error {
+	NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
 }
 

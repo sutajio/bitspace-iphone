@@ -383,6 +383,14 @@
 }
 
 
+- (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error {
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oopsie daisy!" message:[error localizedDescription]
+												   delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+	[alert show];
+	[alert release];
+}
+
+
 #pragma mark -
 #pragma mark Memory management
 
