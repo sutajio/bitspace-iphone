@@ -94,19 +94,8 @@
 	}
 }
 
-- (void)scrobbleCurrentTrack:(BOOL)nowPlaying {
-	Track *track = [self currentTrack];
-	if(track == nil) {
-		return;
-	}
-	
-	NSURL *url;
-	if(nowPlaying == YES) {
-		url = [NSURL URLWithString:track.nowPlayingUrl];
-	} else {
-		url = [NSURL URLWithString:track.scrobbleUrl];
-	}
-	
+- (void)scrobbleTrackWithURL:(NSURL *)url {
+	NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
 														   cachePolicy:NSURLRequestReloadIgnoringCacheData
 													   timeoutInterval:[Connection timeout]];
@@ -116,8 +105,22 @@
 	Response *res = [Connection sendRequest:request withUser:self.appDelegate.username andPassword:self.appDelegate.password];
 	if([res isError]) {
 		NSLog([res.error localizedDescription]);
-		return;
 	}
+	[innerPool release];
+}
+
+- (void)scrobbleCurrentTrack:(BOOL)nowPlaying {
+	Track *track = [self currentTrack];
+	if(track) {
+		NSURL *url;
+		if(nowPlaying == YES) {
+			url = [NSURL URLWithString:track.nowPlayingUrl];
+		} else {
+			url = [NSURL URLWithString:track.scrobbleUrl];
+		}
+		[self performSelectorInBackground:@selector(scrobbleTrackWithURL:) withObject:url];
+	}
+	
 }
 
 - (void)updateProgress:(NSTimer *)updatedTimer
