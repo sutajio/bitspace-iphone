@@ -19,6 +19,7 @@
 
 @synthesize appDelegate;
 @synthesize fetchedResultsController;
+@synthesize searchBar, searchController;
 
 
 #pragma mark -
@@ -62,6 +63,16 @@
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 		abort();
 	}
+	
+	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+	searchBar.delegate = self;
+	searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"All", @"Title", @"Artist", @"Label", nil];
+	[self.tableView addSubview:searchBar];
+	
+	searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+	searchController.delegate = self;
+	searchController.searchResultsDataSource = self;
+	searchController.searchResultsDelegate = self;
 }
 
 /*
@@ -170,8 +181,15 @@
 	[self.navigationController pushViewController:releaseController animated:YES];
 	[releaseController release];
 	
-	NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[self.tableView cellForRowAtIndexPath: indexPath];
+	UITableView *tableView;
+	if(searchController.active == YES) {
+		tableView = searchController.searchResultsTableView;
+	} else {
+		tableView = self.tableView;
+	}
+	
+	NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
+	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView cellForRowAtIndexPath: indexPath];
 	[cell hideActivity];
 }
 
@@ -246,7 +264,7 @@
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:@"Root"];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:@"Releases"];
         aFetchedResultsController.delegate = self;
         self.fetchedResultsController = aFetchedResultsController;
         
@@ -266,12 +284,23 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 	// The fetch controller is about to start sending change notifications, so prepare the table view for updates.
-	[self.tableView beginUpdates];
+	if(searchController.active == YES) {
+		[searchController.searchResultsTableView beginUpdates];
+	} else {
+		[self.tableView beginUpdates];
+	}
 }
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-	UITableView *tableView = self.tableView;
+	
+	UITableView *tableView;
+	
+	if(searchController.active == YES) {
+		tableView = searchController.searchResultsTableView;
+	} else {
+		tableView = self.tableView;
+	}
 	
 	switch(type) {
 		case NSFetchedResultsChangeInsert:
@@ -295,13 +324,22 @@
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+	
+	UITableView *tableView;
+	
+	if(searchController.active == YES) {
+		tableView = searchController.searchResultsTableView;
+	} else {
+		tableView = self.tableView;
+	}
+	
 	switch(type) {
 		case NSFetchedResultsChangeInsert:
-			[self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			[tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
 			break;
 			
 		case NSFetchedResultsChangeDelete:
-			[self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			[tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
 			break;
 	}
 }
@@ -309,10 +347,58 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	// The fetch controller has sent all current change notifications, so tell the table view to process all updates.
-	[self.tableView endUpdates];
+	if(searchController.active == YES) {
+		[searchController.searchResultsTableView endUpdates];
+	} else {
+		[self.tableView endUpdates];
+	}
 }
 
 
+#pragma mark -
+#pragma mark <UISearchDisplayDelegate> Implementation
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+	[fetchedResultsController.fetchRequest setPredicate:nil];
+	
+    NSError *error = nil;
+    if (![fetchedResultsController performFetch:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    }
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString*)searchString searchScope:(NSInteger)searchOption {
+	
+	NSPredicate *predicate = nil;
+	if ([searchString length]) {
+		if (searchOption == 0) {
+			predicate = [NSPredicate predicateWithFormat:@"title contains[cd] %@ OR artist contains[cd] %@ OR label contains[cd] %@", searchString, searchString, searchString];
+		} else {
+			predicate = [NSPredicate predicateWithFormat:@"%K contains[cd] %@", [[controller.searchBar.scopeButtonTitles objectAtIndex:searchOption] lowercaseString], searchString];
+		}
+	}
+	[fetchedResultsController.fetchRequest setPredicate:predicate];
+	
+    NSError *error = nil;
+    if (![fetchedResultsController performFetch:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    }           
+	
+	return YES;
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+	NSInteger searchOption = controller.searchBar.selectedScopeButtonIndex;
+	return [self searchDisplayController:controller shouldReloadTableForSearchString:searchString searchScope:searchOption];
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
+	NSString* searchString = controller.searchBar.text;
+	return [self searchDisplayController:controller shouldReloadTableForSearchString:searchString searchScope:searchOption];
+}
+
+
+#pragma mark -
 #pragma mark <ReleasesLoaderDelegate> Implementation
 
 
@@ -362,6 +448,14 @@
 	
 	if([release valueForKey:@"year"] != [NSNull null]) {
 		newRelease.year = [NSString stringWithFormat:@"%d", (NSDecimalNumber*)[release valueForKey:@"year"]];
+	}
+	
+	if([release valueForKey:@"label"] != [NSNull null]) {
+		newRelease.label = (NSString *)[release valueForKey:@"label"];
+	}
+	
+	if([release valueForKey:@"release_date"] != [NSNull null]) {
+		newRelease.releaseDate = (NSString *)[release valueForKey:@"release_date"];
 	}
 	
 	if([release valueForKey:@"small_artwork_url"] != [NSNull null]) {
