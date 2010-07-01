@@ -20,6 +20,7 @@
 	ArtworkLoader *mediumArtworkLoader;
 	ArtworkLoader *largeArtworkLoader;
 	ReleaseLoader *releaseLoader;
+	BOOL touched;
 }
 
 @property (nonatomic, retain) NSString *title;
@@ -51,5 +52,7 @@
 - (NSInteger)numberOfSets;
 - (NSInteger)numberOfTracksInSet:(NSInteger)setNr;
 - (void)loadTracksWithAppDelegate:(AppDelegate *)appDelegate;
+- (void)touch;
+- (BOOL)wasTouched;
 
 @end

@@ -31,6 +31,14 @@
 
 @synthesize smallArtworkLoader, mediumArtworkLoader, largeArtworkLoader, releaseLoader;
 
+- (void)touch {
+	touched = YES;
+}
+
+- (BOOL)wasTouched {
+	return touched;
+}
+
 -(NSString *)monthCreatedAt {
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"MMM ''yy"];

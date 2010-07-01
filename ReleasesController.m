@@ -442,6 +442,20 @@
 	// Release the loader
 	[loader release];
 	loader = nil;
+	
+	// Run garbage collection on all releases and delete any release that wasn't
+	// included in the last sync.
+	for(Release *release in self.fetchedResultsController.fetchedObjects) {
+		if([release wasTouched] == NO) {
+			[self.appDelegate.managedObjectContext deleteObject:release];
+		}
+	}
+	
+	// Save the context once again, in case any releases was deleted
+	NSError *error = nil;
+	if(![self.appDelegate.managedObjectContext save:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	}
 }
 
 
@@ -504,6 +518,8 @@
 	if([release valueForKey:@"large_artwork_url"] != [NSNull null]) {
 		newRelease.largeArtworkUrl = (NSString*)[release valueForKey:@"large_artwork_url"];
 	}
+	
+	[newRelease touch];
 }
 
 
