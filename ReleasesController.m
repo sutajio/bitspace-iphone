@@ -27,11 +27,17 @@
 
 - (void)refresh {
 	if (loader == nil) {
-		loader = [[ReleasesLoader alloc] init];
-		loader.delegate = self;
-		loader.appDelegate = self.appDelegate;
-		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-		[self.operationQueue addOperation:loader];
+		NSTimeInterval reloadInterval = (NSTimeInterval)[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"ReloadInterval"] doubleValue];
+		NSDate *lastUpdate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastReleasesUpdate"];
+		lastUpdate = lastUpdate ? lastUpdate : [NSDate distantPast];
+		
+		if([lastUpdate timeIntervalSinceNow] <= -reloadInterval) {
+			loader = [[ReleasesLoader alloc] init];
+			loader.delegate = self;
+			loader.appDelegate = self.appDelegate;
+			[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+			[self.operationQueue addOperation:loader];
+		}
 	}
 }
 
@@ -40,6 +46,31 @@
         operationQueue = [[NSOperationQueue alloc] init];
     }
     return operationQueue;
+}
+
+
+#pragma mark -
+#pragma mark Reset data store and view
+
+- (void)resetDataStoreAndView {
+	
+	// Reset the view
+	[self.navigationController popToRootViewControllerAnimated:NO];
+	[self.searchController setActive:NO];
+	[self.searchBar setText:@""];
+	
+	// Reset the data store
+	for(Release *release in self.fetchedResultsController.fetchedObjects) {
+		[self.appDelegate.managedObjectContext deleteObject:release];
+	}
+	
+	NSError *error = nil;
+	if(![self.appDelegate.managedObjectContext save:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	}
+	
+	// Reset the last updated date
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastReleasesUpdate"];
 }
 
 
@@ -407,6 +438,10 @@
     // import is necessary when the application runs.
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesUpdate"];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	
+	// Release the loader
+	[loader release];
+	loader = nil;
 }
 
 
@@ -479,7 +514,7 @@
 
 - (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error {
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oopsie daisy!" message:[error localizedDescription]
-												   delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+												   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
 	[alert show];
 	[alert release];
 }

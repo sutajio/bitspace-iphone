@@ -215,8 +215,18 @@
 	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
 }
 
+- (void)showLoaderError:(NSError *)error {
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oopsie daisy!" message:[error localizedDescription]
+												   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+	[alert show];
+	[alert release];
+}
+
 - (void)loader:(ReleaseLoader *)loader didFailWithError:(NSError *)error {
 	NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	if([self.tracks count] == 0) {
+		[self performSelectorOnMainThread:@selector(showLoaderError:) withObject:error waitUntilDone:YES];
+	}
 	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
 }
 

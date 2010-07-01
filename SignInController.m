@@ -15,15 +15,25 @@
 @synthesize appDelegate;
 
 
+- (void)dismissSignInScreen {
+	[self dismissModalViewControllerAnimated:YES];
+}
+
 - (void)authenticate:(id)sender {
 	if([appDelegate validateUsername:usernameTextField.text andPassword:passwordTextField.text] == YES) {
-		[self dismissModalViewControllerAnimated:YES];
+		[appDelegate resetAppState];
+		[self dismissSignInScreen];
 	} else {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry, friend!" message:@"Invalid username or password."
-													   delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Try again", nil];
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry, friend!" message:@"Your username or password\n seems to be invalid."
+													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
 		[alert show];
 		[alert release];
+		[usernameTextField becomeFirstResponder];
 	}
+}
+
+- (void)focusPasswordField:(id)sender {
+	[passwordTextField becomeFirstResponder];
 }
 
 /*
@@ -48,6 +58,20 @@
     [super viewDidLoad];
 }
 */
+
+- (void)viewDidAppear:(BOOL)animated {
+	if (!animated) {
+        [usernameTextField resignFirstResponder];
+    }
+	[usernameTextField becomeFirstResponder];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(dismissSignInScreen) name:@"DeviceShaken" object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 /*
 // Override to allow orientations other than the default portrait orientation.

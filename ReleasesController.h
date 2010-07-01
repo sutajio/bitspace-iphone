@@ -32,4 +32,6 @@
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UISearchDisplayController *searchController;
 
+- (void)resetDataStoreAndView;
+
 @end

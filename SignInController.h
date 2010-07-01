@@ -20,5 +20,6 @@
 @property (nonatomic, retain) AppDelegate *appDelegate;
 
 - (IBAction)authenticate:(id)sender;
+- (IBAction)focusPasswordField:(id)sender;
 
 @end

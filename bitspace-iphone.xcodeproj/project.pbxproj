@@ -81,6 +81,7 @@
 		8559121711D95C0200583C21 /* ReleaseFooter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8559121611D95C0200583C21 /* ReleaseFooter.xib */; };
 		855913DD11DA059B00583C21 /* SignIn.xib in Resources */ = {isa = PBXBuildFile; fileRef = 855913DC11DA059B00583C21 /* SignIn.xib */; };
 		855913EA11DA0A3C00583C21 /* SignInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 855913E911DA0A3C00583C21 /* SignInController.m */; };
+		8559162E11DBF2FB00583C21 /* BitspaceWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8559162D11DBF2FB00583C21 /* BitspaceWindow.m */; };
 		858045A51164CBD900963147 /* logo_200x200.png in Resources */ = {isa = PBXBuildFile; fileRef = 858045A41164CBD900963147 /* logo_200x200.png */; };
 		85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EE799011CBAD5A00714380 /* TrackTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -213,6 +214,8 @@
 		855913DC11DA059B00583C21 /* SignIn.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignIn.xib; sourceTree = "<group>"; };
 		855913E811DA0A3C00583C21 /* SignInController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignInController.h; sourceTree = "<group>"; };
 		855913E911DA0A3C00583C21 /* SignInController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignInController.m; sourceTree = "<group>"; };
+		8559162C11DBF2FB00583C21 /* BitspaceWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitspaceWindow.h; sourceTree = "<group>"; };
+		8559162D11DBF2FB00583C21 /* BitspaceWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BitspaceWindow.m; sourceTree = "<group>"; };
 		858045A41164CBD900963147 /* logo_200x200.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_200x200.png; sourceTree = "<group>"; };
 		85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackTableViewCell.h; sourceTree = "<group>"; };
 		85EE799011CBAD5A00714380 /* TrackTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackTableViewCell.m; sourceTree = "<group>"; };
@@ -331,6 +334,8 @@
 				8541B09011CA85BC0004C4C9 /* AppDelegate.m */,
 				8541B09111CA85BC0004C4C9 /* AudioStreamer.h */,
 				8541B09211CA85BC0004C4C9 /* AudioStreamer.m */,
+				8559162C11DBF2FB00583C21 /* BitspaceWindow.h */,
+				8559162D11DBF2FB00583C21 /* BitspaceWindow.m */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -633,6 +638,7 @@
 				85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */,
 				8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */,
 				855913EA11DA0A3C00583C21 /* SignInController.m in Sources */,
+				8559162E11DBF2FB00583C21 /* BitspaceWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

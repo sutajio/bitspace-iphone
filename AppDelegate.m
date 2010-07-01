@@ -29,9 +29,8 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
-	self.siteURL = @"http://bitspace.at/";
-	self.username = [[NSUserDefaults standardUserDefaults] stringForKey:@"Username"];
-	self.password = [[NSUserDefaults standardUserDefaults] stringForKey:@"Password"];
+	// Set the site URL, which is the Bitspace API end-point where all data is loaded from
+	self.siteURL = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SiteURL"];
 	
 	// Pass self to the controllers
 	playerController.appDelegate = self;
@@ -47,10 +46,15 @@
     [window addSubview:tabBarController.view];
 	[window makeKeyAndVisible];
 	
-	// Show sign in screen
-	if(!(self.username && self.password)) {
+	// Authenticate user and show sign in screen if authentication fails
+	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
+				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
 		[self requestAuthenticationFromUser];
 	}
+	
+	// Watch for shake events
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(requestAuthenticationFromUser) name:@"DeviceShaken" object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -83,16 +87,24 @@
 
 
 - (void)requestAuthenticationFromUser {
+	// Stop audio playback
+	[playerController stopPlayback];
+	
+	// Show sign in screen
 	SignInController *signInController = [[SignInController alloc] init];
 	signInController.appDelegate = self;
-	tabBarController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	signInController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[tabBarController presentModalViewController:signInController animated:YES];
 	[signInController release];
+	
+	// Authentication succeeded, save username and password for next time and show player
+	[[NSUserDefaults standardUserDefaults] setValue:self.username forKey:@"Username"];
+	[[NSUserDefaults standardUserDefaults] setValue:self.password forKey:@"Password"];
+	tabBarController.selectedViewController = playerController;
 }
 
 
 - (BOOL)validateUsername:(NSString *)usernameValue andPassword:(NSString *)passwordValue {
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 	
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@account", self.siteURL]];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
@@ -101,19 +113,27 @@
 	[request setHTTPMethod:@"GET"];
 	[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];	
 	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+	
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 	Response *res = [Connection sendRequest:request withUser:usernameValue andPassword:passwordValue];
+	
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	
 	if([res isError]) {
 		NSLog([res.error localizedDescription]);
-		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 		return NO;
 	}
 	
 	self.username = usernameValue;
 	self.password = passwordValue;
-	[[NSUserDefaults standardUserDefaults] setValue:usernameValue forKey:@"Username"];
-	[[NSUserDefaults standardUserDefaults] setValue:passwordValue forKey:@"Password"];
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	
 	return YES;
+}
+
+
+- (void)resetAppState {
+	[playerController clearQueueAndResetPlayer:YES];
+	[releasesController resetDataStoreAndView];
 }
 
 

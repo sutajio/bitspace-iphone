@@ -42,5 +42,6 @@
 
 - (void)requestAuthenticationFromUser;
 - (BOOL)validateUsername:(NSString *)username andPassword:(NSString *)password;
+- (void)resetAppState;
 
 @end

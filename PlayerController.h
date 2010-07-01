@@ -59,6 +59,7 @@ typedef enum {
 - (IBAction)toggleRepeat:(id)sender;
 - (IBAction)toggleShuffle:(id)sender;
 - (void)enqueueTrack:(Track *)track fromTheRelease:(Release *)release andPlay:(BOOL)play;
-- (void)clearQueue;
+- (void)stopPlayback;
+- (void)clearQueueAndResetPlayer:(BOOL)resetPlayer;
 
 @end

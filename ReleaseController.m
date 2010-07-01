@@ -168,7 +168,7 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[self.appDelegate.playerController clearQueue];
+	[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
 	for(Track *track in [fetchedResultsController fetchedObjects]) {
 		if([fetchedResultsController objectAtIndexPath:indexPath] == track) {
 			[self.appDelegate.playerController enqueueTrack:track fromTheRelease:theRelease andPlay:YES];

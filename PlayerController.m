@@ -214,15 +214,17 @@
 	}
 	
 	// Set the play/pause button according to the current state
-	NSMutableArray *tbItems = [NSMutableArray arrayWithArray:toolBar.items];
-	if([self isPaused]) {
-		UIBarButtonItem *b = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemPlay target:self action:@selector(togglePlayback:)] autorelease];
-		[tbItems replaceObjectAtIndex:4 withObject:b];
-	} else {
-		UIBarButtonItem *b = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemPause target:self action:@selector(togglePlayback:)] autorelease];
-		[tbItems replaceObjectAtIndex:4 withObject:b];
+	if([toolBar.items count] > 0) {
+		NSMutableArray *tbItems = [NSMutableArray arrayWithArray:toolBar.items];
+		if([self isPaused]) {
+			UIBarButtonItem *b = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemPlay target:self action:@selector(togglePlayback:)] autorelease];
+			[tbItems replaceObjectAtIndex:4 withObject:b];
+		} else {
+			UIBarButtonItem *b = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemPause target:self action:@selector(togglePlayback:)] autorelease];
+			[tbItems replaceObjectAtIndex:4 withObject:b];
+		}
+		[toolBar setItems:tbItems];
 	}
-	[toolBar setItems:tbItems];	
 
 	// Enable or disbale the previous/next buttons
 	if([self isPlayingFirstTrack] && repeatState != PL_REPEAT_ALL && shuffleState != PL_SHUFFLE_ON) {
@@ -357,7 +359,7 @@
 				   shuffleState == PL_SHUFFLE_ON) {
 					[self nextTrack:nil];
 				} else {
-					[self clearQueue];
+					[self clearQueueAndResetPlayer:NO];
 				}
 			} else {
 				[self nextTrack:nil];
@@ -488,10 +490,24 @@
 	}
 }
 
-- (void)clearQueue {
+- (void)stopPlayback {
+	NSLog(@"stopPlayback");
+	if(![streamer isPaused]) {
+		[streamer pause];
+		[self updatePlayerUIBasedOnPlaybackState];
+	}
+}
+
+- (void)clearQueueAndResetPlayer:(BOOL)resetPlayer {
 	[playlist removeAllObjects];
 	playlistPosition = -1;
 	[self updatePlayerUIBasedOnPlaybackState];
+	if(resetPlayer == YES) {
+		navigationBar.hidden = YES;
+		artwork.hidden = YES;
+		statusBar.hidden = YES;
+		toolBar.hidden = YES;
+	}
 }
 
 
