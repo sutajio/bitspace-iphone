@@ -29,6 +29,8 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
+	[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyNever];
+	
 	// Set the site URL, which is the Bitspace API end-point where all data is loaded from
 	self.siteURL = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SiteURL"];
 	
