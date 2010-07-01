@@ -98,7 +98,7 @@
 	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
 	searchBar.delegate = self;
 	searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"All", @"Title", @"Artist", @"Label", nil];
-	[self.tableView addSubview:searchBar];
+	self.tableView.tableHeaderView = searchBar;
 	
 	searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
 	searchController.delegate = self;
