@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PullToRefreshTableViewController.h"
 #import "ReleasesLoader.h"
 #import "ReleaseLoader.h"
 
 @class AppDelegate;
 
-@interface ReleasesController : UITableViewController <ReleasesLoaderDelegate, ReleaseLoaderDelegate, NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
+@interface ReleasesController : PullToRefreshTableViewController <ReleasesLoaderDelegate, ReleaseLoaderDelegate, NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
 	AppDelegate *appDelegate;
 	NSFetchedResultsController *fetchedResultsController;
 	NSOperationQueue *operationQueue;

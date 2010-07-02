@@ -23,15 +23,16 @@
 
 
 #pragma mark -
-#pragma mark Release support
+#pragma mark Sync support
 
-- (void)refresh {
+- (void)refresh:(BOOL)force {
 	if (loader == nil) {
 		NSTimeInterval reloadInterval = (NSTimeInterval)[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"ReloadInterval"] doubleValue];
 		NSDate *lastUpdate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastReleasesUpdate"];
+		refreshHeaderView.lastUpdatedDate = lastUpdate;
 		lastUpdate = lastUpdate ? lastUpdate : [NSDate distantPast];
 		
-		if([lastUpdate timeIntervalSinceNow] <= -reloadInterval) {
+		if(force == YES || [lastUpdate timeIntervalSinceNow] <= -reloadInterval) {
 			loader = [[ReleasesLoader alloc] init];
 			loader.delegate = self;
 			loader.appDelegate = self.appDelegate;
@@ -46,6 +47,11 @@
         operationQueue = [[NSOperationQueue alloc] init];
     }
     return operationQueue;
+}
+
+- (void)reloadTableViewDataSource
+{
+	[self refresh:YES];
 }
 
 
@@ -87,6 +93,8 @@
 */
 
 - (void)viewDidLoad {
+	[super viewDidLoad];
+	
 	self.title = @"Releases";
 	navigationBar.tintColor = [UIColor blackColor];
 	NSError *error = nil;
@@ -114,7 +122,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	[self refresh];
+	[self refresh:NO];
 }
 
 /*
@@ -456,6 +464,10 @@
 	if(![self.appDelegate.managedObjectContext save:&error]) {
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	}
+	
+	// Tell the pull-to-refresh header that the sync is complete
+	refreshHeaderView.lastUpdatedDate = [NSDate date];
+	[super dataSourceDidFinishLoadingNewData];
 }
 
 
