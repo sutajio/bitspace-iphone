@@ -165,42 +165,46 @@
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url == %@", (NSString*)[trackJSON valueForKey:@"url"]];
 		NSSet *filteredSet = [[self.managedObjectContext registeredObjects] filteredSetUsingPredicate:predicate];
 		
+		Track *track;
+		
 		if([filteredSet count] == 0) {
-			Track *track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.managedObjectContext];
-			track.title = (NSString *)[trackJSON valueForKey:@"title"];
-			track.url = (NSString *)[trackJSON valueForKey:@"url"];
-			track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
-			track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
-			track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
-			track.loveUrl = (NSString *)[trackJSON valueForKey:@"love_url"];
-			if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
-				track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
-			} else {
-				track.trackNr = [NSNumber numberWithInt:i];
-			}
-			if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
-				track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
-			} else {
-				track.setNr = [NSNumber numberWithInt:1];
-			}
-			if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
-				track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
-			}
-			if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
-				track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
-			}
-			
-			track.parent = self;
+			track = [[NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.managedObjectContext] retain];
+		} else {
+			track = [[filteredSet anyObject] retain];
 		}
+			
+		track.title = (NSString *)[trackJSON valueForKey:@"title"];
+		track.url = (NSString *)[trackJSON valueForKey:@"url"];
+		track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
+		track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
+		track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
+		track.loveUrl = (NSString *)[trackJSON valueForKey:@"love_url"];
+		if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
+			track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
+		} else {
+			track.trackNr = [NSNumber numberWithInt:i];
+		}
+		if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
+			track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
+		} else {
+			track.setNr = [NSNumber numberWithInt:1];
+		}
+		if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
+			track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
+		}
+		if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
+			track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
+		}
+		
+		track.parent = self;
+		track.touched = [NSNumber numberWithBool:YES];
 		i++;
 	}
 	
-	if([releaseJSON valueForKey:@"release_date"] != [NSNull null]) {
-		self.releaseDate = (NSString *)[releaseJSON valueForKey:@"release_date"];
-	}
-	
-	if([releaseJSON valueForKey:@"label"] != [NSNull null]) {
-		self.label = (NSString *)[releaseJSON valueForKey:@"label"];
+	for(Track *track in self.tracks) {
+		if(track.touched == [NSNumber numberWithBool:NO]) {
+			[self.managedObjectContext deleteObject:track];
+		}
 	}
 	
 	NSError *error = nil;

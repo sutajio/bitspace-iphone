@@ -16,6 +16,7 @@
 @interface ReleasesController : PullToRefreshTableViewController <ReleasesLoaderDelegate, ReleaseLoaderDelegate, NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
 	AppDelegate *appDelegate;
 	NSFetchedResultsController *fetchedResultsController;
+	NSFetchedResultsController *searchResultsController;
 	NSOperationQueue *operationQueue;
 	ReleasesLoader *loader;
 	
@@ -27,6 +28,7 @@
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) NSFetchedResultsController *searchResultsController;
 @property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
 @property (nonatomic, retain, readonly) ReleasesLoader *loader;
 

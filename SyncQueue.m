@@ -33,7 +33,7 @@
 - (void)enqueueRequest:(NSURLRequest *)request {
 	NSMutableArray *queue = [self queuedRequests];
 	[queue addObject:request];
-	[self forceSync];
+	[self performSelectorInBackground:@selector(sendRequest:) withObject:request];
 }
 
 - (void)dequeueRequest:(NSURLRequest *)request {

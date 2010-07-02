@@ -25,5 +25,6 @@
 @property (nonatomic, retain) NSString *scrobbleUrl;
 @property (nonatomic, retain) NSString *loveUrl;
 @property (nonatomic, retain) NSDate *lovedAt;
+@property (nonatomic, retain) NSNumber *touched;
 
 @end

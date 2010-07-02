@@ -102,10 +102,12 @@
 			url = [ProtectedURL URLWithStringAndCredentials:track.nowPlayingUrl 
 												   withUser:self.appDelegate.username 
 												andPassword:self.appDelegate.password];
+			NSLog(@"Now playing");
 		} else {
 			url = [ProtectedURL URLWithStringAndCredentials:track.scrobbleUrl 
 												   withUser:self.appDelegate.username 
 												andPassword:self.appDelegate.password];
+			NSLog(@"Scrobble");
 		}
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
 															   cachePolicy:NSURLRequestReloadIgnoringCacheData

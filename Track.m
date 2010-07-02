@@ -22,5 +22,6 @@
 @dynamic scrobbleUrl;
 @dynamic loveUrl;
 @dynamic lovedAt;
+@dynamic touched;
 
 @end
