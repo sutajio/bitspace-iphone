@@ -11,8 +11,8 @@
 #import "AppDelegate.h"
 #import "Track.h"
 #import "Release.h"
-#import "Connection.h"
-#import "Response.h"
+#import "SyncQueue.h"
+#import "ProtectedURL.h"
 
 
 @implementation PlayerController
@@ -94,31 +94,29 @@
 	}
 }
 
-- (void)scrobbleTrackWithURL:(NSURL *)url {
-	NSAutoreleasePool *innerPool = [[NSAutoreleasePool alloc] init];
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-														   cachePolicy:NSURLRequestReloadIgnoringCacheData
-													   timeoutInterval:[Connection timeout]];
-	[request setHTTPMethod:@"POST"];
-	[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-	Response *res = [Connection sendRequest:request withUser:self.appDelegate.username andPassword:self.appDelegate.password];
-	if([res isError]) {
-		NSLog([res.error localizedDescription]);
-	}
-	[innerPool release];
-}
-
 - (void)scrobbleCurrentTrack:(BOOL)nowPlaying {
 	Track *track = [self currentTrack];
 	if(track) {
 		NSURL *url;
 		if(nowPlaying == YES) {
-			url = [NSURL URLWithString:track.nowPlayingUrl];
+			url = [ProtectedURL URLWithStringAndCredentials:track.nowPlayingUrl 
+												   withUser:self.appDelegate.username 
+												andPassword:self.appDelegate.password];
 		} else {
-			url = [NSURL URLWithString:track.scrobbleUrl];
+			url = [ProtectedURL URLWithStringAndCredentials:track.scrobbleUrl 
+												   withUser:self.appDelegate.username 
+												andPassword:self.appDelegate.password];
 		}
-		[self performSelectorInBackground:@selector(scrobbleTrackWithURL:) withObject:url];
+		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+															   cachePolicy:NSURLRequestReloadIgnoringCacheData
+														   timeoutInterval:5.0];
+		[request setHTTPMethod:@"POST"];
+		[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+		[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+		[request addValue:[ProtectedURL authorizationHeaderWithUser:self.appDelegate.username 
+														andPassword:self.appDelegate.password]
+											  forHTTPHeaderField:@"Authorization"];
+		[self.appDelegate.syncQueue enqueueRequest:request];
 	}
 	
 }

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class PlayerController, ReleasesController;
+@class PlayerController, ReleasesController, SyncQueue;
 
 @interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate> {
     NSString *siteURL;
@@ -23,6 +23,8 @@
 	NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;	    
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
+	
+	SyncQueue *syncQueue;
 }
 
 @property (nonatomic, retain) NSString *siteURL;
@@ -37,6 +39,8 @@
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
+@property (nonatomic, retain, readonly) SyncQueue *syncQueue;
 
 @property (nonatomic, readonly) NSString *applicationDocumentsDirectory;
 

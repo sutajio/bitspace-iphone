@@ -13,6 +13,7 @@
 #import "SignInController.h"
 #import "Connection.h"
 #import "Response.h"
+#import "SyncQueue.h"
 
 @implementation AppDelegate
 
@@ -82,6 +83,16 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed {
 }
 */
+
+#pragma mark -
+#pragma mark SyncQueue
+
+- (SyncQueue *)syncQueue {
+	if(syncQueue == nil) {
+		syncQueue = [[SyncQueue alloc] init];
+	}
+	return syncQueue;
+}
 
 
 #pragma mark -
@@ -224,6 +235,8 @@
 #pragma mark Memory management
 
 - (void)dealloc {
+	[syncQueue release];
+	
     [managedObjectContext release];
     [managedObjectModel release];
     [persistentStoreCoordinator release];

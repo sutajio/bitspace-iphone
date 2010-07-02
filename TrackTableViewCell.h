@@ -12,6 +12,7 @@
 
 @interface TrackTableViewCell : UITableViewCell {
 	Track *track;
+	UIButton *loveButton;
 }
 
 @property (readwrite, assign) Track *track;

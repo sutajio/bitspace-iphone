@@ -172,12 +172,12 @@
 			track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
 			track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
 			track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
+			track.loveUrl = (NSString *)[trackJSON valueForKey:@"love_url"];
 			if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
 				track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
 			} else {
 				track.trackNr = [NSNumber numberWithInt:i];
 			}
-			
 			if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
 				track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
 			} else {

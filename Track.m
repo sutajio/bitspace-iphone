@@ -20,6 +20,7 @@
 @dynamic length;
 @dynamic nowPlayingUrl;
 @dynamic scrobbleUrl;
+@dynamic loveUrl;
 @dynamic lovedAt;
 
 @end
