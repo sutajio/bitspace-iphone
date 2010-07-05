@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class AppDelegate, AudioStreamer, Release, Track;
+@class AppDelegate, AudioStreamer, Release, Track, MPVolumeView;
 
 typedef enum {
 	PL_CTRLS_STATE_UNDEFINED = 0,
@@ -41,6 +41,8 @@ typedef enum {
 	IBOutlet UIBarButtonItem *repeatButton;
 	IBOutlet UIBarButtonItem *shuffleButton;
 	IBOutlet UIActivityIndicatorView *activityIndicator;
+	IBOutlet UIView *volumeBar;
+	IBOutlet MPVolumeView *volumeSlider;
 	AudioStreamer *streamer;
 	NSTimer *progressUpdateTimer;
 	NSMutableArray *playlist;

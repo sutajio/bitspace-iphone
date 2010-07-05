@@ -159,10 +159,11 @@
 	[releasesController resetView];
 	
 	[managedObjectContext release]; managedObjectContext = nil;
-	[managedObjectModel release]; managedObjectModel = nil;	    
+	[managedObjectModel release]; managedObjectModel = nil;
 	[persistentStoreCoordinator release]; persistentStoreCoordinator = nil;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetAppState" object:managedObjectContext];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];
 }
 
 

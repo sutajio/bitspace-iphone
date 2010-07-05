@@ -53,7 +53,11 @@
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
         self.tableView.tableHeaderView = tableHeaderView;
     }
-	self.artworkImage.image = theRelease.smallArtworkImage;
+	if(theRelease.smallArtworkImage) {
+		self.artworkImage.image = theRelease.smallArtworkImage;
+	} else {
+		self.artworkImage.image = [UIImage imageNamed:@"cover-art-small.jpg"];
+	}
 	self.titleLabel.text = theRelease.title;
 	self.artistLabel.text = theRelease.artist;
 	

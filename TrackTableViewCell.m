@@ -64,6 +64,7 @@
 		[request setHTTPBody:[@"toggle=on" dataUsingEncoding:NSUTF8StringEncoding]];
 		track.lovedAt = [NSDate date];
 	}
+	[track.managedObjectContext save:nil];
 	[appDelegate.syncQueue enqueueRequest:request];
 	[self updateLoveButtonState];
 }

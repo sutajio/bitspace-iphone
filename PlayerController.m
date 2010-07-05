@@ -157,6 +157,7 @@
 	if([self hasQueuedTracks]) {
 		statusBar.hidden = NO;
 		toolBar.hidden = NO;
+		volumeBar.hidden = NO;
 		playbackControlsState = PL_CTRLS_STATE_VISIBLE;
 		[[NSUserDefaults standardUserDefaults] setInteger:PL_CTRLS_STATE_VISIBLE forKey:@"PlaybackControlsState"];
 	}
@@ -165,6 +166,7 @@
 - (void)hidePlaybackControls {
 	statusBar.hidden = YES;
 	toolBar.hidden = YES;
+	volumeBar.hidden = YES;
 	playbackControlsState = PL_CTRLS_STATE_HIDDEN;
 	[[NSUserDefaults standardUserDefaults] setInteger:PL_CTRLS_STATE_HIDDEN forKey:@"PlaybackControlsState"];
 }
