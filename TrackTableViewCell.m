@@ -27,6 +27,9 @@
 
 - (void)setTrack:(Track *)value {
 	track = value;
+	self.textLabel.backgroundColor = [UIColor clearColor];
+	self.textLabel.opaque = NO;
+	self.detailTextLabel.backgroundColor = [UIColor whiteColor];
 	self.textLabel.text = track.title;
 	self.detailTextLabel.text = track.artist;
 	self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -35,6 +38,10 @@
 	[loveButton addTarget:self action:@selector(loveTrack:) forControlEvents:UIControlEventTouchUpInside];
 	[self updateLoveButtonState];
 	self.accessoryView = loveButton;
+	UIView *bg = [[UIView alloc] initWithFrame:self.frame];
+	bg.backgroundColor = [UIColor whiteColor];
+	self.backgroundView = bg;
+	[bg release];
 }
 
 - (void)loveTrack:(id)sender {

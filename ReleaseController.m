@@ -19,7 +19,8 @@
 
 @synthesize appDelegate;
 @synthesize theRelease, fetchedResultsController;
-@synthesize tableHeaderView, tableFooterView, releasedAtLabel, releasedByLabel;
+@synthesize tableHeaderView, artworkImage, titleLabel, artistLabel;
+@synthesize tableFooterView, releasedAtLabel, releasedByLabel;
 
 
 #pragma mark Release helper methods
@@ -47,10 +48,15 @@
 - (void)viewDidLoad {
 	//self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	self.navigationItem.title = theRelease.title;
+	
     if (tableHeaderView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
         self.tableView.tableHeaderView = tableHeaderView;
     }
+	self.artworkImage.image = theRelease.smallArtworkImage;
+	self.titleLabel.text = theRelease.title;
+	self.artistLabel.text = theRelease.artist;
+	
 	if (tableFooterView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseFooter" owner:self options:nil];
         self.tableView.tableFooterView = tableFooterView;
@@ -65,7 +71,9 @@
 	} else {
 		self.releasedByLabel.text = @"";
 	}
-	self.tableView.backgroundColor = [UIColor clearColor];
+	
+	// Set background color of table view to the same as the header view
+	self.tableView.backgroundColor = tableHeaderView.backgroundColor;
 	
 	// Prefetch the large artwork for the release
 	self.theRelease.largeArtworkImage;

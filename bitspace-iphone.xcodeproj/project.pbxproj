@@ -707,7 +707,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = bitspace_iphone_Prefix.pch;
 				INFOPLIST_FILE = "bitspace_iphone-Info.plist";
-				PRODUCT_NAME = "bitspace-iphone";
+				PRODUCT_NAME = Bitspace;
 			};
 			name = Release;
 		};

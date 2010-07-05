@@ -19,6 +19,8 @@
 
 @synthesize siteURL, username, password;
 
+@synthesize operationQueue, releasesLoader;
+
 @synthesize window;
 @synthesize tabBarController;
 @synthesize playerController;
@@ -30,6 +32,7 @@
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	
+	// Never accept cookies
 	[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyNever];
 	
 	// Set the site URL, which is the Bitspace API end-point where all data is loaded from
@@ -39,14 +42,8 @@
 	playerController.appDelegate = self;
 	releasesController.appDelegate = self;
 	
-	// Add a global background for the app
-	UIView *backgroundView = [[UIView alloc] initWithFrame: window.frame];
-	backgroundView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"black-noise.jpg"]];
-	[window addSubview:backgroundView];
-	[backgroundView release];
-	
-    // Add the tab bar controller's current view as a subview of the window
-    [window addSubview:tabBarController.view];
+	// Add the tab bar controller's current view as a subview of the window
+	[window addSubview:tabBarController.view];
 	[window makeKeyAndVisible];
 	
 	// Authenticate user and show sign in screen if authentication fails
@@ -57,7 +54,15 @@
 	
 	// Watch for shake events
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(requestAuthenticationFromUser) name:@"DeviceShaken" object:nil];
+											 selector:@selector(requestAuthenticationFromUser) 
+												 name:@"DeviceShaken" 
+											   object:nil];
+	
+	// Watch for synchronization events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(synchronize) 
+												 name:@"Synchronize" 
+											   object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -101,19 +106,20 @@
 
 - (void)requestAuthenticationFromUser {
 	// Stop audio playback
-	[playerController stopPlayback];
+	[self.playerController stopPlayback];
+	
+	// Stop operation queue
+	[self.operationQueue cancelAllOperations];
 	
 	// Show sign in screen
 	SignInController *signInController = [[SignInController alloc] init];
 	signInController.appDelegate = self;
 	signInController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[tabBarController presentModalViewController:signInController animated:YES];
+	[self.tabBarController presentModalViewController:signInController animated:YES];
 	[signInController release];
 	
 	// Authentication succeeded, save username and password for next time and show player
-	[[NSUserDefaults standardUserDefaults] setValue:self.username forKey:@"Username"];
-	[[NSUserDefaults standardUserDefaults] setValue:self.password forKey:@"Password"];
-	tabBarController.selectedViewController = playerController;
+	self.tabBarController.selectedViewController = self.playerController;
 }
 
 
@@ -139,19 +145,138 @@
 	
 	self.username = usernameValue;
 	self.password = passwordValue;
+	[[NSUserDefaults standardUserDefaults] setValue:self.username forKey:@"Username"];
+	[[NSUserDefaults standardUserDefaults] setValue:self.password forKey:@"Password"];
 	
 	return YES;
 }
 
 
 - (void)resetAppState {
+	NSLog(@"AppDelegate#resetAppState");
+	
 	[playerController clearQueueAndResetPlayer:YES];
-	[releasesController resetDataStoreAndView];
+	[releasesController resetView];
+	
+	[managedObjectContext release]; managedObjectContext = nil;
+	[managedObjectModel release]; managedObjectModel = nil;	    
+	[persistentStoreCoordinator release]; persistentStoreCoordinator = nil;
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetAppState" object:managedObjectContext];
+}
+
+
+#pragma mark -
+#pragma mark Synchronization
+
+
+- (NSOperationQueue *)operationQueue {
+    if (operationQueue == nil) {
+        operationQueue = [[NSOperationQueue alloc] init];
+		[operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+    }
+    return operationQueue;
+}
+
+
+- (NSDate *)lastSynchronizationDate {
+	return [[NSUserDefaults standardUserDefaults] objectForKey:@"LastReleasesSync"];
+}
+
+
+- (BOOL)shouldSynchronize {
+	NSTimeInterval synchronizationInterval = (NSTimeInterval)[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"SynchronizationInterval"] doubleValue];
+	NSDate *lastSync = [self lastSynchronizationDate] ? [self lastSynchronizationDate] : [NSDate distantPast];
+	return [lastSync timeIntervalSinceNow] <= -synchronizationInterval ? YES : NO;
+}
+
+
+- (void)synchronizeReleases:(BOOL)force {
+	if (releasesLoader == nil) {	
+		if(force == YES || [self shouldSynchronize] == YES) {
+			releasesLoader = [[ReleasesLoader alloc] init];
+			releasesLoader.delegate = self;
+			releasesLoader.persistentStoreCoordinator = self.persistentStoreCoordinator;
+			[self.operationQueue addOperation:releasesLoader];
+		}
+	}
+}
+
+- (void)synchronize {
+	[self synchronizeReleases:YES];
+}
+
+
+#pragma mark -
+#pragma mark <ReleasesLoaderDelegate> Implementation
+
+
+- (void)loaderDidSave:(NSNotification *)saveNotification {
+    if([NSThread isMainThread]) {
+        [self.managedObjectContext mergeChangesFromContextDidSaveNotification:saveNotification];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidSave" object:self];
+    } else {
+        [self performSelectorOnMainThread:@selector(loaderDidSave:) withObject:saveNotification waitUntilDone:NO];
+    }
+}
+
+
+- (void)loaderDidFinish:(ReleasesLoader *)loader {
+	if([NSThread isMainThread]) {
+		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesSync"];
+		[releasesLoader release];
+		releasesLoader = nil;
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidFinish" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(loaderDidFinish:) withObject:loader waitUntilDone:NO];
+	}
+}
+
+
+- (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader {
+	if([NSThread isMainThread]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidFinishLoadingPage" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(loaderDidFinishLoadingPage:) withObject:loader waitUntilDone:NO];
+	}
+}
+
+
+- (void)loaderDidFinishParsingRelease:(ReleasesLoader *)loader {
+	if([NSThread isMainThread]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidFinishParsingRelease" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(loaderDidFinishParsingRelease:) withObject:loader waitUntilDone:NO];
+	}
+}
+
+
+- (void)loaderDidStart:(ReleasesLoader *)loader {
+	if([NSThread isMainThread]) {
+		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidStart" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(loaderDidStart:) withObject:loader waitUntilDone:NO];
+	}
+}
+
+
+- (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error {
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oopsie daisy!" message:[error localizedDescription]
+												   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+	[alert show];
+	[alert release];
 }
 
 
 #pragma mark -
 #pragma mark Core Data stack
+
+- (NSString *)databaseFilename {
+	return [NSString stringWithFormat:@"bitspace-%@.sqlite", self.username];
+}
+
 
 /**
  Returns the managed object context for the application.
@@ -197,7 +322,7 @@
         return persistentStoreCoordinator;
     }
 	
-    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"bitspace.sqlite"]];
+    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: [self databaseFilename]]];
 	
 	NSError *error = nil;
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

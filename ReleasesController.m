@@ -11,7 +11,6 @@
 #import "Release.h"
 #import "ReleaseController.h"
 #import "AppDelegate.h"
-#import "ObjectiveResourceDateFormatter.h"
 #import "ReleaseTableViewCell.h"
 
 
@@ -25,59 +24,39 @@
 #pragma mark -
 #pragma mark Sync support
 
-- (void)refresh:(BOOL)force {
-	if (loader == nil) {
-		NSTimeInterval reloadInterval = (NSTimeInterval)[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"ReloadInterval"] doubleValue];
-		NSDate *lastUpdate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastReleasesUpdate"];
-		refreshHeaderView.lastUpdatedDate = lastUpdate;
-		lastUpdate = lastUpdate ? lastUpdate : [NSDate distantPast];
-		
-		if(force == YES || [lastUpdate timeIntervalSinceNow] <= -reloadInterval) {
-			loader = [[ReleasesLoader alloc] init];
-			loader.delegate = self;
-			loader.appDelegate = self.appDelegate;
-			[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-			[self.operationQueue addOperation:loader];
-		}
-	}
-}
-
-- (NSOperationQueue *)operationQueue {
-    if (operationQueue == nil) {
-        operationQueue = [[NSOperationQueue alloc] init];
-    }
-    return operationQueue;
-}
-
 - (void)reloadTableViewDataSource
 {
-	[self refresh:YES];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];
+}
+
+
+- (void)synchronizationDidFinish {
+	refreshHeaderView.lastUpdatedDate = [NSDate date];
+	[super dataSourceDidFinishLoadingNewData];
 }
 
 
 #pragma mark -
-#pragma mark Reset data store and view
+#pragma mark Reset view
 
-- (void)resetDataStoreAndView {
+- (void)resetView {
 	
 	// Reset the view
 	[self.navigationController popToRootViewControllerAnimated:NO];
 	[self.searchController setActive:NO];
 	[self.searchBar setText:@""];
 	
-	// Reset the data store
-	for(Release *release in self.fetchedResultsController.fetchedObjects) {
-		[self.appDelegate.managedObjectContext deleteObject:release];
-	}
-	
-	NSError *error = nil;
-	if(![self.appDelegate.managedObjectContext save:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	}
-	
 	// Reset the last updated date
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastReleasesUpdate"];
 	refreshHeaderView.lastUpdatedDate = nil;
+}
+
+
+- (void)resetAppState {
+	[fetchedResultsController release]; fetchedResultsController = nil;
+	[searchResultsController release]; searchResultsController = nil;
+	[self.fetchedResultsController performFetch:nil];
+	[self.tableView reloadData];
 }
 
 
@@ -98,11 +77,7 @@
 	
 	self.title = @"Releases";
 	navigationBar.tintColor = [UIColor blackColor];
-	NSError *error = nil;
-	if (![[self fetchedResultsController] performFetch:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		abort();
-	}
+	refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
 	searchBar.delegate = self;
@@ -113,6 +88,11 @@
 	searchController.delegate = self;
 	searchController.searchResultsDataSource = self;
 	searchController.searchResultsDelegate = self;
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronizationDidFinish) name:@"SynchronizationDidFinish" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetAppState) name:@"ResetAppState" object:nil];
+	
+	[[self fetchedResultsController] performFetch:nil];
 }
 
 /*
@@ -121,10 +101,11 @@
 }
 */
 
+/*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	[self refresh:NO];
 }
+ */
 
 /*
 - (void)viewWillDisappear:(BOOL)animated {
@@ -153,12 +134,17 @@
 }
 
 - (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"SynchronizationDidFinish" object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"ResetAppState" object:nil];
 }
 
 
 #pragma mark Table view methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 125;
+}
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if(tableView == searchController.searchResultsTableView) {
@@ -265,7 +251,7 @@
 		release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
 	}
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRelease:) name:@"finishedLoadingRelease" object:release];
-	[release loadTracksWithAppDelegate:self.appDelegate];
+	[release loadTracks:NO];
 }
 
 
@@ -498,122 +484,12 @@
 
 
 #pragma mark -
-#pragma mark <ReleasesLoaderDelegate> Implementation
-
-
-- (void)handleLoadCompletion {
-    // Store the current time as the time of the last import. This will be used to determine whether an
-    // import is necessary when the application runs.
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesUpdate"];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-	
-	// Release the loader
-	[loader release];
-	loader = nil;
-	
-	// Run garbage collection on all releases and delete any release that wasn't
-	// included in the last sync.
-	for(Release *release in self.fetchedResultsController.fetchedObjects) {
-		if([release wasTouched] == NO) {
-			[self.appDelegate.managedObjectContext deleteObject:release];
-		}
-	}
-	
-	// Save the context once again, in case any releases was deleted
-	NSError *error = nil;
-	if(![self.appDelegate.managedObjectContext save:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	}
-	
-	// Tell the pull-to-refresh header that the sync is complete
-	refreshHeaderView.lastUpdatedDate = [NSDate date];
-	[super dataSourceDidFinishLoadingNewData];
-}
-
-
-- (void)loaderDidFinish:(ReleasesLoader *)loader {
-    [self performSelectorOnMainThread:@selector(handleLoadCompletion) withObject:nil waitUntilDone:NO];
-}
-
-
-- (void)handlePageCompletion {
-	NSError *error = nil;
-	if(![self.appDelegate.managedObjectContext save:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	}
-}
-
-
-- (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader {
-    [self performSelectorOnMainThread:@selector(handlePageCompletion) withObject:nil waitUntilDone:YES];
-}
-
-
-- (void)addRelease:(NSDictionary*)release {
-	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url == %@", (NSString*)[release valueForKey:@"url"]];
-	NSSet *filteredSet = [[self.appDelegate.managedObjectContext registeredObjects] filteredSetUsingPredicate:predicate];
-	
-	Release *newRelease;
-	
-	if([filteredSet count] == 0) {
-		newRelease = [[NSEntityDescription insertNewObjectForEntityForName:@"Release" inManagedObjectContext:self.appDelegate.managedObjectContext] retain];
-	} else {
-		newRelease = [[filteredSet anyObject] retain];
-	}
-	
-	newRelease.title = (NSString*)[release valueForKey:@"title"];
-	newRelease.artist = (NSString*)[release valueForKey:@"artist"];
-	newRelease.url = (NSString*)[release valueForKey:@"url"];
-	newRelease.createdAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[release valueForKey:@"created_at"]];
-	
-	if([release valueForKey:@"year"] != [NSNull null]) {
-		newRelease.year = [NSString stringWithFormat:@"%d", (NSDecimalNumber*)[release valueForKey:@"year"]];
-	}
-	
-	if([release valueForKey:@"label"] != [NSNull null]) {
-		newRelease.label = (NSString *)[release valueForKey:@"label"];
-	}
-	
-	if([release valueForKey:@"release_date"] != [NSNull null]) {
-		newRelease.releaseDate = (NSString *)[release valueForKey:@"release_date"];
-	}
-	
-	if([release valueForKey:@"small_artwork_url"] != [NSNull null]) {
-		newRelease.smallArtworkUrl = (NSString*)[release valueForKey:@"small_artwork_url"];
-	}
-	
-	if([release valueForKey:@"medium_artwork_url"] != [NSNull null]) {
-		newRelease.mediumArtworkUrl = (NSString*)[release valueForKey:@"medium_artwork_url"];
-	}
-	
-	if([release valueForKey:@"large_artwork_url"] != [NSNull null]) {
-		newRelease.largeArtworkUrl = (NSString*)[release valueForKey:@"large_artwork_url"];
-	}
-	
-	[newRelease touch];
-}
-
-
-- (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON {
-	[self performSelectorOnMainThread:@selector(addRelease:) withObject:releaseJSON waitUntilDone:YES];
-}
-
-
-- (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oopsie daisy!" message:[error localizedDescription]
-												   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-	[alert show];
-	[alert release];
-}
-
-
-#pragma mark -
 #pragma mark Memory management
 
 - (void)dealloc {
 	[fetchedResultsController release];
-	[operationQueue release];
+	[searchResultsController release];
+	[searchBar release];
     [super dealloc];
 }
 

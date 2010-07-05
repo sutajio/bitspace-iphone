@@ -8,17 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "PullToRefreshTableViewController.h"
-#import "ReleasesLoader.h"
-#import "ReleaseLoader.h"
 
 @class AppDelegate;
 
-@interface ReleasesController : PullToRefreshTableViewController <ReleasesLoaderDelegate, ReleaseLoaderDelegate, NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
+@interface ReleasesController : PullToRefreshTableViewController <NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
 	AppDelegate *appDelegate;
 	NSFetchedResultsController *fetchedResultsController;
 	NSFetchedResultsController *searchResultsController;
-	NSOperationQueue *operationQueue;
-	ReleasesLoader *loader;
 	
 	IBOutlet UINavigationBar *navigationBar;
 	
@@ -29,12 +25,10 @@
 @property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSFetchedResultsController *searchResultsController;
-@property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
-@property (nonatomic, retain, readonly) ReleasesLoader *loader;
 
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UISearchDisplayController *searchController;
 
-- (void)resetDataStoreAndView;
+- (void)resetView;
 
 @end

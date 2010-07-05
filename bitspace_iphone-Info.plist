@@ -30,7 +30,7 @@
 	<string>UIStatusBarStyleBlackOpaque</string>
 	<key>SiteURL</key>
 	<string>http://bitspace.at/</string>
-	<key>ReloadInterval</key>
-	<string>600</string>
+	<key>SynchronizationInterval</key>
+	<string>86400</string>
 </dict>
 </plist>

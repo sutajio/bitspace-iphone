@@ -14,16 +14,23 @@
 @optional
 - (void)loaderDidFinish:(ReleasesLoader *)loader;
 - (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader;
-- (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON;
+- (void)loaderDidFinishParsingRelease:(ReleasesLoader *)loader;
+- (void)loaderDidStart:(ReleasesLoader *)loader;
 - (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error;
 @end
 
 @interface ReleasesLoader : NSOperation {
 	id <ReleasesLoaderDelegate> delegate;
-	AppDelegate *appDelegate;
+	NSManagedObjectContext *insertionContext;
+	NSPersistentStoreCoordinator *persistentStoreCoordinator;
+	NSEntityDescription *releaseEntityDescription;
+	NSArray *cachedObjects;
 }
 
 @property (nonatomic, assign) id <ReleasesLoaderDelegate> delegate;
 @property (nonatomic, retain) AppDelegate *appDelegate;
+@property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic, retain, readonly) NSManagedObjectContext *insertionContext;
+@property (nonatomic, retain, readonly) NSEntityDescription *releaseEntityDescription;
 
 @end

@@ -18,10 +18,19 @@
 	release = value;
 	self.textLabel.text = self.release.title;
 	self.detailTextLabel.text = self.release.artist;
-	if(self.release.smallArtworkImage == nil) {
-		self.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
+	if(release.smallArtworkImage) {
+		self.imageView.image = release.smallArtworkImage;
 	} else {
-		self.imageView.image = self.release.smallArtworkImage;
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArtwork:) name:@"finishedLoadingSmallArtwork" object:release];
+		self.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
+	}
+}
+
+- (void)showArtwork:(NSNotification *)notification {
+	if([notification object] == release) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishedLoadingSmallArtwork" object:[notification object]];
+		self.imageView.image = ((Release *)[notification object]).smallArtworkImage;
+		[self setNeedsLayout];
 	}
 }
 

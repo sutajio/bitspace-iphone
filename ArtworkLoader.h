@@ -10,7 +10,7 @@
 
 @protocol ArtworkLoaderDelegate <NSObject>
 @optional
-- (void)loaderDidFinishLoadingArtwork:(NSData *)artworkData fromURL:(NSString *)url;
+- (void)loaderDidFinishLoadingArtwork:(UIImage *)artworkImage fromURL:(NSString *)url;
 @end
 
 @interface ArtworkLoader : NSOperation {

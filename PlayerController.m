@@ -177,11 +177,6 @@
 		artwork.image = track.parent.largeArtworkImage;
 		artwork.hidden = NO;
 	}
-	
-	NSError *error = nil;
-	if(![self.appDelegate.managedObjectContext save:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	}
 }
 
 - (void)updatePlayerUIBasedOnPlaybackState {
@@ -198,16 +193,11 @@
 		navigationBar.hidden = NO;
 		
 		// Show the artwork for the release
-		if(track.parent.largeArtworkUrl != nil) {
-			if(track.parent.largeArtwork) {
-				artwork.image = track.parent.largeArtworkImage;
-				artwork.hidden = NO;
-			} else {
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArtwork:) name:@"finishedLoadingLargeArtwork" object:track.parent];
-				artwork.image = track.parent.largeArtworkImage;
-				artwork.hidden = NO;
-			}
+		if(track.parent.largeArtworkImage) {
+			artwork.image = track.parent.largeArtworkImage;
+			artwork.hidden = NO;
 		} else {
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArtwork:) name:@"finishedLoadingLargeArtwork" object:track.parent];
 			artwork.image = [UIImage imageNamed:@"cover-art-large.jpg"];
 			artwork.hidden = NO;
 		}

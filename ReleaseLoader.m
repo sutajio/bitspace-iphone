@@ -12,6 +12,7 @@
 #import "Release.h"
 #import "Track.h"
 #import "AppDelegate.h"
+#import "NSString+SBJSON.h"
 
 
 @implementation ReleaseLoader

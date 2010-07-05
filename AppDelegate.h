@@ -7,13 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ReleasesLoader.h"
 
 @class PlayerController, ReleasesController, SyncQueue;
 
-@interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate> {
+@interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, ReleasesLoaderDelegate> {
     NSString *siteURL;
 	NSString *username;
 	NSString *password;
+	
+	NSOperationQueue *operationQueue;
+	ReleasesLoader *releasesLoader;
 	
 	UIWindow *window;
     UITabBarController *tabBarController;
@@ -30,6 +34,10 @@
 @property (nonatomic, retain) NSString *siteURL;
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *password;
+
+@property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
+@property (nonatomic, retain, readonly) ReleasesLoader *releasesLoader;
+@property (nonatomic, readonly) NSDate *lastSynchronizationDate;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;

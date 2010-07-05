@@ -22,14 +22,12 @@
 @dynamic releaseDate;
 @dynamic label;
 @dynamic smallArtworkUrl;
-@dynamic mediumArtworkUrl;
 @dynamic largeArtworkUrl;
-@dynamic smallArtwork;
-@dynamic mediumArtwork;
-@dynamic largeArtwork;
 @dynamic tracks;
 
-@synthesize smallArtworkLoader, mediumArtworkLoader, largeArtworkLoader, releaseLoader;
+@synthesize smallArtworkImage, largeArtworkImage;
+@synthesize smallArtworkLoader, largeArtworkLoader;
+@synthesize operationQueue, releaseLoader;
 
 - (void)touch {
 	touched = YES;
@@ -40,9 +38,10 @@
 }
 
 -(NSString *)monthCreatedAt {
+	NSDate *dateCreatedAt = [ObjectiveResourceDateFormatter parseDateTime:self.createdAt];
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"MMM ''yy"];
-	NSString *formatedDate = [dateFormatter stringFromDate:self.createdAt];
+	NSString *formatedDate = [dateFormatter stringFromDate:dateCreatedAt];
 	[dateFormatter release];
 	return formatedDate;
 }
@@ -76,86 +75,50 @@
 	return i;
 }
 
-- (NSOperationQueue *)operationQueue {
++ (NSOperationQueue *)operationQueue {
+	static NSOperationQueue *operationQueue;
     if (operationQueue == nil) {
         operationQueue = [[NSOperationQueue alloc] init];
+		[operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
     }
     return operationQueue;
 }
 
 -(UIImage *)smallArtworkImage {
 	if(smallArtworkImage == nil) {
-		if(self.smallArtwork == nil) {
-			if(smallArtworkLoader == nil) {
-				smallArtworkLoader = [[ArtworkLoader alloc] init];
-				smallArtworkLoader.url = self.smallArtworkUrl;
-				smallArtworkLoader.delegate = self;
-				[self.operationQueue addOperation:smallArtworkLoader];
-				[smallArtworkLoader release];
-			}
-		} else {
-			smallArtworkImage = [[UIImage imageWithData:self.smallArtwork] retain];
+		if(smallArtworkLoader == nil) {
+			smallArtworkLoader = [[ArtworkLoader alloc] init];
+			smallArtworkLoader.url = self.smallArtworkUrl;
+			smallArtworkLoader.delegate = self;
+			[[Release operationQueue] addOperation:smallArtworkLoader];
+			[smallArtworkLoader release];
 		}
 	}
 	return smallArtworkImage;
 }
 
--(UIImage *)mediumArtworkImage {
-	if(mediumArtworkImage == nil) {
-		if(self.mediumArtwork == nil) {
-			if(mediumArtworkLoader == nil) {
-				mediumArtworkLoader = [[ArtworkLoader alloc] init];
-				mediumArtworkLoader.url = self.mediumArtworkUrl;
-				mediumArtworkLoader.delegate = self;
-				[self.operationQueue addOperation:mediumArtworkLoader];
-				[mediumArtworkLoader release];
-			}
-		} else {
-			mediumArtworkImage = [[UIImage imageWithData:self.mediumArtwork] retain];
-		}
-	}
-	return mediumArtworkImage;
-}
-
 -(UIImage *)largeArtworkImage {
 	if(largeArtworkImage == nil) {
-		if(self.largeArtwork == nil) {
-			if(largeArtworkLoader == nil) {
-				largeArtworkLoader = [[ArtworkLoader alloc] init];
-				largeArtworkLoader.url = self.largeArtworkUrl;
-				largeArtworkLoader.delegate = self;
-				[self.operationQueue addOperation:largeArtworkLoader];
-				[largeArtworkLoader release];
-			}
-		} else {
-			largeArtworkImage = [[UIImage imageWithData:self.largeArtwork] retain];
+		if(largeArtworkLoader == nil) {
+			largeArtworkLoader = [[ArtworkLoader alloc] init];
+			largeArtworkLoader.url = self.largeArtworkUrl;
+			largeArtworkLoader.delegate = self;
+			[[Release operationQueue] addOperation:largeArtworkLoader];
+			[largeArtworkLoader release];
 		}
 	}
 	return largeArtworkImage;
 }
 
--(void)loaderDidFinishLoadingArtwork:(NSData *)artworkData fromURL:(NSString *)url {
+-(void)loaderDidFinishLoadingArtwork:(UIImage *)artworkImage fromURL:(NSString *)url {
 	if([url isEqualToString:self.smallArtworkUrl]) {
-		self.smallArtwork = artworkData;
+		self.smallArtworkImage = artworkImage;
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingSmallArtwork" object:self];
 	}
-	if([url isEqualToString:self.mediumArtworkUrl]) {
-		self.mediumArtwork = artworkData;
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingMediumArtwork" object:self];
-	}
 	if([url isEqualToString:self.largeArtworkUrl]) {
-		self.largeArtwork = artworkData;
+		self.largeArtworkImage = artworkImage;
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingLargeArtwork" object:self];
 	}
-}
-
-- (void)loadTracksWithAppDelegate:(AppDelegate *)appDelegate {
-	releaseLoader = [[ReleaseLoader alloc] init];
-	releaseLoader.releaseURL = self.url;
-	releaseLoader.appDelegate = appDelegate;
-	releaseLoader.delegate = self;
-	[self.operationQueue addOperation:releaseLoader];
-	[releaseLoader release];
 }
 
 -(void)updateRelease:(NSDictionary *)releaseJSON {
@@ -242,12 +205,31 @@
 	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
 }
 
-//-(void)dealloc {
-//	if(operationQueue) { [operationQueue release]; }
-//	if(smallArtworkImage) { [smallArtworkImage release]; }
-//	if(mediumArtworkImage) { [mediumArtworkImage release]; }
-//	if(largeArtworkImage) { [largeArtworkImage release]; }
-//	[super dealloc];
-//}
+- (NSOperationQueue *)operationQueue {
+	if(operationQueue == nil) {
+		operationQueue = [[NSOperationQueue alloc] init];
+	}
+	return operationQueue;
+}
+
+- (void)loadTracks:(BOOL)force {
+	if(force == YES || [self.tracks count] == 0) {
+		releaseLoader = [[ReleaseLoader alloc] init];
+		releaseLoader.releaseURL = self.url;
+		releaseLoader.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+		releaseLoader.delegate = self;
+		[self.operationQueue addOperation:releaseLoader];
+		[releaseLoader release];
+	} else {
+		[self finishedLoading];
+	}
+}
+
+-(void)dealloc {
+	if(operationQueue) { [operationQueue release]; }
+	if(smallArtworkImage) { [smallArtworkImage release]; }
+	if(largeArtworkImage) { [largeArtworkImage release]; }
+	[super dealloc];
+}
 
 @end

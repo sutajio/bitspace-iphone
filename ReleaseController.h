@@ -16,18 +16,26 @@
 	NSFetchedResultsController *fetchedResultsController;
 	
 	UIView *tableHeaderView;
+	IBOutlet UIImageView *artworkImage;
+	IBOutlet UILabel *artistLabel;
+	IBOutlet UILabel *titleLabel;
+	
 	UIView *tableFooterView;
-	UILabel *releasedAtLabel;
-	UILabel *releasedByLabel;
+	IBOutlet UILabel *releasedAtLabel;
+	IBOutlet UILabel *releasedByLabel;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) Release *theRelease;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
-@property (nonatomic, retain) IBOutlet UIView *tableHeaderView;
-@property (nonatomic, retain) IBOutlet UIView *tableFooterView;
-@property (nonatomic, retain) IBOutlet UILabel *releasedAtLabel;
-@property (nonatomic, retain) IBOutlet UILabel *releasedByLabel;
+@property (nonatomic, retain) UIView *tableHeaderView;
+@property (nonatomic, retain) UIImageView *artworkImage;
+@property (nonatomic, retain) UILabel *artistLabel;
+@property (nonatomic, retain) UILabel *titleLabel;
+
+@property (nonatomic, retain) UIView *tableFooterView;
+@property (nonatomic, retain) UILabel *releasedAtLabel;
+@property (nonatomic, retain) UILabel *releasedByLabel;
 
 @end
