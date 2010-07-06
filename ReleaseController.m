@@ -84,10 +84,10 @@
 	self.titleLabel.text = theRelease.title;
 	self.artistLabel.text = theRelease.artist;
 	
-	if (tableFooterView == nil) {
-        [[NSBundle mainBundle] loadNibNamed:@"ReleaseFooter" owner:self options:nil];
-        self.tableView.tableFooterView = tableFooterView;
-    }
+	//if (tableFooterView == nil) {
+//        [[NSBundle mainBundle] loadNibNamed:@"ReleaseFooter" owner:self options:nil];
+//        self.tableView.tableFooterView = tableFooterView;
+//    }
 	if(self.theRelease.releaseDate) {
 		self.releasedAtLabel.text = [NSString stringWithFormat:@"Released: %@", self.theRelease.releaseDate];
 	} else {
@@ -151,6 +151,16 @@
 
 #pragma mark Table view methods
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	Track *track = [fetchedResultsController objectAtIndexPath:indexPath];
+	if(track.artist == nil) {
+		return 44;
+	} else {
+		return 60;
+	}
+}
+
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[fetchedResultsController sections] count];
 }
@@ -186,10 +196,14 @@
 }
 
 
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { 
-//    id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
-//    return [sectionInfo name];
-//}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { 
+    if([[fetchedResultsController sections] count] > 1) {
+		NSArray *sectionIndex = [@"A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z" componentsSeparatedByString:@"|"];
+		return [NSString stringWithFormat:@"Side %@", [sectionIndex objectAtIndex:section]];
+	} else {
+		return nil;
+	}
+}
 
 
 //- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {

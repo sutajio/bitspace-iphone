@@ -28,7 +28,6 @@
 }
 
 @property (nonatomic, assign) id <ReleasesLoaderDelegate> delegate;
-@property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, retain, readonly) NSManagedObjectContext *insertionContext;
 @property (nonatomic, retain, readonly) NSEntityDescription *releaseEntityDescription;

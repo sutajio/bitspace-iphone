@@ -37,15 +37,6 @@
 	return touched;
 }
 
--(NSString *)monthCreatedAt {
-	NSDate *dateCreatedAt = [ObjectiveResourceDateFormatter parseDateTime:self.createdAt];
-	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-	[dateFormatter setDateFormat:@"MMM ''yy"];
-	NSString *formatedDate = [dateFormatter stringFromDate:dateCreatedAt];
-	[dateFormatter release];
-	return formatedDate;
-}
-
 -(BOOL) hasTrackWithURL:(NSString *)url {
 	for(Track *track in self.tracks) {
 		if([track.url isEqualToString:url]) {

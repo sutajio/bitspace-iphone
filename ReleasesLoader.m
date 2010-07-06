@@ -17,7 +17,7 @@
 
 @implementation ReleasesLoader
 
-@synthesize delegate, appDelegate;
+@synthesize delegate;
 @synthesize insertionContext, persistentStoreCoordinator, releaseEntityDescription;
 
 - (void)dealloc {

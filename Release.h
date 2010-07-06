@@ -26,7 +26,6 @@
 @property (nonatomic, retain) NSString *year;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSString *createdAt;
-@property (nonatomic, readonly) NSString *monthCreatedAt;
 @property (nonatomic, retain) NSString *releaseDate;
 @property (nonatomic, retain) NSString *label;
 @property (nonatomic, retain) NSString *smallArtworkUrl;

@@ -17,6 +17,54 @@
 
 @synthesize track;
 
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+	if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+	
+		bgView = [[UIView alloc] initWithFrame:self.frame];
+		bgView.backgroundColor = [UIColor whiteColor];
+		self.backgroundView = bgView;
+		[bgView release];
+		
+		trackNrLabel = [[[UILabel alloc] init] autorelease];
+		trackNrLabel.font = [UIFont systemFontOfSize:16.0f];
+		trackNrLabel.frame = CGRectMake(0.0f, 10.0f, 40.0f, 22.0f);
+		trackNrLabel.textColor = [UIColor blackColor];
+		trackNrLabel.highlightedTextColor = [UIColor whiteColor];
+		trackNrLabel.backgroundColor = [UIColor clearColor];
+		trackNrLabel.textAlignment = UITextAlignmentCenter;
+		trackNrLabel.opaque = NO;
+		[self.contentView addSubview:trackNrLabel];
+		
+		textLabel = [[[UILabel alloc] init] autorelease];
+		textLabel.font = [UIFont boldSystemFontOfSize:16.0f];
+		textLabel.frame = CGRectMake(40.0f, 10.0f, 220.0f, 22.0f);
+		textLabel.textColor = [UIColor darkTextColor];
+		textLabel.highlightedTextColor = [UIColor whiteColor];
+		textLabel.backgroundColor = [UIColor clearColor];
+		textLabel.opaque = NO;
+		[self.contentView addSubview:textLabel];
+		
+		detailTextLabel = [[[UILabel alloc] init] autorelease];
+		detailTextLabel.font = [UIFont systemFontOfSize:14.0f];
+		detailTextLabel.frame = CGRectMake(40.0f, 28.0f, 220.0f, 22.0f);
+		detailTextLabel.textColor = [UIColor lightGrayColor];
+		detailTextLabel.highlightedTextColor = [UIColor whiteColor];
+		detailTextLabel.backgroundColor = [UIColor clearColor];
+		detailTextLabel.opaque = NO;
+		[self.contentView addSubview:detailTextLabel];
+		
+		self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+		self.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+		
+		loveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		loveButton.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
+		[loveButton addTarget:self action:@selector(loveTrack:) forControlEvents:UIControlEventTouchUpInside];
+		self.accessoryView = loveButton;
+	}
+	
+	return self;
+}
+
 - (void)updateLoveButtonState {
 	if(track.lovedAt) {
 		[loveButton setImage:[UIImage imageNamed:@"love-on.png"] forState:UIControlStateNormal];
@@ -27,21 +75,18 @@
 
 - (void)setTrack:(Track *)value {
 	track = value;
-	self.textLabel.backgroundColor = [UIColor clearColor];
-	self.textLabel.opaque = NO;
-	self.detailTextLabel.backgroundColor = [UIColor whiteColor];
-	self.textLabel.text = track.title;
-	self.detailTextLabel.text = track.artist;
-	self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	self.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-	loveButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
-	[loveButton addTarget:self action:@selector(loveTrack:) forControlEvents:UIControlEventTouchUpInside];
+	
+	if([track.trackNr intValue] % 2) {
+		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:1.0f alpha:1.0f];
+	} else {
+		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.97f alpha:1.0f];
+	}
+		
+	trackNrLabel.text = [track.trackNr stringValue];
+	textLabel.text = track.title;
+	detailTextLabel.text = track.artist;
+	
 	[self updateLoveButtonState];
-	self.accessoryView = loveButton;
-	UIView *bg = [[UIView alloc] initWithFrame:self.frame];
-	bg.backgroundColor = [UIColor whiteColor];
-	self.backgroundView = bg;
-	[bg release];
 }
 
 - (void)loveTrack:(id)sender {
@@ -67,6 +112,15 @@
 	[track.managedObjectContext save:nil];
 	[appDelegate.syncQueue enqueueRequest:request];
 	[self updateLoveButtonState];
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+	[super setHighlighted:highlighted animated:animated];
+	
+	trackNrLabel.highlighted = highlighted;
+	textLabel.highlighted = highlighted;
+	detailTextLabel.highlighted = highlighted;
+	loveButton.highlighted = NO;
 }
 
 @end

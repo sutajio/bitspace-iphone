@@ -12,6 +12,10 @@
 
 @interface TrackTableViewCell : UITableViewCell {
 	Track *track;
+	UIView *bgView;
+	UILabel *trackNrLabel;
+	UILabel *textLabel;
+	UILabel *detailTextLabel;
 	UIButton *loveButton;
 }
 
