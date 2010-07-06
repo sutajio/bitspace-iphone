@@ -38,4 +38,6 @@
 @property (nonatomic, retain) UILabel *releasedAtLabel;
 @property (nonatomic, retain) UILabel *releasedByLabel;
 
+- (IBAction)shuffle:(id)sender;
+
 @end

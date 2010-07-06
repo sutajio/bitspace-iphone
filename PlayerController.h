@@ -46,13 +46,16 @@ typedef enum {
 	AudioStreamer *streamer;
 	NSTimer *progressUpdateTimer;
 	NSMutableArray *playlist;
-	NSInteger playlistPosition;
-	PlaybackControlsState playbackControlsState;
-	PlayerRepeatState repeatState;
-	PlayerShuffleState shuffleState;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
+
+@property (nonatomic, readonly) Track *currentTrack;
+@property (nonatomic, readonly) NSMutableArray *playlist;
+@property (nonatomic, assign) NSInteger playlistPosition;
+@property (nonatomic, assign) PlaybackControlsState playbackControlsState;
+@property (nonatomic, assign) PlayerRepeatState playerRepeatState;
+@property (nonatomic, assign) PlayerShuffleState playerShuffleState;
 
 - (IBAction)togglePlaybackControls:(id)sender;
 - (IBAction)togglePlayback:(id)sender;

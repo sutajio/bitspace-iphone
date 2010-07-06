@@ -23,6 +23,29 @@
 @synthesize tableFooterView, releasedAtLabel, releasedByLabel;
 
 
+#pragma mark Shuffle
+
+- (NSMutableArray *)shuffleArray:(NSArray *)array {
+	NSMutableArray *shuffledArray = [NSMutableArray arrayWithCapacity:[array count]];
+	[shuffledArray addObjectsFromArray:array];
+	if ([shuffledArray count] > 1) {
+		for (NSUInteger shuffleIndex = [shuffledArray count] - 1; shuffleIndex > 0; shuffleIndex--)
+			[shuffledArray exchangeObjectAtIndex:shuffleIndex withObjectAtIndex:random() % (shuffleIndex + 1)];
+	}
+	return shuffledArray;
+}
+
+- (void)shuffle:(id)sender {
+	[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
+	NSMutableArray *tracks = [self shuffleArray:[fetchedResultsController fetchedObjects]];
+	for(Track *track in tracks) {
+		[self.appDelegate.playerController enqueueTrack:track fromTheRelease:theRelease andPlay:NO];
+	}
+	[self.appDelegate.playerController nextTrack:nil];
+	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
+}
+
+
 #pragma mark Release helper methods
 
 - (void)refreshRelease {
