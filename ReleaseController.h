@@ -10,7 +10,7 @@
 
 @class AppDelegate, Release;
 
-@interface ReleaseController : UITableViewController <NSFetchedResultsControllerDelegate> {
+@interface ReleaseController : UITableViewController <NSFetchedResultsControllerDelegate, UIActionSheetDelegate> {
 	AppDelegate *appDelegate;
 	Release *theRelease;
 	NSFetchedResultsController *fetchedResultsController;
@@ -38,6 +38,7 @@
 @property (nonatomic, retain) UILabel *releasedAtLabel;
 @property (nonatomic, retain) UILabel *releasedByLabel;
 
+- (IBAction)offline:(id)sender;
 - (IBAction)shuffle:(id)sender;
 
 @end

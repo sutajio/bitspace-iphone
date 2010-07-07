@@ -56,10 +56,18 @@
 		self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 		self.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 		
-		loveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		loveButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		loveButton.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
 		[loveButton addTarget:self action:@selector(loveTrack:) forControlEvents:UIControlEventTouchUpInside];
 		self.accessoryView = loveButton;
+		
+		downloadActivityIndicator = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] retain];
+		[downloadActivityIndicator stopAnimating];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadWillBegin:) name:@"TrackOfflineModeDownloadWillBegin" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showDownloadActivity:) name:@"TrackOfflineModeDownloadDidBegin" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideDownloadActivity:) name:@"TrackOfflineModeDownloadDidFinish" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offlineModeDidClear:) name:@"TrackOfflineModeDidClear" object:nil];
 	}
 	
 	return self;
@@ -70,6 +78,47 @@
 		[loveButton setImage:[UIImage imageNamed:@"love-on.png"] forState:UIControlStateNormal];
 	} else {
 		[loveButton setImage:[UIImage imageNamed:@"love-off.png"] forState:UIControlStateNormal];
+	}
+}
+
+- (void)showDownloadActivity:(NSNotification *)notification {
+	if(notification && [notification object] != track)
+		return;
+	
+	[downloadActivityIndicator startAnimating];
+	self.accessoryView = downloadActivityIndicator;
+}
+
+- (void)hideDownloadActivity:(NSNotification *)notification {
+	if(notification && [notification object] != track)
+		return;
+	
+	[downloadActivityIndicator stopAnimating];
+	self.accessoryView = loveButton;
+}
+
+- (void)updateOfflineModeState {
+	if([track hasCache] == YES) {
+		textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+	} else {
+		textLabel.textColor = [UIColor darkTextColor];
+		if([track isLoading] == YES) {
+			[self showDownloadActivity:nil];
+		} else {
+			[self hideDownloadActivity:nil];
+		}
+	}
+}
+
+- (void)downloadWillBegin:(NSNotification *)notification {
+	if([notification object] == track) {
+		[self updateOfflineModeState];
+	}
+}
+
+- (void)offlineModeDidClear:(NSNotification *)notification {
+	if([notification object] == track) {
+		[self updateOfflineModeState];
 	}
 }
 
@@ -87,6 +136,7 @@
 	detailTextLabel.text = track.artist;
 	
 	[self updateLoveButtonState];
+	[self updateOfflineModeState];
 }
 
 - (void)loveTrack:(id)sender {
@@ -121,6 +171,12 @@
 	textLabel.highlighted = highlighted;
 	detailTextLabel.highlighted = highlighted;
 	loveButton.highlighted = NO;
+}
+
+- (void)dealloc {
+	[loveButton release];
+	[downloadActivityIndicator release];
+	[super dealloc];
 }
 
 @end

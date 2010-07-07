@@ -174,7 +174,7 @@
 - (NSOperationQueue *)operationQueue {
     if (operationQueue == nil) {
         operationQueue = [[NSOperationQueue alloc] init];
-		[operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+		[operationQueue setMaxConcurrentOperationCount:3];
     }
     return operationQueue;
 }

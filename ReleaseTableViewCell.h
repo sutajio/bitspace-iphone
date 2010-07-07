@@ -12,6 +12,7 @@
 
 @interface ReleaseTableViewCell : UITableViewCell {
 	Release *release;
+	UIProgressView *downloadProgressView;
 }
 
 @property (readwrite, assign) Release *release;

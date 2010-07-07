@@ -37,6 +37,15 @@
 	return touched;
 }
 
+- (BOOL)hasTrack:(Track *)track {
+	for(Track *t in self.tracks) {
+		if(track == t) {
+			return YES;
+		}
+	}
+	return NO;
+}
+
 -(BOOL) hasTrackWithURL:(NSString *)url {
 	for(Track *track in self.tracks) {
 		if([track.url isEqualToString:url]) {
@@ -44,6 +53,47 @@
 		}
 	}
 	return NO;
+}
+
+- (BOOL)hasOnlineTracks {
+	for(Track *track in self.tracks) {
+		if([track hasCache] == NO) {
+			return YES;
+		}
+	}
+	return NO;
+}
+
+- (BOOL)hasOfflineTracks {
+	for(Track *track in self.tracks) {
+		if([track hasCache] == YES) {
+			return YES;
+		}
+	}
+	return NO;
+}
+
+- (BOOL)hasLoadingTracks {
+	for(Track *track in self.tracks) {
+		if([track isLoading] == YES) {
+			return YES;
+		}
+	}
+	return NO;
+}
+
+- (NSInteger)numberOfTracks {
+	return [self.tracks count];
+}
+
+- (NSInteger)numberOfOfflineTracks {
+	NSInteger i = 0;
+	for(Track *track in self.tracks) {
+		if([track hasCache]) {
+			i++;
+		}
+	}
+	return i;
 }
 
 -(NSInteger) numberOfSets {

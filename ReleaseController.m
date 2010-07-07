@@ -23,6 +23,47 @@
 @synthesize tableFooterView, releasedAtLabel, releasedByLabel;
 
 
+#pragma mark Offline
+
+- (void)enableOfflineMode {
+	for(Track *track in [fetchedResultsController fetchedObjects]) {
+		[(Track *)track enableOfflineMode];
+	}
+}
+
+- (void)clearDownloadedTracks {
+	for(Track *track in [fetchedResultsController fetchedObjects]) {
+		[(Track *)track clearCache];
+	}
+}
+
+- (void)offline:(id)sender {
+	if([theRelease hasOnlineTracks] && [theRelease hasOfflineTracks]) {
+		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Clear downloaded tracks" otherButtonTitles:@"Enable offline mode", nil];
+		[actionSheet showInView:sender];
+		[actionSheet release];
+	} else if([theRelease hasOnlineTracks]) {
+		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Enabling offline mode will download all the tracks on this release so that you can listen to them without an internet connect. We strongly recommend that you use a Wi-Fi connection when enabling offline mode." delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Enable offline mode", nil];
+		[actionSheet showInView:sender];
+		[actionSheet release];
+	} else if([theRelease hasOfflineTracks]) {
+		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Clear downloaded tracks" otherButtonTitles:nil, nil];
+		[actionSheet showInView:sender];
+		[actionSheet release];
+	}
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if(buttonIndex == [actionSheet destructiveButtonIndex]) {
+		[self clearDownloadedTracks];
+	} else if(buttonIndex == [actionSheet cancelButtonIndex]) {
+		return;
+	} else {
+		[self enableOfflineMode];
+	}
+}
+
+
 #pragma mark Shuffle
 
 - (NSMutableArray *)shuffleArray:(NSArray *)array {

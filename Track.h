@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TrackLoader.h"
 
 @class Release;
 
-@interface Track : NSManagedObject {
+@interface Track : NSManagedObject <TrackLoaderDelegate> {
 
 }
 
@@ -26,5 +27,12 @@
 @property (nonatomic, retain) NSString *loveUrl;
 @property (nonatomic, retain) NSDate *lovedAt;
 @property (nonatomic, retain) NSNumber *touched;
+@property (nonatomic, retain) NSNumber *loading;
+@property (nonatomic, retain) TrackLoader *loader;
+
+- (BOOL)hasCache;
+- (BOOL)isLoading;
+- (void)enableOfflineMode;
+- (void)clearCache;
 
 @end

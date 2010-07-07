@@ -17,6 +17,7 @@
 	UILabel *textLabel;
 	UILabel *detailTextLabel;
 	UIButton *loveButton;
+	UIActivityIndicatorView *downloadActivityIndicator;
 }
 
 @property (readwrite, assign) Track *track;

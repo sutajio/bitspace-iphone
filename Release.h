@@ -10,6 +10,7 @@
 #import "ArtworkLoader.h"
 #import "ReleaseLoader.h"
 
+@class Track;
 
 @interface Release : NSManagedObject <ArtworkLoaderDelegate, ReleaseLoaderDelegate> {
 	UIImage *smallArtworkImage;
@@ -39,7 +40,13 @@
 @property (nonatomic, retain) ReleaseLoader *releaseLoader;
 @property (nonatomic, retain) NSOperationQueue *operationQueue;
 
+- (BOOL)hasTrack:(Track *)track;
 - (BOOL)hasTrackWithURL:(NSString *)url;
+- (BOOL)hasOnlineTracks;
+- (BOOL)hasOfflineTracks;
+- (BOOL)hasLoadingTracks;
+- (NSInteger)numberOfTracks;
+- (NSInteger)numberOfOfflineTracks;
 - (NSInteger)numberOfSets;
 - (NSInteger)numberOfTracksInSet:(NSInteger)setNr;
 - (void)loadTracks:(BOOL)force;
