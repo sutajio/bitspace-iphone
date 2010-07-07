@@ -101,14 +101,30 @@
 	return largeArtworkImage;
 }
 
+- (void)finishedLoadingSmallArtwork {
+	if([NSThread isMainThread]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingSmallArtwork" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(finishedLoadingSmallArtwork) withObject:nil waitUntilDone:NO];
+	}
+}
+
+- (void)finishedLoadingLargeArtwork {
+	if([NSThread isMainThread]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingLargeArtwork" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(finishedLoadingLargeArtwork) withObject:nil waitUntilDone:NO];
+	}
+}
+
 -(void)loaderDidFinishLoadingArtwork:(UIImage *)artworkImage fromURL:(NSString *)url {
 	if([url isEqualToString:self.smallArtworkUrl]) {
 		self.smallArtworkImage = artworkImage;
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingSmallArtwork" object:self];
+		[self finishedLoadingSmallArtwork];
 	}
 	if([url isEqualToString:self.largeArtworkUrl]) {
 		self.largeArtworkImage = artworkImage;
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingLargeArtwork" object:self];
+		[self finishedLoadingLargeArtwork];
 	}
 }
 
