@@ -46,6 +46,9 @@
 	[window addSubview:tabBarController.view];
 	[window makeKeyAndVisible];
 	
+	// Select the correct tab if user has used the app before
+	self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
+	
 	// Authenticate user and show sign in screen if authentication fails
 	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
 				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
@@ -67,6 +70,10 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	
+	// Save which tab the user was on when the app terminated
+	[[NSUserDefaults standardUserDefaults] setInteger:self.tabBarController.selectedIndex forKey:@"TabBarSelectedIndex"];
+	
+	// Save the database if it has changes
     NSError *error = nil;
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {

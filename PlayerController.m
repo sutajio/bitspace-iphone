@@ -78,8 +78,11 @@
 	if(playlist == nil) {
 		playlist = [[NSMutableArray alloc] init];
 		for(NSString *trackId in [[NSUserDefaults standardUserDefaults] arrayForKey:@"Playlist"]) {
-			Track *track = (Track *)[self.appDelegate.managedObjectContext objectWithID:[self.appDelegate.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:trackId]]];
-			[playlist addObject:track];
+			NSManagedObjectID *objectID = [self.appDelegate.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:trackId]];
+			if(objectID) {
+				Track *track = (Track *)[self.appDelegate.managedObjectContext objectWithID:objectID];
+				[playlist addObject:track];
+			}
 		}
 	}
 	return playlist;
