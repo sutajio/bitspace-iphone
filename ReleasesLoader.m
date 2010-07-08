@@ -105,7 +105,7 @@
 	
 	do {
 		// Request a page from the server...
-		NSLog([NSString stringWithFormat:@"Requesting page #%d", page]);
+		NSLog(@"Requesting page #%d", page);
 		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?page=%d", appDelegate.siteURL, page]];
 		NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
@@ -116,7 +116,7 @@
 		[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
 		Response *res = [Connection sendRequest:request withUser:appDelegate.username andPassword:appDelegate.password];
 		if([res isError]) {
-			NSLog([res.error localizedDescription]);
+			NSLog(@"%@", [res.error localizedDescription]);
 			[delegate loader:self didFailWithError:res.error];
 			break;
 		}

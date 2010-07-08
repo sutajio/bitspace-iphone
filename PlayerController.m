@@ -345,7 +345,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 }
-*/
+ */
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
@@ -480,7 +481,9 @@
 	} else if(self.playerRepeatState == PL_REPEAT_ALL && [self isPlayingLastTrack]) {
 		self.playlistPosition = 0;
 	} else {
-		self.playlistPosition++;
+		if([self isPlayingLastTrack] == NO) {
+			self.playlistPosition++;
+		}
 	}
 	[self playCurrentTrack];
 }
@@ -498,7 +501,9 @@
 	} else if(self.playerRepeatState == PL_REPEAT_ALL && self.playlistPosition == 0) {
 		self.playlistPosition = [playlist count] - 1;
 	} else {
-		self.playlistPosition--;
+		if([self isPlayingFirstTrack] == NO) {
+			self.playlistPosition--;
+		}
 	}
 	[self playCurrentTrack];
 }
@@ -564,7 +569,6 @@
 		volumeBar.hidden = YES;
 	}
 }
-
 
 @end
 

@@ -31,7 +31,7 @@
 	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
 	Response *res = [Connection sendRequest:request withUser:self.appDelegate.username andPassword:self.appDelegate.password];
 	if([res isError]) {
-		NSLog([res.error localizedDescription]);
+		NSLog(@"%@", [res.error localizedDescription]);
 		[delegate loader:self didFailWithError:res.error];
 		return;
 	}

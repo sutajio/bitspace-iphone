@@ -55,6 +55,15 @@
 		[self requestAuthenticationFromUser];
 	}
 	
+	// Begin receiving remote control events
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+	if ([[UIApplication sharedApplication]
+		 respondsToSelector:@selector(beginReceivingRemoteControlEvents)])
+    {
+		[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+	}
+#endif
+	
 	// Watch for shake events
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(requestAuthenticationFromUser) 
