@@ -40,12 +40,15 @@
 	}
 }
 
-- (void)createStreamer:(NSString *)sourceUrl {
+- (void)createStreamer:(Track *)track {
 	[self destroyStreamer];
 	
 	NSLog(@"Creating streamer...");
-	NSURL *url = [NSURL URLWithString:sourceUrl];
-	streamer = [[AudioStreamer alloc] initWithURL:url];
+	if([track hasCache]) {
+		streamer = [[AudioStreamer alloc] initWithFileAtPath:[track cachedFilePath]];
+	} else {
+		streamer = [[AudioStreamer alloc] initWithURL:[NSURL URLWithString:track.url]];
+	}
 	
 	progressUpdateTimer =
 	[NSTimer
@@ -435,7 +438,7 @@
 	
 	Track *track = [self currentTrack];
 	if(track) {
-		[self createStreamer:track.url];
+		[self createStreamer:track];
 		[self scrobbleCurrentTrack:YES];
 	}
 	

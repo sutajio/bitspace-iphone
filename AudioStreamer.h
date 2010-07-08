@@ -165,6 +165,7 @@ extern NSString * const ASStatusChangedNotification;
 @property (readonly) NSDictionary *httpHeaders;
 
 - (id)initWithURL:(NSURL *)aURL;
+- (id)initWithFileAtPath:(NSString *)aPath;
 - (void)start;
 - (void)stop;
 - (void)pause;

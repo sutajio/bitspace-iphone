@@ -35,8 +35,8 @@
 	return [self.loading boolValue];
 }
 
-- (NSData *)cachedData {
-	return [NSData dataWithContentsOfFile:cachePathForKey(self.url) options:0 error:NULL];
+- (NSString *)cachedFilePath {
+	return cachePathForKey(self.url);
 }
 
 - (void)loaderDidBegin {

@@ -32,6 +32,7 @@
 
 - (BOOL)hasCache;
 - (BOOL)isLoading;
+- (NSString *)cachedFilePath;
 - (void)enableOfflineMode;
 - (void)clearCache;
 
