@@ -21,6 +21,9 @@
 @interface TrackLoader : NSOperation {
 	NSString *url;
 	id <TrackLoaderDelegate> delegate;
+	
+	NSOutputStream *outputStream;
+	BOOL done;
 }
 
 @property (nonatomic, retain) NSString *url;

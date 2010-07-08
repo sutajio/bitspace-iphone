@@ -13,29 +13,59 @@
 
 @synthesize url, delegate;
 
-- (BOOL)hasCacheForKey:(NSString*)key {
-	return [[NSFileManager defaultManager] fileExistsAtPath:cachePathForKey(key)];
-}
-
-- (void)setCachedData:(NSData *)data forKey:(NSString *)key {
++ (NSOutputStream *)outputStreamForKey:(NSString *)key {
 	[[NSFileManager defaultManager] createDirectoryAtPath:cachePathForKey(@"") 
 							  withIntermediateDirectories:YES 
 											   attributes:nil 
 													error:NULL];
-	[data writeToFile:cachePathForKey(key) atomically:YES];
+	return [NSOutputStream outputStreamToFileAtPath:cachePathForKey(key) append:NO];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	[outputStream open];
+}
+
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
+{
+	done = YES;
+	[delegate loaderDidFailWithError:error];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+	if(outputStream) {
+		[outputStream write:[data bytes] maxLength:[data length]];
+	} else {
+		NSLog(@"Fail");
+	}
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	done = YES;
+	[outputStream close];
 }
 
 - (void)main {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSLog(@"Downloading track: %@", url);
 	[delegate loaderDidBegin];
+	
+	done = NO;
 	NSURL *dataUrl = [NSURL URLWithString:url];
-	NSData *data = [NSData dataWithContentsOfURL:dataUrl];
-	if(data) {
-		[self setCachedData:data forKey:url];	
-	} else {
-		[delegate loaderDidFailWithError:nil];
+	NSURLRequest *request = [NSURLRequest requestWithURL:dataUrl];
+	NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO] autorelease];
+	if(connection) {
+		outputStream = [TrackLoader outputStreamForKey:url];
+		static NSString *runLoopMode = @"com.sutajio.bitspace.TrackLoader";
+		[connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:runLoopMode];
+		[connection start];
+		while (done == NO) {
+			[[NSRunLoop currentRunLoop] runMode:runLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:.3]];
+		}
 	}
+	
 	[delegate loaderDidFinish];
 	NSLog(@"Download finished");
 	[pool release];
