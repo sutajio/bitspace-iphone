@@ -32,5 +32,9 @@
 	<string>http://bitspace.at/</string>
 	<key>SynchronizationInterval</key>
 	<string>86400</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>
