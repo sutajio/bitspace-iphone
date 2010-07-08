@@ -57,6 +57,14 @@
 	}
 }
 
+- (void)loaderDidFailWithError:(NSError *)error {
+	if([NSThread isMainThread] == YES) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:error];
+	} else {
+		[self performSelectorOnMainThread:@selector(loaderDidFailWithError:) withObject:error waitUntilDone:NO];
+	}
+}
+
 - (void)enableOfflineMode {
 	if([self hasCache] == NO) {
 		if(self.isLoading == NO) {

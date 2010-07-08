@@ -66,6 +66,18 @@
 											 selector:@selector(synchronize) 
 												 name:@"Synchronize" 
 											   object:nil];
+	
+	// Watch for authenticate events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(requestAuthenticationFromUser) 
+												 name:@"Authenticate" 
+											   object:nil];
+	
+	// Watch for network error events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(handleNetworkError:) 
+												 name:@"NetworkError" 
+											   object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -96,6 +108,31 @@
 }
 */
 
+
+#pragma mark -
+#pragma mark Error handling
+
+- (void)handleNetworkError:(NSNotification *)notification {
+	NSError *error = (NSError *)[notification object];
+	UIAlertView *alertView = nil;
+	switch ([error code]) {
+		case 401:
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"Authenticate" object:nil];
+			break;
+		case NSURLErrorUserAuthenticationRequired:
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"Authenticate" object:nil];
+			break;
+		case NSURLErrorNotConnectedToInternet:
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"EnableOfflineMode" object:nil];
+			break;
+		default:
+			alertView = [[UIAlertView alloc] initWithTitle:@"Network error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+			[alertView show];
+			[alertView release];
+			break;
+	}
+}
+
 #pragma mark -
 #pragma mark SyncQueue
 
@@ -118,6 +155,9 @@
 	// Stop operation queue
 	[self.operationQueue cancelAllOperations];
 	
+	// Store old username
+	NSString *oldUsername = [self.username copy];
+	
 	// Show sign in screen
 	SignInController *signInController = [[SignInController alloc] init];
 	signInController.appDelegate = self;
@@ -125,8 +165,11 @@
 	[self.tabBarController presentModalViewController:signInController animated:YES];
 	[signInController release];
 	
-	// Authentication succeeded, save username and password for next time and show player
-	self.tabBarController.selectedViewController = self.playerController;
+	// If a new user signed in; reset app state
+	if([oldUsername isEqualToString:self.username] == NO) {
+		[self resetAppState];
+	}
+	[oldUsername release];
 }
 
 
@@ -146,7 +189,11 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 	
 	if([res isError]) {
-		NSLog([res.error localizedDescription]);
+		NSLog(@"Network error: %@", [res.error localizedDescription]);
+		if([res.error code] != 401) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:res.error];
+			return YES;
+		}
 		return NO;
 	}
 	
@@ -161,6 +208,8 @@
 
 - (void)resetAppState {
 	NSLog(@"AppDelegate#resetAppState");
+	
+	self.tabBarController.selectedViewController = self.playerController;
 	
 	[playerController clearQueueAndResetPlayer:YES];
 	[releasesController resetView];
@@ -269,12 +318,16 @@
 	}
 }
 
+- (void)dispatchNetworkError:(NSError *)error {
+	if([NSThread isMainThread]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:error];
+	} else {
+		[self performSelectorOnMainThread:@selector(dispatchNetworkError:) withObject:error waitUntilDone:NO];
+	}
+}
 
 - (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oopsie daisy!" message:[error localizedDescription]
-												   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-	[alert show];
-	[alert release];
+	[self dispatchNetworkError:error];
 }
 
 

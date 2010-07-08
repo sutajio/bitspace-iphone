@@ -134,8 +134,7 @@
 }
 
 - (void)viewDidUnload {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"SynchronizationDidFinish" object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"ResetAppState" object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

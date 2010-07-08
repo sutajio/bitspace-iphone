@@ -31,7 +31,11 @@
 	[delegate loaderDidBegin];
 	NSURL *dataUrl = [NSURL URLWithString:url];
 	NSData *data = [NSData dataWithContentsOfURL:dataUrl];
-	[self setCachedData:data forKey:url];	
+	if(data) {
+		[self setCachedData:data forKey:url];	
+	} else {
+		[delegate loaderDidFailWithError:nil];
+	}
 	[delegate loaderDidFinish];
 	NSLog(@"Download finished");
 	[pool release];

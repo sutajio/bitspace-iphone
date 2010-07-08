@@ -11,6 +11,19 @@
 
 @implementation SyncQueue
 
+- (SyncQueue *)init {
+	if(self = [super init]) {
+		syncTimer =
+		[NSTimer
+		 scheduledTimerWithTimeInterval:10.0f
+		 target:self
+		 selector:@selector(forceSync)
+		 userInfo:nil
+		 repeats:YES];
+	}
+	return self;
+}
+
 - (NSMutableArray *)queuedRequests {
 	if(queuedRequests == nil) {
 		queuedRequests = [[NSMutableArray alloc] init];
@@ -25,7 +38,7 @@
 	if ([NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error]) {
 		[self performSelectorOnMainThread:@selector(dequeueRequest:) withObject:request waitUntilDone:NO];
 	} else {
-		NSLog([error localizedDescription]);
+		NSLog(@"%@", [error localizedDescription]);
 	}
 	[innerPool release];
 }
@@ -33,7 +46,6 @@
 - (void)enqueueRequest:(NSURLRequest *)request {
 	NSMutableArray *queue = [self queuedRequests];
 	[queue addObject:request];
-	[self performSelectorInBackground:@selector(sendRequest:) withObject:request];
 }
 
 - (void)dequeueRequest:(NSURLRequest *)request {
@@ -49,6 +61,7 @@
 }
 
 - (void)dealloc {
+	[syncTimer release];
 	[queuedRequests release];
 	[super dealloc];
 }

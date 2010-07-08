@@ -11,6 +11,7 @@
 
 @interface SyncQueue : NSObject {
 	NSMutableArray *queuedRequests;
+	NSTimer *syncTimer;
 }
 
 - (void)enqueueRequest:(NSURLRequest *)request;

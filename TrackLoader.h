@@ -15,6 +15,7 @@
 @optional
 - (void)loaderDidBegin;
 - (void)loaderDidFinish;
+- (void)loaderDidFailWithError:(NSError *)error;
 @end
 
 @interface TrackLoader : NSOperation {

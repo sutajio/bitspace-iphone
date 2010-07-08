@@ -21,7 +21,6 @@
 
 - (void)authenticate:(id)sender {
 	if([appDelegate validateUsername:usernameTextField.text andPassword:passwordTextField.text] == YES) {
-		[appDelegate resetAppState];
 		[self dismissSignInScreen];
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry, friend!" message:@"Your username or password\n seems to be invalid."

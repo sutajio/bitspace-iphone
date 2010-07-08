@@ -248,10 +248,7 @@
 }
 
 - (void)showLoaderError:(NSError *)error {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oopsie daisy!" message:[error localizedDescription]
-												   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-	[alert show];
-	[alert release];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:error];
 }
 
 - (void)loader:(ReleaseLoader *)loader didFailWithError:(NSError *)error {
