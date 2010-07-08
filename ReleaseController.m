@@ -43,7 +43,7 @@
 		[actionSheet showInView:sender];
 		[actionSheet release];
 	} else if([theRelease hasOnlineTracks]) {
-		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Enabling offline mode will download all the tracks on this release so that you can listen to them without an internet connect. We strongly recommend that you use a Wi-Fi connection when enabling offline mode." delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Enable offline mode", nil];
+		UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Enabling offline mode will download all the tracks on this release so that you can listen to them without an internet connection. We strongly recommend that you use a Wi-Fi connection when enabling offline mode." delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Enable offline mode", nil];
 		[actionSheet showInView:sender];
 		[actionSheet release];
 	} else if([theRelease hasOfflineTracks]) {
