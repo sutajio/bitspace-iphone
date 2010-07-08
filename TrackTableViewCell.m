@@ -174,10 +174,7 @@
 }
 
 - (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:@"TrackOfflineModeDownloadWillBegin"];
-	[[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:@"TrackOfflineModeDownloadDidBegin"];
-	[[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:@"TrackOfflineModeDownloadDidFinish"];
-	[[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:@"TrackOfflineModeDidClear"];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[loveButton release];
 	[downloadActivityIndicator release];
 	[super dealloc];
