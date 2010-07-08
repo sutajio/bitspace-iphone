@@ -558,6 +558,7 @@
 		artwork.hidden = YES;
 		statusBar.hidden = YES;
 		toolBar.hidden = YES;
+		volumeBar.hidden = YES;
 	}
 }
 
