@@ -15,13 +15,14 @@
 @synthesize appDelegate;
 
 
-- (void)dismissSignInScreen {
+- (void)dismissSignInScreen:(id)sender {
 	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (void)authenticate:(id)sender {
 	if([appDelegate validateUsername:usernameTextField.text andPassword:passwordTextField.text] == YES) {
-		[self dismissSignInScreen];
+		[self dismissSignInScreen:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"UserDidSignIn" object:nil];
 	} else {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry, friend!" message:@"Your username or password\n seems to be invalid."
 													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
@@ -58,6 +59,14 @@
 }
 */
 
+- (void)viewWillAppear:(BOOL)animated {
+	if(self.appDelegate.username && self.appDelegate.password) {
+		cancelButton.enabled = YES;
+	} else {
+		cancelButton.enabled = NO;
+	}
+}
+
 - (void)viewDidAppear:(BOOL)animated {
 	if (!animated) {
         [usernameTextField resignFirstResponder];
@@ -65,7 +74,7 @@
 	[usernameTextField becomeFirstResponder];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(dismissSignInScreen) name:@"DeviceShaken" object:nil];
+											 selector:@selector(dismissSignInScreen:) name:@"DeviceShaken" object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {

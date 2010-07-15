@@ -13,6 +13,7 @@
 @interface SignInController : UIViewController {
 	IBOutlet UITextField *usernameTextField;
 	IBOutlet UITextField *passwordTextField;
+	IBOutlet UIBarButtonItem *cancelButton;
 	
 	AppDelegate *appDelegate;
 }
@@ -21,5 +22,6 @@
 
 - (IBAction)authenticate:(id)sender;
 - (IBAction)focusPasswordField:(id)sender;
+- (IBAction)dismissSignInScreen:(id)sender;
 
 @end

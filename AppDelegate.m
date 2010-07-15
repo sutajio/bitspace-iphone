@@ -96,6 +96,12 @@
 												 name:@"Authenticate" 
 											   object:nil];
 	
+	// Watch for sign in events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(userDidSignIn) 
+												 name:@"UserDidSignIn" 
+											   object:nil];
+	
 	// Watch for network error events
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(handleNetworkError:) 
@@ -170,14 +176,6 @@
 
 
 - (void)requestAuthenticationFromUser {
-	// Stop audio playback
-	[self.playerController stopPlayback];
-	
-	// Stop operation queue
-	[self.operationQueue cancelAllOperations];
-	
-	// Store old username
-	NSString *oldUsername = [self.username copy];
 	
 	// Show sign in screen
 	SignInController *signInController = [[SignInController alloc] init];
@@ -185,12 +183,6 @@
 	signInController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self.tabBarController presentModalViewController:signInController animated:YES];
 	[signInController release];
-	
-	// If a new user signed in; reset app state
-	if([oldUsername isEqualToString:self.username] == NO) {
-		[self resetAppState];
-	}
-	[oldUsername release];
 }
 
 
@@ -220,8 +212,6 @@
 	
 	self.username = usernameValue;
 	self.password = passwordValue;
-	[[NSUserDefaults standardUserDefaults] setValue:self.username forKey:@"Username"];
-	[[NSUserDefaults standardUserDefaults] setValue:self.password forKey:@"Password"];
 	
 	return YES;
 }
@@ -230,19 +220,51 @@
 - (void)resetAppState {
 	NSLog(@"AppDelegate#resetAppState");
 	
+	// Stop audio playback
+	[self.playerController stopPlayback];
+	
+	// Stop operation queue
+	[self.operationQueue cancelAllOperations];
+	
+	// Select the player controller
 	self.tabBarController.selectedViewController = self.playerController;
 	
+	// Reset all views
 	[playerController clearQueueAndResetPlayer:YES];
 	[artistsController resetView];
 	[releasesController resetView];
 	[favoritesController resetView];
 	
+	// Reset CoreData
 	[managedObjectContext release]; managedObjectContext = nil;
 	[managedObjectModel release]; managedObjectModel = nil;
 	[persistentStoreCoordinator release]; persistentStoreCoordinator = nil;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetAppState" object:managedObjectContext];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];
+	// Reset the last synchronization date, to force a synchronization
+	[[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"LastReleasesSync"];
+	
+	// Send out a ResetAppState message to all controllers
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetAppState" object:nil];
+}
+
+
+- (void)userDidSignIn {
+	
+	// Save old username
+	NSString *oldUsername = [[NSUserDefaults standardUserDefaults] stringForKey:@"Username"];
+	
+	// If a new user signed in; reset app state
+	if(oldUsername && [oldUsername isEqualToString:self.username] == NO) {
+		[self resetAppState];
+	}
+	
+	// Save the username and password, so that the user doesn't need to sign in the next
+	// time he or she starts the app.
+	[[NSUserDefaults standardUserDefaults] setValue:self.username forKey:@"Username"];
+	[[NSUserDefaults standardUserDefaults] setValue:self.password forKey:@"Password"];
+	
+	// Synchronize, if needed...
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];	
 }
 
 
