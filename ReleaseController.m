@@ -137,6 +137,8 @@
 	// Set the artist and title
 	self.titleLabel.text = theRelease.title;
 	self.artistLabel.text = theRelease.artist;
+	self.releasedByLabel.text = theRelease.label;
+	self.releasedAtLabel.text = theRelease.releaseDate;
 	
 	// Set background color of table view to the same as the header view
 	self.tableView.backgroundColor = tableHeaderView.backgroundColor;
