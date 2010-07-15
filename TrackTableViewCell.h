@@ -15,6 +15,7 @@
 	NSInteger index;
 	BOOL showAlbumArtist;
 	UIView *bgView;
+	UIImageView *playingImage;
 	UILabel *trackNrLabel;
 	UILabel *textLabel;
 	UILabel *detailTextLabel;

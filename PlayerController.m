@@ -444,6 +444,7 @@
 	}
 	
 	[self updatePlayerUIBasedOnPlaybackState];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackDidStartPlaying" object:track];
 }
 
 - (void)togglePlaybackControls:(id)sender {
@@ -470,6 +471,7 @@
 
 - (void)nextTrack:(id)sender {
 	NSLog(@"nextTrack");
+	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
 		self.playlistPosition = rand() % [self.playlist count];
 	} else if(self.playerRepeatState == PL_REPEAT_TRACK) {
@@ -485,11 +487,13 @@
 			self.playlistPosition++;
 		}
 	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackDidStopPlaying" object:oldTrack];
 	[self playCurrentTrack];
 }
 
 - (void)previousTrack:(id)sender {
 	NSLog(@"previousTrack");
+	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
 		self.playlistPosition = rand() % [self.playlist count];
 	} else if(self.playerRepeatState == PL_REPEAT_TRACK) {
@@ -505,6 +509,7 @@
 			self.playlistPosition--;
 		}
 	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackDidStopPlaying" object:oldTrack];
 	[self playCurrentTrack];
 }
 
@@ -556,10 +561,13 @@
 }
 
 - (void)clearQueueAndResetPlayer:(BOOL)resetPlayer {
+	Track *oldTrack = [self currentTrack];
+	
 	[self.playlist removeAllObjects];
 	[self persistPlaylist];
 	
 	self.playlistPosition = -1;
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackDidStopPlaying" object:oldTrack];
 	[self updatePlayerUIBasedOnPlaybackState];
 	if(resetPlayer == YES) {
 		navigationBar.hidden = YES;

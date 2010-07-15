@@ -9,6 +9,8 @@
 #import "TrackTableViewCell.h"
 #import "Track.h"
 #import "Release.h"
+#import "AppDelegate.h"
+#import "PlayerController.h"
 
 
 @implementation TrackTableViewCell
@@ -22,6 +24,12 @@
 		bgView.backgroundColor = [UIColor whiteColor];
 		self.backgroundView = bgView;
 		[bgView release];
+		
+		playingImage = [[[UIImageView alloc] init] autorelease];
+		playingImage.frame = CGRectMake(12.0f, 13.0f, 16.0f, 16.0f);
+		playingImage.image = [UIImage imageNamed:@"playing.png"];
+		playingImage.hidden = YES;
+		[self.contentView addSubview:playingImage];
 		
 		trackNrLabel = [[[UILabel alloc] init] autorelease];
 		trackNrLabel.font = [UIFont systemFontOfSize:16.0f];
@@ -81,6 +89,14 @@
 												 selector:@selector(updateState:) 
 													 name:@"TrackLoveStateDidChange" 
 												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(updateState:) 
+													 name:@"TrackDidStartPlaying" 
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(updateState:) 
+													 name:@"TrackDidStopPlaying" 
+												   object:nil];
 	}
 	
 	return self;
@@ -100,8 +116,16 @@
 	} else {
 		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.97f alpha:1.0f];
 	}
-		
-	trackNrLabel.text = [NSString stringWithFormat:@"%d", self.index];
+	
+	if([[(AppDelegate *)[[UIApplication sharedApplication] delegate] playerController] currentTrack] == track) {
+		trackNrLabel.hidden = YES;
+		playingImage.hidden = NO;
+	} else {
+		trackNrLabel.text = [NSString stringWithFormat:@"%d", self.index];
+		trackNrLabel.hidden = NO;
+		playingImage.hidden = YES;
+	}
+	
 	textLabel.text = track.title;
 	
 	if(self.showAlbumArtist && track.artist == nil) {
