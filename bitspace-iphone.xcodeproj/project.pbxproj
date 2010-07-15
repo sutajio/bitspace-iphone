@@ -102,6 +102,8 @@
 		85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EE799011CBAD5A00714380 /* TrackTableViewCell.m */; };
 		85FE1F2111EC8E6A005D1F15 /* ArtistsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85FE1F2011EC8E6A005D1F15 /* ArtistsController.m */; };
 		85FE1F4A11EC9831005D1F15 /* Artist.m in Sources */ = {isa = PBXBuildFile; fileRef = 85FE1F4911EC9831005D1F15 /* Artist.m */; };
+		85FE206311EF27BC005D1F15 /* ArtistController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85FE206111EF27BC005D1F15 /* ArtistController.m */; };
+		85FE206411EF27BC005D1F15 /* Artist.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85FE206211EF27BC005D1F15 /* Artist.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -262,6 +264,9 @@
 		85FE1F2011EC8E6A005D1F15 /* ArtistsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArtistsController.m; sourceTree = "<group>"; };
 		85FE1F4811EC9831005D1F15 /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
 		85FE1F4911EC9831005D1F15 /* Artist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Artist.m; sourceTree = "<group>"; };
+		85FE206011EF27BC005D1F15 /* ArtistController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArtistController.h; sourceTree = "<group>"; };
+		85FE206111EF27BC005D1F15 /* ArtistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArtistController.m; sourceTree = "<group>"; };
+		85FE206211EF27BC005D1F15 /* Artist.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Artist.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* bitspace_iphone-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "bitspace_iphone-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -596,6 +601,7 @@
 			children = (
 				28AD73870D9D96C1002E5188 /* MainWindow.xib */,
 				851B45E91163E1E1007F1E83 /* Player.xib */,
+				85FE206211EF27BC005D1F15 /* Artist.xib */,
 				8541B09B11CA85F30004C4C9 /* Release.xib */,
 				8541B19411CA9DCB0004C4C9 /* ReleaseHeader.xib */,
 				85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */,
@@ -614,6 +620,8 @@
 			children = (
 				85FE1F1F11EC8E6A005D1F15 /* ArtistsController.h */,
 				85FE1F2011EC8E6A005D1F15 /* ArtistsController.m */,
+				85FE206011EF27BC005D1F15 /* ArtistController.h */,
+				85FE206111EF27BC005D1F15 /* ArtistController.m */,
 			);
 			name = Artists;
 			sourceTree = "<group>";
@@ -694,6 +702,7 @@
 				85D4D9E611E4CA9800D9ACD9 /* button-default.png in Resources */,
 				85D4D9EE11E4CE5600D9ACD9 /* button-highlighted.png in Resources */,
 				85D0FDF211E78A730030994D /* heart.png in Resources */,
+				85FE206411EF27BC005D1F15 /* Artist.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,6 +766,7 @@
 				85EA225411E655DF00B1D0EC /* FavoritesController.m in Sources */,
 				85FE1F2111EC8E6A005D1F15 /* ArtistsController.m in Sources */,
 				85FE1F4A11EC9831005D1F15 /* Artist.m in Sources */,
+				85FE206311EF27BC005D1F15 /* ArtistController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,96 +1,44 @@
 //
-//  ArtistsController.m
+//  ArtistController.m
 //  bitspace-iphone
 //
-//  Created by Niklas Holmgren on 2010-07-13.
+//  Created by Niklas Holmgren on 2010-07-15.
 //  Copyright 2010 Koneko Collective Ltd. All rights reserved.
 //
 
-#import "ArtistsController.h"
+#import "ArtistController.h"
 #import "AppDelegate.h"
 #import "Artist.h"
-#import "ArtistController.h"
+#import "ReleaseTableViewCell.h"
+#import "ReleaseController.h"
 
 
-@implementation ArtistsController
+@implementation ArtistController
 
-@synthesize appDelegate, fetchedResultsController;
-@synthesize navigationBar;
-
-
-#pragma mark -
-#pragma mark Pull to refresh
-
-- (void)reloadTableViewDataSource {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ForceSynchronization" object:nil];
-}
-
-
-- (void)synchronizationDidFinish {
-	[self dataSourceDidFinishLoadingNewData];
-	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
-}
-
-
-#pragma mark -
-#pragma mark Reset view
-
-- (void)resetView {
-	
-}
-
-- (void)resetAppState {
-	[fetchedResultsController release]; fetchedResultsController = nil;
-	[self.fetchedResultsController performFetch:nil];
-	[self.tableView reloadData];
-}
-
-
-#pragma mark -
-#pragma mark Initialization
-
-/*
-- (id)initWithStyle:(UITableViewStyle)style {
-    // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-    if ((self = [super initWithStyle:style])) {
-    }
-    return self;
-}
-*/
+@synthesize appDelegate, theArtist, fetchedResultsController;
 
 
 #pragma mark -
 #pragma mark View lifecycle
 
+/*
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	
-	self.navigationBar.tintColor = [UIColor blackColor];
-	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
-	
-	// Watch for reset app state events
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(resetAppState) 
-												 name:@"ResetAppState" 
-											   object:nil];
-	
-	// Watch for reset app state events
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(synchronizationDidFinish) 
-												 name:@"ReleasesSynchronizationDidFinish" 
-											   object:nil];
-	
-	[self.fetchedResultsController performFetch:nil];
-}
-
-/*
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
 }
 */
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+	
+	self.navigationItem.title = theArtist.name;
+	
+	[[self fetchedResultsController] performFetch:nil];
+	[self.tableView reloadData];
+}
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -118,14 +66,26 @@
 #pragma mark -
 #pragma mark Table view data source
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 125;
+}
+
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[fetchedResultsController sections] count];
 }
 
 
+// Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
-	return [sectionInfo numberOfObjects];
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
+}
+
+
+- (void)configureCell:(ReleaseTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+	// Set up the cell...
+	cell.release = [fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 
@@ -134,33 +94,16 @@
     
     static NSString *CellIdentifier = @"Cell";
 	
-	UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[ReleaseTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 	}
     
-    Artist *artist = (Artist *)[fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = artist.name;
-    
+	// Set up the cell...
+	[self configureCell:cell atIndexPath:indexPath];
+	
     return cell;
 }
-
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
-	return [sectionInfo name];	
-}
-
-
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-	return [fetchedResultsController sectionIndexTitles];
-}
-
-
-- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-	return [fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
-}
-
 
 /*
 // Override to support conditional editing of the table view.
@@ -206,13 +149,13 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	Artist *artist = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	Release *release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
 	
-	ArtistController *artistController = [[ArtistController alloc] initWithNibName:@"Artist" bundle:nil];
-	artistController.appDelegate = self.appDelegate;
-	artistController.theArtist = artist;
-	[self.navigationController pushViewController:artistController animated:YES];
-	[artistController release];
+	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
+	releaseController.theRelease = release;
+	releaseController.appDelegate = self.appDelegate;
+	[self.navigationController pushViewController:releaseController animated:YES];
+	[releaseController release];
 }
 
 
@@ -225,23 +168,29 @@
         // Create the fetch request for the entity.
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         // Edit the entity name as appropriate.
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Artist" inManagedObjectContext:self.appDelegate.managedObjectContext];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Release" inManagedObjectContext:self.appDelegate.managedObjectContext];
         [fetchRequest setEntity:entity];
         
         // Edit the sort keys as appropriate.
-		NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(compare:)];
-		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+		NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:NO selector:@selector(compare:)];
+		NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"releaseDate" ascending:NO selector:@selector(compare:)];
+		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor1, sortDescriptor2, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
+		
+		// Edit the filter predicate as appropriate.
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"artist == %@", theArtist.name];
+		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:@"sectionName" cacheName:nil];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         aFetchedResultsController.delegate = self;
         self.fetchedResultsController = aFetchedResultsController;
         
         [aFetchedResultsController release];
         [fetchRequest release];
-        [sortDescriptor release];
+        [sortDescriptor1 release];
+		[sortDescriptor2 release];
         [sortDescriptors release];
     }
 	
@@ -262,8 +211,7 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
 	UITableView *tableView = self.tableView;
 	
-	UITableViewCell *cell;
-	Artist *artist;
+	ReleaseTableViewCell *cell;
 	
 	switch(type) {
 		case NSFetchedResultsChangeInsert:
@@ -275,9 +223,8 @@
 			break;
 			
 		case NSFetchedResultsChangeUpdate:
-			cell = [tableView cellForRowAtIndexPath:indexPath];
-			artist = (Artist *)[fetchedResultsController objectAtIndexPath:indexPath];
-			cell.textLabel.text = artist.name;
+			cell = (ReleaseTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+			[self configureCell:cell atIndexPath:indexPath];
 			break;
 			
 		case NSFetchedResultsChangeMove:
@@ -317,9 +264,9 @@
     // Relinquish ownership any cached data, images, etc that aren't in use.
 }
 
-
 - (void)viewDidUnload {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
+    // For example: self.myOutlet = nil;
 }
 
 
