@@ -14,6 +14,8 @@
 
 @implementation PullToRefreshTableViewController
 
+@synthesize refreshHeaderView;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

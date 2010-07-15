@@ -26,6 +26,8 @@
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSFetchedResultsController *searchResultsController;
 
+@property (nonatomic, readonly) UINavigationBar *navigationBar;
+
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UISearchDisplayController *searchController;
 

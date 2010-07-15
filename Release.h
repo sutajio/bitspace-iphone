@@ -8,25 +8,25 @@
 
 #import <UIKit/UIKit.h>
 #import "ArtworkLoader.h"
-#import "ReleaseLoader.h"
 
-@class Track;
+@class Artist, Track;
 
-@interface Release : NSManagedObject <ArtworkLoaderDelegate, ReleaseLoaderDelegate> {
+@interface Release : NSManagedObject <ArtworkLoaderDelegate> {
 	UIImage *smallArtworkImage;
 	UIImage *largeArtworkImage;
 	ArtworkLoader *smallArtworkLoader;
 	ArtworkLoader *largeArtworkLoader;
-	ReleaseLoader *releaseLoader;
 	NSOperationQueue *operationQueue;
 	BOOL touched;
 }
 
+@property (nonatomic, retain) Artist *parent;
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *artist;
 @property (nonatomic, retain) NSString *year;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSString *createdAt;
+@property (nonatomic, retain) NSString *updatedAt;
 @property (nonatomic, retain) NSString *releaseDate;
 @property (nonatomic, retain) NSString *label;
 @property (nonatomic, retain) NSString *smallArtworkUrl;
@@ -37,7 +37,6 @@
 @property (nonatomic, retain) UIImage *largeArtworkImage;
 @property (nonatomic, retain) ArtworkLoader *smallArtworkLoader;
 @property (nonatomic, retain) ArtworkLoader *largeArtworkLoader;
-@property (nonatomic, retain) ReleaseLoader *releaseLoader;
 @property (nonatomic, retain) NSOperationQueue *operationQueue;
 
 - (BOOL)hasTrack:(Track *)track;
@@ -45,11 +44,11 @@
 - (BOOL)hasOnlineTracks;
 - (BOOL)hasOfflineTracks;
 - (BOOL)hasLoadingTracks;
+- (BOOL)hasTracksQueuedForDownload;
 - (NSInteger)numberOfTracks;
 - (NSInteger)numberOfOfflineTracks;
 - (NSInteger)numberOfSets;
 - (NSInteger)numberOfTracksInSet:(NSInteger)setNr;
-- (void)loadTracks:(BOOL)force;
 - (void)touch;
 - (BOOL)wasTouched;
 

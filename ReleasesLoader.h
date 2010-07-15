@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class AppDelegate, ReleasesLoader;
+@class ReleasesLoader;
 
 @protocol ReleasesLoaderDelegate <NSObject>
 @optional
@@ -23,13 +23,18 @@
 	id <ReleasesLoaderDelegate> delegate;
 	NSManagedObjectContext *insertionContext;
 	NSPersistentStoreCoordinator *persistentStoreCoordinator;
+	NSEntityDescription *artistEntityDescription;
 	NSEntityDescription *releaseEntityDescription;
-	NSArray *cachedObjects;
+	NSEntityDescription *trackEntityDescription;
+	NSArray *cachedReleases;
+	NSArray *cachedTracks;
 }
 
 @property (nonatomic, assign) id <ReleasesLoaderDelegate> delegate;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, retain, readonly) NSManagedObjectContext *insertionContext;
+@property (nonatomic, retain, readonly) NSEntityDescription *artistEntityDescription;
 @property (nonatomic, retain, readonly) NSEntityDescription *releaseEntityDescription;
+@property (nonatomic, retain, readonly) NSEntityDescription *trackEntityDescription;
 
 @end

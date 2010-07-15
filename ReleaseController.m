@@ -10,7 +10,6 @@
 #import "Release.h"
 #import "Track.h"
 #import "AppDelegate.h"
-#import "ReleaseLoader.h"
 #import "PlayerController.h"
 #import "TrackTableViewCell.h"
 
@@ -80,7 +79,7 @@
 	[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
 	NSMutableArray *tracks = [self shuffleArray:[fetchedResultsController fetchedObjects]];
 	for(Track *track in tracks) {
-		[self.appDelegate.playerController enqueueTrack:track fromTheRelease:theRelease andPlay:NO];
+		[self.appDelegate.playerController enqueueTrack:track andPlay:NO];
 	}
 	[self.appDelegate.playerController nextTrack:nil];
 	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
@@ -113,44 +112,37 @@
 	//self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	self.navigationItem.title = theRelease.title;
 	
+	// Load the release header nib
     if (tableHeaderView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
-        self.tableView.tableHeaderView = tableHeaderView;
     }
+
+	// Fetch the tracks from CoreData
+	[self refreshRelease];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+	
+	// Set the table header
+	self.tableView.tableHeaderView = tableHeaderView;
+	
+	// Set the artwork
 	if(theRelease.smallArtworkImage) {
 		self.artworkImage.image = theRelease.smallArtworkImage;
 	} else {
 		self.artworkImage.image = [UIImage imageNamed:@"cover-art-small.jpg"];
 	}
+	
+	// Set the artist and title
 	self.titleLabel.text = theRelease.title;
 	self.artistLabel.text = theRelease.artist;
-	
-	//if (tableFooterView == nil) {
-//        [[NSBundle mainBundle] loadNibNamed:@"ReleaseFooter" owner:self options:nil];
-//        self.tableView.tableFooterView = tableFooterView;
-//    }
-	if(self.theRelease.releaseDate) {
-		self.releasedAtLabel.text = [NSString stringWithFormat:@"Released: %@", self.theRelease.releaseDate];
-	} else {
-		self.releasedAtLabel.text = @"";
-	}
-	if(self.theRelease.label) {
-		self.releasedByLabel.text = [NSString stringWithFormat:@"Label: %@", self.theRelease.label];
-	} else {
-		self.releasedByLabel.text = @"";
-	}
 	
 	// Set background color of table view to the same as the header view
 	self.tableView.backgroundColor = tableHeaderView.backgroundColor;
 	
 	// Prefetch the large artwork for the release
 	self.theRelease.largeArtworkImage;
-
-	[self refreshRelease];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
 }
 
 /*
@@ -216,6 +208,8 @@
 
 - (void)configureCell:(TrackTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	// Set up the cell...
+	cell.index = [indexPath row]+1;
+	cell.showAlbumArtist = NO;
 	cell.track = [fetchedResultsController objectAtIndexPath:indexPath];
 }
 
@@ -261,9 +255,9 @@
 	[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
 	for(Track *track in [fetchedResultsController fetchedObjects]) {
 		if([fetchedResultsController objectAtIndexPath:indexPath] == track) {
-			[self.appDelegate.playerController enqueueTrack:track fromTheRelease:theRelease andPlay:YES];
+			[self.appDelegate.playerController enqueueTrack:track andPlay:YES];
 		} else {
-			[self.appDelegate.playerController enqueueTrack:track fromTheRelease:theRelease andPlay:NO];
+			[self.appDelegate.playerController enqueueTrack:track andPlay:NO];
 		}
 	}
 	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;

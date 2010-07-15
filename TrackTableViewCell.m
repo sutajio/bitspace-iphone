@@ -8,14 +8,12 @@
 
 #import "TrackTableViewCell.h"
 #import "Track.h"
-#import "SyncQueue.h"
-#import "ProtectedURL.h"
-#import "AppDelegate.h"
+#import "Release.h"
 
 
 @implementation TrackTableViewCell
 
-@synthesize track;
+@synthesize track, index, showAlbumArtist;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -62,106 +60,90 @@
 		self.accessoryView = loveButton;
 		
 		downloadActivityIndicator = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] retain];
-		[downloadActivityIndicator stopAnimating];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadWillBegin:) name:@"TrackOfflineModeDownloadWillBegin" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showDownloadActivity:) name:@"TrackOfflineModeDownloadDidBegin" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideDownloadActivity:) name:@"TrackOfflineModeDownloadDidFinish" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offlineModeDidClear:) name:@"TrackOfflineModeDidClear" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(updateState:) 
+													 name:@"TrackOfflineModeDownloadWillBegin" 
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(updateState:) 
+													 name:@"TrackOfflineModeDownloadDidBegin" 
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(updateState:) 
+													 name:@"TrackOfflineModeDownloadDidFinish" 
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(updateState:) 
+													 name:@"TrackOfflineModeDidClear" 
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(updateState:) 
+													 name:@"TrackLoveStateDidChange" 
+												   object:nil];
 	}
 	
 	return self;
 }
 
-- (void)updateLoveButtonState {
-	if(track.lovedAt) {
-		[loveButton setImage:[UIImage imageNamed:@"love-on.png"] forState:UIControlStateNormal];
-	} else {
-		[loveButton setImage:[UIImage imageNamed:@"love-off.png"] forState:UIControlStateNormal];
-	}
-}
-
-- (void)showDownloadActivity:(NSNotification *)notification {
+- (void)updateState:(NSNotification *)notification {
 	if(notification && [notification object] != track)
 		return;
-	
-	[downloadActivityIndicator startAnimating];
-	self.accessoryView = downloadActivityIndicator;
-}
-
-- (void)hideDownloadActivity:(NSNotification *)notification {
-	if(notification && [notification object] != track)
-		return;
-	
-	[downloadActivityIndicator stopAnimating];
-	self.accessoryView = loveButton;
-}
-
-- (void)updateOfflineModeState {
-	if([track hasCache] == YES) {
-		textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
-	} else {
-		textLabel.textColor = [UIColor darkTextColor];
-		if([track isLoading] == YES) {
-			[self showDownloadActivity:nil];
-		} else {
-			[self hideDownloadActivity:nil];
-		}
-	}
-}
-
-- (void)downloadWillBegin:(NSNotification *)notification {
-	if([notification object] == track) {
-		[self updateOfflineModeState];
-	}
-}
-
-- (void)offlineModeDidClear:(NSNotification *)notification {
-	if([notification object] == track) {
-		[self updateOfflineModeState];
-	}
+	self.track = track;
 }
 
 - (void)setTrack:(Track *)value {
 	track = value;
 	
-	if([track.trackNr intValue] % 2) {
+	if(self.index % 2) {
 		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:1.0f alpha:1.0f];
 	} else {
 		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.97f alpha:1.0f];
 	}
 		
-	trackNrLabel.text = [track.trackNr stringValue];
+	trackNrLabel.text = [NSString stringWithFormat:@"%d", self.index];
 	textLabel.text = track.title;
-	detailTextLabel.text = track.artist;
 	
-	[self updateLoveButtonState];
-	[self updateOfflineModeState];
+	if(self.showAlbumArtist && track.artist == nil) {
+		detailTextLabel.text = track.parent.artist;
+	} else {
+		detailTextLabel.text = track.artist;
+	}
+	
+	if(track.lovedAt) {
+		[loveButton setImage:[UIImage imageNamed:@"love-on.png"] forState:UIControlStateNormal];
+	} else {
+		[loveButton setImage:[UIImage imageNamed:@"love-off.png"] forState:UIControlStateNormal];
+	}
+	
+	if([track hasCache] == YES && [track isLoading] == NO) {
+		textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+	} else {
+		textLabel.textColor = [UIColor darkTextColor];
+	}
+	
+	if([track isLoading] == YES) {
+		[downloadActivityIndicator startAnimating];
+		self.accessoryView = downloadActivityIndicator;
+	} else {
+		[downloadActivityIndicator stopAnimating];
+		self.accessoryView = loveButton;
+	}
+	
+	if([track hasCache] == NO && track.loader != nil && [track isLoading] == NO) {
+		trackNrLabel.alpha = 0.3f;
+		textLabel.alpha = 0.3f;
+		detailTextLabel.alpha = 0.3f;
+		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.9f alpha:1.0f];
+	} else {
+		trackNrLabel.alpha = 1.0f;
+		textLabel.alpha = 1.0f;
+		detailTextLabel.alpha = 1.0f;
+	}
 }
 
 - (void)loveTrack:(id)sender {
-	NSLog(@"Love");
-	AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-	NSURL *url = [ProtectedURL URLWithStringAndCredentials:track.loveUrl withUser:appDelegate.username andPassword:appDelegate.password];
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-														   cachePolicy:NSURLRequestReloadIgnoringCacheData
-													   timeoutInterval:5.0];
-	[request setHTTPMethod:@"PUT"];
-	[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-	[request addValue:[ProtectedURL authorizationHeaderWithUser:appDelegate.username 
-													andPassword:appDelegate.password]
-										  forHTTPHeaderField:@"Authorization"];
-	if(track.lovedAt) {
-		[request setHTTPBody:[@"toggle=off" dataUsingEncoding:NSUTF8StringEncoding]];
-		track.lovedAt = nil;
-	} else {
-		[request setHTTPBody:[@"toggle=on" dataUsingEncoding:NSUTF8StringEncoding]];
-		track.lovedAt = [NSDate date];
-	}
-	[track.managedObjectContext save:nil];
-	[appDelegate.syncQueue enqueueRequest:request];
-	[self updateLoveButtonState];
+	[self.track toggleLove];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {

@@ -10,6 +10,8 @@
 #import "Connection.h"
 #import "Response.h"
 #import "Release.h"
+#import "Artist.h"
+#import "Track.h"
 #import "AppDelegate.h"
 #import "ObjectiveResourceDateFormatter.h"
 #import "NSString+SBJSON.h"
@@ -23,7 +25,9 @@
 - (void)dealloc {
 	[insertionContext release];
 	[persistentStoreCoordinator release];
+	[artistEntityDescription release];
 	[releaseEntityDescription release];
+	[trackEntityDescription release];
 	[super dealloc];
 }
 
@@ -31,19 +35,18 @@
 	return [NSPredicate predicateWithFormat:@"url == %@", url];
 }
 
-- (NSArray *)filteredArrayUsingPredicate:(NSPredicate *)predicate {
-	if(cachedObjects == nil) {
+- (NSArray *)filteredReleasesArrayUsingPredicate:(NSPredicate *)predicate {
+	if(cachedReleases == nil) {
 		NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
-		NSEntityDescription *entity = [NSEntityDescription entityForName:@"Release" inManagedObjectContext:self.insertionContext];
-		[fetchRequest setEntity:entity];
-		cachedObjects = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+		[fetchRequest setEntity:self.releaseEntityDescription];
+		cachedReleases = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
 	}
-	return [cachedObjects filteredArrayUsingPredicate:predicate];
+	return [cachedReleases filteredArrayUsingPredicate:predicate];
 }
 
 - (Release *)findOrCreateReleaseWithURL:(NSString *)url {
 	NSPredicate *predicate = [self predicateForURL:url];
-	NSArray *filteredArray = [self filteredArrayUsingPredicate:predicate];
+	NSArray *filteredArray = [self filteredReleasesArrayUsingPredicate:predicate];
 	
 	if([filteredArray count] == 0) {
 		return [NSEntityDescription insertNewObjectForEntityForName:@"Release" inManagedObjectContext:self.insertionContext];
@@ -52,14 +55,84 @@
 	}
 }
 
-- (void)addRelease:(NSDictionary*)releaseJSON {
+- (Artist *)findOrCreateArtistWithName:(NSString *)artistName {
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", artistName];
+	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Artist" inManagedObjectContext:self.insertionContext];
+	[fetchRequest setEntity:entity];
+	[fetchRequest setPredicate:predicate];
+	NSArray *filteredArray = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+	
+	if([filteredArray count] == 0) {
+		Artist *artist = [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
+		artist.name = artistName;
+		return artist;
+	} else {
+		return [filteredArray objectAtIndex:0];
+	}
+}
+
+- (NSArray *)filteredTracksArrayUsingPredicate:(NSPredicate *)predicate {
+	if(cachedTracks == nil) {
+		NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[fetchRequest setEntity:self.trackEntityDescription];
+		cachedTracks = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+	}
+	return [cachedTracks filteredArrayUsingPredicate:predicate];
+}
+
+- (Track *)findOrCreateTrackWithURL:(NSString *)url {
+	NSPredicate *predicate = [self predicateForURL:url];
+	NSArray *filteredArray = [self filteredTracksArrayUsingPredicate:predicate];
+	
+	if([filteredArray count] == 0) {
+		return [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.insertionContext];
+	} else {
+		return [filteredArray objectAtIndex:0];
+	}
+}
+
+- (Track *)addTrack:(NSDictionary*)trackJSON {
+	
+	Track *track = [self findOrCreateTrackWithURL:(NSString*)[trackJSON valueForKey:@"url"]];
+	
+	track.title = (NSString *)[trackJSON valueForKey:@"title"];
+	track.url = (NSString *)[trackJSON valueForKey:@"url"];
+	track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
+	track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
+	track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
+	track.loveUrl = (NSString *)[trackJSON valueForKey:@"love_url"];
+	if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
+		track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
+	} else {
+		track.trackNr = [NSNumber numberWithInt:0];
+	}
+	if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
+		track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
+	} else {
+		track.setNr = [NSNumber numberWithInt:1];
+	}
+	if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
+		track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
+	}
+	if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
+		track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
+	}
+	
+	track.touched = [NSNumber numberWithBool:YES];
+	return track;
+}
+
+- (Release *)addRelease:(NSDictionary*)releaseJSON {
 	
 	Release *release = [self findOrCreateReleaseWithURL:(NSString*)[releaseJSON valueForKey:@"url"]];
 	
+	release.parent = [self findOrCreateArtistWithName:(NSString*)[releaseJSON valueForKey:@"artist"]];
 	release.title = (NSString*)[releaseJSON valueForKey:@"title"];
 	release.artist = (NSString*)[releaseJSON valueForKey:@"artist"];
 	release.url = (NSString*)[releaseJSON valueForKey:@"url"];
 	release.createdAt = (NSString*)[releaseJSON valueForKey:@"created_at"];
+	release.updatedAt = (NSString*)[releaseJSON valueForKey:@"updated_at"];
 	
 	if([releaseJSON valueForKey:@"year"] != [NSNull null]) {
 		release.year = [NSString stringWithFormat:@"%d", (NSDecimalNumber*)[releaseJSON valueForKey:@"year"]];
@@ -81,7 +154,17 @@
 		release.largeArtworkUrl = (NSString*)[releaseJSON valueForKey:@"large_artwork_url"];
 	}
 	
+	NSArray *tracks = (NSArray *)[releaseJSON valueForKey:@"tracks"];
+	if(tracks) {
+		for(NSObject *t in tracks) {
+			Track *track = [self addTrack:(NSDictionary *)t];
+			track.parent = release;
+		}
+	}
+	
 	[release touch];
+	
+	return release;
 }
 
 - (void)main {
@@ -131,7 +214,11 @@
 				[self addRelease:(NSDictionary *)release];
 				[delegate loaderDidFinishParsingRelease:self];
 			}
-			[self.insertionContext save:nil];
+			NSError *error = nil;
+			[self.insertionContext save:&error];
+			if(error) {
+				NSLog(@"%@", [error userInfo]);
+			}
 			[delegate loaderDidFinishLoadingPage:self];
 			if([self isCancelled] == YES)
 				break;
@@ -143,7 +230,7 @@
 	if([self isCancelled] == NO) {
 		// Run garbage collection on all releases and delete any release that wasn't
 		// included in the last sync.
-		for(Release *release in [self.insertionContext registeredObjects]) {
+		for(Release *release in cachedReleases) {
 			if([release wasTouched] == NO) {
 				[self.insertionContext deleteObject:release];
 			}
@@ -175,11 +262,25 @@
     return insertionContext;
 }
 
+- (NSEntityDescription *)artistEntityDescription {
+    if (artistEntityDescription == nil) {
+        artistEntityDescription = [[NSEntityDescription entityForName:@"Artist" inManagedObjectContext:self.insertionContext] retain];
+    }
+    return artistEntityDescription;
+}
+
 - (NSEntityDescription *)releaseEntityDescription {
     if (releaseEntityDescription == nil) {
         releaseEntityDescription = [[NSEntityDescription entityForName:@"Release" inManagedObjectContext:self.insertionContext] retain];
     }
     return releaseEntityDescription;
+}
+
+- (NSEntityDescription *)trackEntityDescription {
+    if (trackEntityDescription == nil) {
+        trackEntityDescription = [[NSEntityDescription entityForName:@"Track" inManagedObjectContext:self.insertionContext] retain];
+    }
+    return trackEntityDescription;
 }
 
 @end

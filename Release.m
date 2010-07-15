@@ -7,18 +7,21 @@
 //
 
 #import "Release.h"
+#import "Artist.h"
 #import "Track.h"
-#import "ReleaseLoader.h"
 #import "ObjectiveResourceDateFormatter.h"
+#import "AppDelegate.h"
 
 
 @implementation Release
 
+@dynamic parent;
 @dynamic title;
 @dynamic artist;
 @dynamic year;
 @dynamic url;
 @dynamic createdAt;
+@dynamic updatedAt;
 @dynamic releaseDate;
 @dynamic label;
 @dynamic smallArtworkUrl;
@@ -27,7 +30,7 @@
 
 @synthesize smallArtworkImage, largeArtworkImage;
 @synthesize smallArtworkLoader, largeArtworkLoader;
-@synthesize operationQueue, releaseLoader;
+@synthesize operationQueue;
 
 - (void)touch {
 	touched = YES;
@@ -76,6 +79,15 @@
 - (BOOL)hasLoadingTracks {
 	for(Track *track in self.tracks) {
 		if([track isLoading] == YES) {
+			return YES;
+		}
+	}
+	return NO;
+}
+
+- (BOOL)hasTracksQueuedForDownload {
+	for(Track *track in self.tracks) {
+		if(track.loader != nil) {
 			return YES;
 		}
 	}
@@ -178,105 +190,11 @@
 	}
 }
 
--(void)updateRelease:(NSDictionary *)releaseJSON {
-	NSArray *tracksArray = (NSArray *)[releaseJSON valueForKey:@"tracks"];
-	NSInteger i = 1;
-	for(NSDictionary *trackJSON in tracksArray) {
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url == %@", (NSString*)[trackJSON valueForKey:@"url"]];
-		NSSet *filteredSet = [[self.managedObjectContext registeredObjects] filteredSetUsingPredicate:predicate];
-		
-		Track *track;
-		
-		if([filteredSet count] == 0) {
-			track = [[NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.managedObjectContext] retain];
-		} else {
-			track = [[filteredSet anyObject] retain];
-		}
-			
-		track.title = (NSString *)[trackJSON valueForKey:@"title"];
-		track.url = (NSString *)[trackJSON valueForKey:@"url"];
-		track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
-		track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
-		track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
-		track.loveUrl = (NSString *)[trackJSON valueForKey:@"love_url"];
-		if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
-			track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
-		} else {
-			track.trackNr = [NSNumber numberWithInt:i];
-		}
-		if([trackJSON valueForKey:@"set_nr"] != [NSNull null]) {
-			track.setNr = (NSNumber *)[trackJSON valueForKey:@"set_nr"];
-		} else {
-			track.setNr = [NSNumber numberWithInt:1];
-		}
-		if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
-			track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
-		}
-		if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
-			track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
-		}
-		
-		track.parent = self;
-		track.touched = [NSNumber numberWithBool:YES];
-		i++;
-	}
-	
-	for(Track *track in self.tracks) {
-		if(track.touched == [NSNumber numberWithBool:NO]) {
-			[self.managedObjectContext deleteObject:track];
-		}
-	}
-	
-	NSError *error = nil;
-	if(![self.managedObjectContext save:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	}
-}
-
-
-- (void)loaderDidFinishParsingRelease:(NSDictionary *)releaseJSON {
-	[self performSelectorOnMainThread:@selector(updateRelease:) withObject:releaseJSON waitUntilDone:NO];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedParsingRelease" object:self];
-}
-
-- (void)finishedLoading {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingRelease" object:self];
-}
-
-- (void)loaderDidFinish:(ReleaseLoader *)loader {
-	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
-}
-
-- (void)showLoaderError:(NSError *)error {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:error];
-}
-
-- (void)loader:(ReleaseLoader *)loader didFailWithError:(NSError *)error {
-	NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	if([self.tracks count] == 0) {
-		[self performSelectorOnMainThread:@selector(showLoaderError:) withObject:error waitUntilDone:YES];
-	}
-	[self performSelectorOnMainThread:@selector(finishedLoading) withObject:nil waitUntilDone:NO];
-}
-
 - (NSOperationQueue *)operationQueue {
 	if(operationQueue == nil) {
 		operationQueue = [[NSOperationQueue alloc] init];
 	}
 	return operationQueue;
-}
-
-- (void)loadTracks:(BOOL)force {
-	if(force == YES || [self.tracks count] == 0) {
-		releaseLoader = [[ReleaseLoader alloc] init];
-		releaseLoader.releaseURL = self.url;
-		releaseLoader.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-		releaseLoader.delegate = self;
-		[self.operationQueue addOperation:releaseLoader];
-		[releaseLoader release];
-	} else {
-		[self finishedLoading];
-	}
 }
 
 -(void)dealloc {

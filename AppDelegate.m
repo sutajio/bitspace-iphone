@@ -9,7 +9,9 @@
 #import "AppDelegate.h"
 #import "ObjectiveResource.h"
 #import "PlayerController.h"
+#import "ArtistsController.h"
 #import "ReleasesController.h"
+#import "FavoritesController.h"
 #import "SignInController.h"
 #import "Connection.h"
 #import "Response.h"
@@ -19,12 +21,16 @@
 
 @synthesize siteURL, username, password;
 
-@synthesize operationQueue, releasesLoader;
+@synthesize operationQueue;
 
 @synthesize window;
 @synthesize tabBarController;
 @synthesize playerController;
+@synthesize artistsController;
 @synthesize releasesController;
+@synthesize favoritesController;
+
+@synthesize releasesLoader, lastSynchronizationDate;
 
 
 #pragma mark -
@@ -40,7 +46,9 @@
 	
 	// Pass self to the controllers
 	playerController.appDelegate = self;
+	artistsController.appDelegate = self;
 	releasesController.appDelegate = self;
+	favoritesController.appDelegate = self;
 	
 	// Add the tab bar controller's current view as a subview of the window
 	[window addSubview:tabBarController.view];
@@ -64,16 +72,22 @@
 	}
 #endif
 	
+	// Watch for release-synchronization events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(synchronize) 
+												 name:@"Synchronize" 
+											   object:nil];
+	
+	// Watch for release-synchronization events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(forceSynchronization) 
+												 name:@"ForceSynchronization" 
+											   object:nil];
+	
 	// Watch for shake events
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(requestAuthenticationFromUser) 
 												 name:@"DeviceShaken" 
-											   object:nil];
-	
-	// Watch for synchronization events
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(synchronize) 
-												 name:@"Synchronize" 
 											   object:nil];
 	
 	// Watch for authenticate events
@@ -91,9 +105,6 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	
-	// Save which tab the user was on when the app terminated
-	[[NSUserDefaults standardUserDefaults] setInteger:self.tabBarController.selectedIndex forKey:@"TabBarSelectedIndex"];
-	
 	// Save the database if it has changes
     NSError *error = nil;
     if (managedObjectContext != nil) {
@@ -105,11 +116,12 @@
 }
 
 
-/*
-// Optional UITabBarControllerDelegate method
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+
+	// Save which tab the user has selected
+	[[NSUserDefaults standardUserDefaults] setInteger:self.tabBarController.selectedIndex forKey:@"TabBarSelectedIndex"];
 }
-*/
+
 
 /*
 // Optional UITabBarControllerDelegate method
@@ -221,7 +233,9 @@
 	self.tabBarController.selectedViewController = self.playerController;
 	
 	[playerController clearQueueAndResetPlayer:YES];
+	[artistsController resetView];
 	[releasesController resetView];
+	[favoritesController resetView];
 	
 	[managedObjectContext release]; managedObjectContext = nil;
 	[managedObjectModel release]; managedObjectModel = nil;
@@ -233,7 +247,7 @@
 
 
 #pragma mark -
-#pragma mark Synchronization
+#pragma mark Operation queue
 
 
 - (NSOperationQueue *)operationQueue {
@@ -244,6 +258,9 @@
     return operationQueue;
 }
 
+
+#pragma mark -
+#pragma mark Synchronization
 
 - (NSDate *)lastSynchronizationDate {
 	return [[NSUserDefaults standardUserDefaults] objectForKey:@"LastReleasesSync"];
@@ -257,19 +274,20 @@
 }
 
 
-- (void)synchronizeReleases:(BOOL)force {
-	if (releasesLoader == nil) {	
-		if(force == YES || [self shouldSynchronize] == YES) {
-			releasesLoader = [[ReleasesLoader alloc] init];
-			releasesLoader.delegate = self;
-			releasesLoader.persistentStoreCoordinator = self.persistentStoreCoordinator;
-			[self.operationQueue addOperation:releasesLoader];
-		}
+- (void)forceSynchronization {
+	if (releasesLoader == nil) {
+		releasesLoader = [[ReleasesLoader alloc] init];
+		releasesLoader.delegate = self;
+		releasesLoader.persistentStoreCoordinator = self.persistentStoreCoordinator;
+		[self.operationQueue addOperation:releasesLoader];
 	}
 }
 
-- (void)synchronize {
-	[self synchronizeReleases:YES];
+
+- (void)synchronize {	
+	if([self shouldSynchronize] == YES) {
+		[self forceSynchronization];
+	}
 }
 
 
@@ -280,7 +298,7 @@
 - (void)loaderDidSave:(NSNotification *)saveNotification {
     if([NSThread isMainThread]) {
         [self.managedObjectContext mergeChangesFromContextDidSaveNotification:saveNotification];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidSave" object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidSave" object:self];
     } else {
         [self performSelectorOnMainThread:@selector(loaderDidSave:) withObject:saveNotification waitUntilDone:NO];
     }
@@ -293,7 +311,7 @@
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesSync"];
 		[releasesLoader release];
 		releasesLoader = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidFinish" object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidFinish" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(loaderDidFinish:) withObject:loader waitUntilDone:NO];
 	}
@@ -302,7 +320,7 @@
 
 - (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader {
 	if([NSThread isMainThread]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidFinishLoadingPage" object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidFinishLoadingPage" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(loaderDidFinishLoadingPage:) withObject:loader waitUntilDone:NO];
 	}
@@ -311,7 +329,7 @@
 
 - (void)loaderDidFinishParsingRelease:(ReleasesLoader *)loader {
 	if([NSThread isMainThread]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidFinishParsingRelease" object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidFinishParsingRelease" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(loaderDidFinishParsingRelease:) withObject:loader waitUntilDone:NO];
 	}
@@ -321,7 +339,7 @@
 - (void)loaderDidStart:(ReleasesLoader *)loader {
 	if([NSThread isMainThread]) {
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SynchronizationDidStart" object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidStart" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(loaderDidStart:) withObject:loader waitUntilDone:NO];
 	}

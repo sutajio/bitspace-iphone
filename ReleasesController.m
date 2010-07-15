@@ -16,23 +16,23 @@
 
 @implementation ReleasesController
 
-@synthesize appDelegate;
-@synthesize fetchedResultsController, searchResultsController;
+@synthesize appDelegate, fetchedResultsController;
+@synthesize navigationBar;
+@synthesize searchResultsController;
 @synthesize searchBar, searchController;
 
 
 #pragma mark -
-#pragma mark Sync support
+#pragma mark Pull to refresh
 
-- (void)reloadTableViewDataSource
-{
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];
+- (void)reloadTableViewDataSource {
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ForceSynchronization" object:nil];
 }
 
 
 - (void)synchronizationDidFinish {
-	refreshHeaderView.lastUpdatedDate = [NSDate date];
-	[super dataSourceDidFinishLoadingNewData];
+	[self dataSourceDidFinishLoadingNewData];
+	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 }
 
 
@@ -48,7 +48,7 @@
 	
 	// Reset the last updated date
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastReleasesUpdate"];
-	refreshHeaderView.lastUpdatedDate = nil;
+	self.refreshHeaderView.lastUpdatedDate = nil;
 }
 
 
@@ -75,9 +75,8 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
-	self.title = @"Releases";
-	navigationBar.tintColor = [UIColor blackColor];
-	refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+	self.navigationBar.tintColor = [UIColor blackColor];
+	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
 	searchBar.delegate = self;
@@ -89,8 +88,17 @@
 	searchController.searchResultsDataSource = self;
 	searchController.searchResultsDelegate = self;
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronizationDidFinish) name:@"SynchronizationDidFinish" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetAppState) name:@"ResetAppState" object:nil];
+	// Watch for reset app state events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(resetAppState) 
+												 name:@"ResetAppState" 
+											   object:nil];
+	
+	// Watch for reset app state events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(synchronizationDidFinish) 
+												 name:@"ReleasesSynchronizationDidFinish" 
+											   object:nil];
 	
 	[[self fetchedResultsController] performFetch:nil];
 }
@@ -216,41 +224,19 @@
 }
 
 
-- (void)showRelease:(NSNotification *)notification {
-	Release *release = (Release *)[notification object];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishedLoadingRelease" object:release];
-	
-	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
-	releaseController.theRelease = release;
-	releaseController.appDelegate = self.appDelegate;
-	[self.navigationController pushViewController:releaseController animated:YES];
-	[releaseController release];
-	
-	UITableView *tableView;
-	if(searchController.active == YES) {
-		tableView = searchController.searchResultsTableView;
-	} else {
-		tableView = self.tableView;
-	}
-	
-	NSIndexPath *indexPath = [tableView indexPathForSelectedRow];
-	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView cellForRowAtIndexPath: indexPath];
-	[cell hideActivity];
-}
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	ReleaseTableViewCell *cell = (ReleaseTableViewCell *)[tableView cellForRowAtIndexPath: indexPath];
-	[cell showActivity];
-	
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
 	Release *release;
 	if(tableView == searchController.searchResultsTableView) {
 		release = (Release *)[searchResultsController objectAtIndexPath:indexPath];
 	} else {
 		release = (Release *)[fetchedResultsController objectAtIndexPath:indexPath];
 	}
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRelease:) name:@"finishedLoadingRelease" object:release];
-	[release loadTracks:NO];
+	
+	ReleaseController *releaseController = [[ReleaseController alloc] initWithNibName:@"Release" bundle:nil];
+	releaseController.theRelease = release;
+	releaseController.appDelegate = self.appDelegate;
+	[self.navigationController pushViewController:releaseController animated:YES];
+	[releaseController release];
 }
 
 

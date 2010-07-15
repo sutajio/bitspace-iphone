@@ -12,6 +12,8 @@
 
 @interface TrackTableViewCell : UITableViewCell {
 	Track *track;
+	NSInteger index;
+	BOOL showAlbumArtist;
 	UIView *bgView;
 	UILabel *trackNrLabel;
 	UILabel *textLabel;
@@ -21,5 +23,7 @@
 }
 
 @property (readwrite, assign) Track *track;
+@property (readwrite, assign) NSInteger index;
+@property (readwrite, assign) BOOL showAlbumArtist;
 
 @end

@@ -533,7 +533,7 @@
 	[self updatePlayerUIBasedOnPlaybackState];
 }
 
-- (void)enqueueTrack:(Track *)track fromTheRelease:(Release *)release andPlay:(BOOL)play {
+- (void)enqueueTrack:(Track *)track andPlay:(BOOL)play {
 	NSLog(@"Enqueueing track...");
 	
 	[self.playlist addObject:track];

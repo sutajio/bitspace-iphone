@@ -17,6 +17,8 @@
 	BOOL reloading;
 }
 
+@property (nonatomic, readonly) RefreshTableHeaderView *refreshHeaderView;
+
 - (void)dataSourceDidFinishLoadingNewData;
 - (void)showReloadAnimationAnimated:(BOOL)animated;
 
