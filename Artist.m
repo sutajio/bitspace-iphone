@@ -12,5 +12,6 @@
 @implementation Artist
 
 @dynamic name;
+@dynamic sectionName;
 
 @end

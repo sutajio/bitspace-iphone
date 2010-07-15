@@ -66,6 +66,7 @@
 	if([filteredArray count] == 0) {
 		Artist *artist = [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
 		artist.name = artistName;
+		artist.sectionName = [artistName substringToIndex:1];
 		return artist;
 	} else {
 		return [filteredArray objectAtIndex:0];

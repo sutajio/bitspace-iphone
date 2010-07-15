@@ -117,10 +117,6 @@
 #pragma mark -
 #pragma mark Table view data source
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//	return 44;
-//}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[fetchedResultsController sections] count];
 }
@@ -146,6 +142,22 @@
 	cell.textLabel.text = artist.name;
     
     return cell;
+}
+
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
+	return [sectionInfo name];	
+}
+
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+	return [fetchedResultsController sectionIndexTitles];
+}
+
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+	return [fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
 }
 
 
@@ -220,19 +232,15 @@
 		NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(compare:)];
 		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
-		
-		// Edit the filter predicate as appropriate.
-		//NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL"];
-		//[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:@"sectionName" cacheName:nil];
         aFetchedResultsController.delegate = self;
         self.fetchedResultsController = aFetchedResultsController;
         
         [aFetchedResultsController release];
-        //[fetchRequest release];
+        [fetchRequest release];
         [sortDescriptor release];
         [sortDescriptors release];
     }
