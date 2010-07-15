@@ -105,6 +105,7 @@
 		85FE206311EF27BC005D1F15 /* ArtistController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85FE206111EF27BC005D1F15 /* ArtistController.m */; };
 		85FE206411EF27BC005D1F15 /* Artist.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85FE206211EF27BC005D1F15 /* Artist.xib */; };
 		85FE20FA11EF5A1F005D1F15 /* sign-in-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 85FE20F911EF5A1F005D1F15 /* sign-in-bg.png */; };
+		85FE214011EF6CA3005D1F15 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 85FE213F11EF6CA3005D1F15 /* Default.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -269,6 +270,7 @@
 		85FE206111EF27BC005D1F15 /* ArtistController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArtistController.m; sourceTree = "<group>"; };
 		85FE206211EF27BC005D1F15 /* Artist.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Artist.xib; sourceTree = "<group>"; };
 		85FE20F911EF5A1F005D1F15 /* sign-in-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sign-in-bg.png"; sourceTree = "<group>"; };
+		85FE213F11EF6CA3005D1F15 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* bitspace_iphone-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "bitspace_iphone-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -328,6 +330,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				85FE213F11EF6CA3005D1F15 /* Default.png */,
 				85FE20F911EF5A1F005D1F15 /* sign-in-bg.png */,
 				85D0FDF111E78A730030994D /* heart.png */,
 				85D4D9ED11E4CE5600D9ACD9 /* button-highlighted.png */,
@@ -707,6 +710,7 @@
 				85D0FDF211E78A730030994D /* heart.png in Resources */,
 				85FE206411EF27BC005D1F15 /* Artist.xib in Resources */,
 				85FE20FA11EF5A1F005D1F15 /* sign-in-bg.png in Resources */,
+				85FE214011EF6CA3005D1F15 /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
