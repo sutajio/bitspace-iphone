@@ -116,9 +116,13 @@
 	}
 	if([trackJSON valueForKey:@"artist"] != [NSNull null]) {
 		track.artist = (NSString *)[trackJSON valueForKey:@"artist"];
+	} else {
+		track.artist = nil;
 	}
 	if([trackJSON valueForKey:@"loved_at"] != [NSNull null]) {
 		track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
+	} else {
+		track.lovedAt = nil;
 	}
 	
 	[track touch];
@@ -141,22 +145,32 @@
 	
 	if([releaseJSON valueForKey:@"year"] != [NSNull null]) {
 		release.year = [NSString stringWithFormat:@"%d", (NSDecimalNumber*)[releaseJSON valueForKey:@"year"]];
+	} else {
+		release.year = nil;
 	}
 	
 	if([releaseJSON valueForKey:@"label"] != [NSNull null]) {
 		release.label = (NSString *)[releaseJSON valueForKey:@"label"];
+	} else {
+		release.label = nil;
 	}
 	
 	if([releaseJSON valueForKey:@"release_date"] != [NSNull null]) {
 		release.releaseDate = (NSString *)[releaseJSON valueForKey:@"release_date"];
+	} else {
+		release.releaseDate = nil;
 	}
 	
 	if([releaseJSON valueForKey:@"small_artwork_url"] != [NSNull null]) {
 		release.smallArtworkUrl = (NSString*)[releaseJSON valueForKey:@"small_artwork_url"];
+	} else {
+		release.smallArtworkUrl = nil;
 	}
 	
 	if([releaseJSON valueForKey:@"large_artwork_url"] != [NSNull null]) {
 		release.largeArtworkUrl = (NSString*)[releaseJSON valueForKey:@"large_artwork_url"];
+	} else {
+		release.largeArtworkUrl = nil;
 	}
 	
 	NSArray *tracks = (NSArray *)[releaseJSON valueForKey:@"tracks"];
@@ -174,6 +188,22 @@
 	}
 	
 	return release;
+}
+
+- (NSString *)lastUpdateDate {
+	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[fetchRequest setEntity:self.releaseEntityDescription];
+	[fetchRequest setFetchLimit:1];
+	NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO selector:@selector(compare:)] autorelease];
+	NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortDescriptor, nil] autorelease];
+	[fetchRequest setSortDescriptors:sortDescriptors];
+	NSArray *result = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+	if([result count] > 0) {
+		Release *release = [result objectAtIndex:0];
+		return [release.updatedAt copy];
+	} else {
+		return @"";
+	}
 }
 
 - (void)main {
@@ -194,12 +224,13 @@
 	[delegate loaderDidStart:self];
 	
 	int page = 1;
+	NSString *since = [self lastUpdateDate];
 	
 	do {
 		// Request a page from the server...
 		NSLog(@"Requesting page #%d", page);
 		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?page=%d", appDelegate.siteURL, page]];
+		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?page=%d&since=%@", appDelegate.siteURL, page, since]];
 		NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
 																cachePolicy:NSURLRequestReloadIgnoringCacheData
 															timeoutInterval:[Connection timeout]];

@@ -158,6 +158,7 @@
 
 - (void)finishedLoadingSmallArtwork {
 	if([NSThread isMainThread]) {
+		smallArtworkLoader = nil;
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingSmallArtwork" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(finishedLoadingSmallArtwork) withObject:nil waitUntilDone:NO];
@@ -166,6 +167,7 @@
 
 - (void)finishedLoadingLargeArtwork {
 	if([NSThread isMainThread]) {
+		largeArtworkLoader = nil;
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingLargeArtwork" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(finishedLoadingLargeArtwork) withObject:nil waitUntilDone:NO];
