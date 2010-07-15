@@ -10,7 +10,7 @@
 #import "Release.h"
 
 
-#define cachePathForKey(key) [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"Cache/Artwork/%@", [key stringByReplacingOccurrencesOfString:@"/" withString:@"|"]]]
+#define cachePathForKey(key) [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"Artwork/%@", [key stringByReplacingOccurrencesOfString:@"/" withString:@"|"]]]
 
 
 @implementation ArtworkLoader
