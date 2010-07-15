@@ -272,7 +272,7 @@
         [fetchRequest setSortDescriptors:sortDescriptors];
 		
 		// Edit the filter predicate as appropriate.
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL"];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND parent.archived == NO"];
 		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
@@ -306,7 +306,7 @@
         [fetchRequest setSortDescriptors:sortDescriptors];
 		
 		// Edit the filter predicate as appropriate.
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL"];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND parent.archived == NO"];
 		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
@@ -423,16 +423,16 @@
 	if ([searchString length]) {
 		switch (searchOption) {
 			case 1:
-				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (title contains[cd] %@)", searchString];
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND parent.archived == NO AND (title contains[cd] %@)", searchString];
 				break;
 			case 2:
-				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (artist contains[cd] %@ OR parent.artist contains[cd] %@)", searchString, searchString];
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND parent.archived == NO AND (artist contains[cd] %@ OR parent.artist contains[cd] %@)", searchString, searchString];
 				break;
 			case 3:
-				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (parent.title contains[cd] %@)", searchString];
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND parent.archived == NO AND (parent.title contains[cd] %@)", searchString];
 				break;
 			default:
-				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (title contains[cd] %@ OR artist contains[cd] %@ OR parent.artist contains[cd] %@ OR parent.title contains[cd] %@)", searchString, searchString, searchString, searchString];
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND parent.archived == NO AND (title contains[cd] %@ OR artist contains[cd] %@ OR parent.artist contains[cd] %@ OR parent.title contains[cd] %@)", searchString, searchString, searchString, searchString];
 				break;
 		}
 	}

@@ -286,6 +286,10 @@
 		NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(compare:)];
 		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
+		
+		// Edit the filter predicate as appropriate.
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"archived == NO"];
+		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
@@ -316,6 +320,10 @@
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(compare:)];
         NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
+		
+		// Edit the filter predicate as appropriate.
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"archived == NO"];
+		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
@@ -429,7 +437,7 @@
 	
 	NSPredicate *predicate = nil;
 	if ([searchString length]) {
-		predicate = [NSPredicate predicateWithFormat:@"name contains[cd] %@", searchString];
+		predicate = [NSPredicate predicateWithFormat:@"archived == NO AND name contains[cd] %@", searchString];
 	}
 	[self.searchResultsController.fetchRequest setPredicate:predicate];
 	

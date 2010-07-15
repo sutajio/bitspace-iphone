@@ -13,5 +13,6 @@
 
 @dynamic name;
 @dynamic sectionName;
+@dynamic archived;
 
 @end

@@ -27,18 +27,11 @@
 @dynamic smallArtworkUrl;
 @dynamic largeArtworkUrl;
 @dynamic tracks;
+@dynamic archived;
 
 @synthesize smallArtworkImage, largeArtworkImage;
 @synthesize smallArtworkLoader, largeArtworkLoader;
 @synthesize operationQueue;
-
-- (void)touch {
-	touched = YES;
-}
-
-- (BOOL)wasTouched {
-	return touched;
-}
 
 - (BOOL)hasTrack:(Track *)track {
 	for(Track *t in self.tracks) {

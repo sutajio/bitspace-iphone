@@ -15,5 +15,6 @@
 
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *sectionName;
+@property (nonatomic, retain) NSNumber *archived;
 
 @end

@@ -53,6 +53,7 @@
 	} else {
 		return [filteredArray objectAtIndex:0];
 	}
+
 }
 
 - (Artist *)findOrCreateArtistWithName:(NSString *)artistName {
@@ -120,20 +121,23 @@
 		track.lovedAt = [ObjectiveResourceDateFormatter parseDateTime:(NSString*)[trackJSON valueForKey:@"loved_at"]];
 	}
 	
-	track.touched = [NSNumber numberWithBool:YES];
+	[track touch];
+	
 	return track;
 }
 
 - (Release *)addRelease:(NSDictionary*)releaseJSON {
 	
 	Release *release = [self findOrCreateReleaseWithURL:(NSString*)[releaseJSON valueForKey:@"url"]];
-	
+
 	release.parent = [self findOrCreateArtistWithName:(NSString*)[releaseJSON valueForKey:@"artist"]];
 	release.title = (NSString*)[releaseJSON valueForKey:@"title"];
 	release.artist = (NSString*)[releaseJSON valueForKey:@"artist"];
 	release.url = (NSString*)[releaseJSON valueForKey:@"url"];
 	release.createdAt = (NSString*)[releaseJSON valueForKey:@"created_at"];
 	release.updatedAt = (NSString*)[releaseJSON valueForKey:@"updated_at"];
+	release.archived = (NSNumber*)[releaseJSON valueForKey:@"archived"];
+	release.parent.archived = release.archived;
 	
 	if([releaseJSON valueForKey:@"year"] != [NSNull null]) {
 		release.year = [NSString stringWithFormat:@"%d", (NSDecimalNumber*)[releaseJSON valueForKey:@"year"]];
@@ -163,7 +167,11 @@
 		}
 	}
 	
-	[release touch];
+	for(Track *track in release.tracks) {
+		if([track wasTouched] == NO) {
+			[self.insertionContext deleteObject:track];
+		}
+	}
 	
 	return release;
 }
@@ -227,19 +235,6 @@
 		
 		page++;
 	} while(true);
-	
-	if([self isCancelled] == NO) {
-		// Run garbage collection on all releases and delete any release that wasn't
-		// included in the last sync.
-		for(Release *release in cachedReleases) {
-			if([release wasTouched] == NO) {
-				[self.insertionContext deleteObject:release];
-			}
-		}
-
-		// Save the context once again, in case any releases was deleted
-		[self.insertionContext save:nil];
-	}
 	
 	// Tell the delegate that we have finished loading
 	[delegate loaderDidFinish:self];

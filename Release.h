@@ -17,7 +17,6 @@
 	ArtworkLoader *smallArtworkLoader;
 	ArtworkLoader *largeArtworkLoader;
 	NSOperationQueue *operationQueue;
-	BOOL touched;
 }
 
 @property (nonatomic, retain) Artist *parent;
@@ -32,6 +31,7 @@
 @property (nonatomic, retain) NSString *smallArtworkUrl;
 @property (nonatomic, retain) NSString *largeArtworkUrl;
 @property (nonatomic, retain) NSSet *tracks;
+@property (nonatomic, retain) NSNumber *archived;
 
 @property (nonatomic, retain) UIImage *smallArtworkImage;
 @property (nonatomic, retain) UIImage *largeArtworkImage;
@@ -49,7 +49,5 @@
 - (NSInteger)numberOfOfflineTracks;
 - (NSInteger)numberOfSets;
 - (NSInteger)numberOfTracksInSet:(NSInteger)setNr;
-- (void)touch;
-- (BOOL)wasTouched;
 
 @end

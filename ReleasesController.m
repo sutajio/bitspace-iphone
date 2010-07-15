@@ -294,8 +294,11 @@
         // Edit the sort key as appropriate.
 		NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
         NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
-        
         [fetchRequest setSortDescriptors:sortDescriptors];
+		
+		// Edit the filter predicate as appropriate.
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"archived == NO"];
+		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
@@ -325,8 +328,11 @@
         // Edit the sort key as appropriate.
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
         NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
-        
         [fetchRequest setSortDescriptors:sortDescriptors];
+		
+		// Edit the filter predicate as appropriate.
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"archived == NO"];
+		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
@@ -441,9 +447,9 @@
 	NSPredicate *predicate = nil;
 	if ([searchString length]) {
 		if (searchOption == 0) {
-			predicate = [NSPredicate predicateWithFormat:@"title contains[cd] %@ OR artist contains[cd] %@ OR label contains[cd] %@", searchString, searchString, searchString];
+			predicate = [NSPredicate predicateWithFormat:@"archived == NO AND (title contains[cd] %@ OR artist contains[cd] %@ OR label contains[cd] %@)", searchString, searchString, searchString];
 		} else {
-			predicate = [NSPredicate predicateWithFormat:@"%K contains[cd] %@", [[controller.searchBar.scopeButtonTitles objectAtIndex:searchOption] lowercaseString], searchString];
+			predicate = [NSPredicate predicateWithFormat:@"archived == NO AND (%K contains[cd] %@)", [[controller.searchBar.scopeButtonTitles objectAtIndex:searchOption] lowercaseString], searchString];
 		}
 	}
 	[self.searchResultsController.fetchRequest setPredicate:predicate];
