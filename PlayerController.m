@@ -328,6 +328,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
+	NSString *startPage = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"StartPage"];
+	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:startPage]];
+	[webView loadRequest:request];
+	[webView setBackgroundColor:[UIColor clearColor]];
+	[webView setOpaque:NO];
 }
 
 /*

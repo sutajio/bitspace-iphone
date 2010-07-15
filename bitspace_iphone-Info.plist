@@ -36,5 +36,7 @@
 	<array>
 		<string>audio</string>
 	</array>
+	<key>StartPage</key>
+	<string>http://bitspace.at/featured</string>
 </dict>
 </plist>

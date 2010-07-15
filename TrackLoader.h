@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define cachePathForKey(key) [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"Cache/Tracks/%@", [key stringByReplacingOccurrencesOfString:@"/" withString:@"|"]]]
+#define cachePathForKey(key) [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"Tracks/%@", [key stringByReplacingOccurrencesOfString:@"/" withString:@"|"]]]
 
 
 @protocol TrackLoaderDelegate <NSObject>
