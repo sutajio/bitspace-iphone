@@ -16,7 +16,6 @@
 	UIImage *largeArtworkImage;
 	ArtworkLoader *smallArtworkLoader;
 	ArtworkLoader *largeArtworkLoader;
-	NSOperationQueue *operationQueue;
 }
 
 @property (nonatomic, retain) Artist *parent;
@@ -37,7 +36,6 @@
 @property (nonatomic, retain) UIImage *largeArtworkImage;
 @property (nonatomic, retain) ArtworkLoader *smallArtworkLoader;
 @property (nonatomic, retain) ArtworkLoader *largeArtworkLoader;
-@property (nonatomic, retain) NSOperationQueue *operationQueue;
 
 - (BOOL)hasTrack:(Track *)track;
 - (BOOL)hasTrackWithURL:(NSString *)url;

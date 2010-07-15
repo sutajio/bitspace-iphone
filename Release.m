@@ -31,7 +31,6 @@
 
 @synthesize smallArtworkImage, largeArtworkImage;
 @synthesize smallArtworkLoader, largeArtworkLoader;
-@synthesize operationQueue;
 
 - (BOOL)hasTrack:(Track *)track {
 	for(Track *t in self.tracks) {
@@ -125,7 +124,7 @@
 	static NSOperationQueue *operationQueue;
     if (operationQueue == nil) {
         operationQueue = [[NSOperationQueue alloc] init];
-		[operationQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
+		[operationQueue setMaxConcurrentOperationCount:3];
     }
     return operationQueue;
 }
@@ -185,15 +184,7 @@
 	}
 }
 
-- (NSOperationQueue *)operationQueue {
-	if(operationQueue == nil) {
-		operationQueue = [[NSOperationQueue alloc] init];
-	}
-	return operationQueue;
-}
-
 -(void)dealloc {
-	if(operationQueue) { [operationQueue release]; }
 	if(smallArtworkImage) { [smallArtworkImage release]; }
 	if(largeArtworkImage) { [largeArtworkImage release]; }
 	[super dealloc];
