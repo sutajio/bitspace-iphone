@@ -17,6 +17,8 @@
 
 @synthesize appDelegate, fetchedResultsController;
 @synthesize navigationBar;
+@synthesize searchResultsController;
+@synthesize searchBar, searchController;
 
 
 #pragma mark -
@@ -38,10 +40,17 @@
 
 - (void)resetView {
 	
+	// Reset the view
+	[self.searchController setActive:NO];
+	[self.searchBar setText:@""];
+	
+	// Reset the last updated date
+	self.refreshHeaderView.lastUpdatedDate = nil;
 }
 
 - (void)resetAppState {
 	[fetchedResultsController release]; fetchedResultsController = nil;
+	[searchResultsController release]; searchResultsController = nil;
 	[self.fetchedResultsController performFetch:nil];
 	[self.tableView reloadData];
 }
@@ -71,6 +80,16 @@
 	
 	self.navigationBar.tintColor = [UIColor blackColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+	
+	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+	searchBar.delegate = self;
+	searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"All", @"Title", @"Artist", @"Release", nil];
+	self.tableView.tableHeaderView = searchBar;
+	
+	searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+	searchController.delegate = self;
+	searchController.searchResultsDataSource = self;
+	searchController.searchResultsDelegate = self;
 
 	// Watch for reset app state events
 	[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -124,13 +143,22 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [[fetchedResultsController sections] count];
+	if(tableView == searchController.searchResultsTableView) {
+		return [[searchResultsController sections] count];
+	} else {
+		return [[fetchedResultsController sections] count];
+	}
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
-	return [sectionInfo numberOfObjects];
+    if(tableView == searchController.searchResultsTableView) {
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[searchResultsController sections] objectAtIndex:section];
+		return [sectionInfo numberOfObjects];
+	} else {
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[fetchedResultsController sections] objectAtIndex:section];
+		return [sectionInfo numberOfObjects];
+	}
 }
 
 
@@ -143,10 +171,15 @@
     if (cell == nil) {
         cell = [[[TrackTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 	}
-    
+	
 	cell.index = [indexPath row]+1;
 	cell.showAlbumArtist = YES;
-    cell.track = [fetchedResultsController objectAtIndexPath:indexPath];
+    
+	if(tableView == searchController.searchResultsTableView) {
+		cell.track = [searchResultsController objectAtIndexPath:indexPath];
+	} else {
+		cell.track = [fetchedResultsController objectAtIndexPath:indexPath];
+	}
     
     return cell;
 }
@@ -196,10 +229,20 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	Track *selectedTrack = (Track *)[fetchedResultsController objectAtIndexPath:indexPath];
+	Track *selectedTrack;
+	NSArray *fetchedObjects;
+	
+	if(tableView == searchController.searchResultsTableView) {
+		selectedTrack = (Track *)[searchResultsController objectAtIndexPath:indexPath];
+		fetchedObjects = [searchResultsController fetchedObjects];
+	} else {
+		selectedTrack = (Track *)[fetchedResultsController objectAtIndexPath:indexPath];
+		fetchedObjects = [fetchedResultsController fetchedObjects];
+	}
+	
 	if(selectedTrack.parent) {
 		[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
-		for(Track *track in [fetchedResultsController fetchedObjects]) {
+		for(Track *track in fetchedObjects) {
 			if(selectedTrack == track) {
 				[self.appDelegate.playerController enqueueTrack:track andPlay:YES];
 			} else {
@@ -245,7 +288,41 @@
     }
 	
 	return fetchedResultsController;
-}    
+}
+
+
+- (NSFetchedResultsController *)searchResultsController {
+    // Set up the search results controller if needed.
+    if (searchResultsController == nil) {
+        // Create the fetch request for the entity.
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        // Edit the entity name as appropriate.
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:self.appDelegate.managedObjectContext];
+        [fetchRequest setEntity:entity];
+        
+        // Edit the sort keys as appropriate.
+		NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lovedAt" ascending:NO selector:@selector(compare:)];
+		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+		
+		// Edit the filter predicate as appropriate.
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL"];
+		[fetchRequest setPredicate:predicate];
+        
+        // Edit the section name key path and cache name if appropriate.
+        // nil for section name key path means "no sections".
+        NSFetchedResultsController *aSearchResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        aSearchResultsController.delegate = self;
+        self.searchResultsController = aSearchResultsController;
+        
+        [aSearchResultsController release];
+        [fetchRequest release];
+        [sortDescriptor release];
+        [sortDescriptors release];
+    }
+	
+	return searchResultsController;
+}
 
 
 /**
@@ -254,12 +331,22 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 	// The fetch controller is about to start sending change notifications, so prepare the table view for updates.
-	[self.tableView beginUpdates];
+	if(controller == searchResultsController) {
+		[searchController.searchResultsTableView beginUpdates];
+	} else {
+		[self.tableView beginUpdates];
+	}
 }
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-	UITableView *tableView = self.tableView;
+	UITableView *tableView;
+	
+	if(controller == searchResultsController) {
+		tableView = searchController.searchResultsTableView;
+	} else {
+		tableView = self.tableView;
+	}
 	
 	TrackTableViewCell *cell;
 	
@@ -288,13 +375,21 @@
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+	UITableView *tableView;
+	
+	if(controller == searchResultsController) {
+		tableView = searchController.searchResultsTableView;
+	} else {
+		tableView = self.tableView;
+	}
+	
 	switch(type) {
 		case NSFetchedResultsChangeInsert:
-			[self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			[tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
 			break;
 			
 		case NSFetchedResultsChangeDelete:
-			[self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+			[tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
 			break;
 	}
 }
@@ -302,7 +397,63 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	// The fetch controller has sent all current change notifications, so tell the table view to process all updates.
-	[self.tableView endUpdates];
+	if(controller == searchResultsController) {
+		[searchController.searchResultsTableView endUpdates];
+	} else {
+		[self.tableView endUpdates];
+	}
+}
+
+
+#pragma mark -
+#pragma mark <UISearchDisplayDelegate> Implementation
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+	[self.searchResultsController.fetchRequest setPredicate:nil];
+	
+    NSError *error = nil;
+    if (![self.searchResultsController performFetch:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    }
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString*)searchString searchScope:(NSInteger)searchOption {
+	
+	NSPredicate *predicate = nil;
+	if ([searchString length]) {
+		switch (searchOption) {
+			case 1:
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (title contains[cd] %@)", searchString];
+				break;
+			case 2:
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (artist contains[cd] %@ OR parent.artist contains[cd] %@)", searchString, searchString];
+				break;
+			case 3:
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (parent.title contains[cd] %@)", searchString];
+				break;
+			default:
+				predicate = [NSPredicate predicateWithFormat:@"lovedAt != NULL AND (title contains[cd] %@ OR artist contains[cd] %@ OR parent.artist contains[cd] %@ OR parent.title contains[cd] %@)", searchString, searchString, searchString, searchString];
+				break;
+		}
+	}
+	[self.searchResultsController.fetchRequest setPredicate:predicate];
+	
+    NSError *error = nil;
+    if (![self.searchResultsController performFetch:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+    }           
+	
+	return YES;
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+	NSInteger searchOption = controller.searchBar.selectedScopeButtonIndex;
+	return [self searchDisplayController:controller shouldReloadTableForSearchString:searchString searchScope:searchOption];
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
+	NSString* searchString = controller.searchBar.text;
+	return [self searchDisplayController:controller shouldReloadTableForSearchString:searchString searchScope:searchOption];
 }
 
 

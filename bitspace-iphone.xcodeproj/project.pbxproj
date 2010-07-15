@@ -579,10 +579,10 @@
 		85D0FCEA11E762EA0030994D /* Releases */ = {
 			isa = PBXGroup;
 			children = (
-				8541B0A011CA86290004C4C9 /* ReleaseController.h */,
-				8541B0A111CA86290004C4C9 /* ReleaseController.m */,
 				8541B0A211CA86290004C4C9 /* ReleasesController.h */,
 				8541B0A311CA86290004C4C9 /* ReleasesController.m */,
+				8541B0A011CA86290004C4C9 /* ReleaseController.h */,
+				8541B0A111CA86290004C4C9 /* ReleaseController.m */,
 			);
 			name = Releases;
 			sourceTree = "<group>";

@@ -47,7 +47,6 @@
 	[self.searchBar setText:@""];
 	
 	// Reset the last updated date
-	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastReleasesUpdate"];
 	self.refreshHeaderView.lastUpdatedDate = nil;
 }
 

@@ -14,6 +14,7 @@
 	AppDelegate *appDelegate;
 	Artist *theArtist;
 	NSFetchedResultsController *fetchedResultsController;
+	NSFetchedResultsController *searchResultsController;
 	
 }
 

@@ -11,17 +11,25 @@
 
 @class AppDelegate;
 
-@interface FavoritesController : PullToRefreshTableViewController <NSFetchedResultsControllerDelegate> {
+@interface FavoritesController : PullToRefreshTableViewController <NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
 	AppDelegate *appDelegate;
 	NSFetchedResultsController *fetchedResultsController;
+	NSFetchedResultsController *searchResultsController;
 	
 	IBOutlet UINavigationBar *navigationBar;
+	
+	UISearchBar *searchBar;
+	UISearchDisplayController *searchController;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) NSFetchedResultsController *searchResultsController;
 
 @property (nonatomic, readonly) UINavigationBar *navigationBar;
+
+@property (nonatomic, retain) UISearchBar *searchBar;
+@property (nonatomic, retain) UISearchDisplayController *searchController;
 
 - (void)resetView;
 
