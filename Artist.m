@@ -12,6 +12,7 @@
 @implementation Artist
 
 @dynamic name;
+@dynamic sortName;
 @dynamic sectionName;
 @dynamic archived;
 

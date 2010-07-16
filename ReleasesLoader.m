@@ -56,7 +56,7 @@
 
 }
 
-- (Artist *)findOrCreateArtistWithName:(NSString *)artistName {
+- (Artist *)findOrCreateArtistWithName:(NSString *)artistName andSortName:(NSString *)sortName {
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", artistName];
 	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Artist" inManagedObjectContext:self.insertionContext];
@@ -67,7 +67,8 @@
 	if([filteredArray count] == 0) {
 		Artist *artist = [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
 		artist.name = artistName;
-		artist.sectionName = [artistName substringToIndex:1];
+		artist.sortName = (NSNull *)sortName == [NSNull null] ? artistName : sortName;
+		artist.sectionName = [artist.sortName substringToIndex:1];
 		return artist;
 	} else {
 		return [filteredArray objectAtIndex:0];
@@ -134,7 +135,7 @@
 	
 	Release *release = [self findOrCreateReleaseWithURL:(NSString*)[releaseJSON valueForKey:@"url"]];
 
-	release.parent = [self findOrCreateArtistWithName:(NSString*)[releaseJSON valueForKey:@"artist"]];
+	release.parent = [self findOrCreateArtistWithName:(NSString*)[releaseJSON valueForKey:@"artist"] andSortName:(NSString*)[releaseJSON valueForKey:@"artist_sort_name"]];
 	release.title = (NSString*)[releaseJSON valueForKey:@"title"];
 	release.artist = (NSString*)[releaseJSON valueForKey:@"artist"];
 	release.url = (NSString*)[releaseJSON valueForKey:@"url"];
