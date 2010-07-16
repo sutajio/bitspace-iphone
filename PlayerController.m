@@ -184,11 +184,13 @@
 {
 	Track *track = [self currentTrack];
 	if(track) {
-		progress.progress = streamer.progress / [track.length doubleValue];
+		if(isSeeking == NO) {
+			[progressSlider setValue:streamer.progress / [track.length doubleValue] animated:YES];
+		}
 		currentTimeLabel.text = [self secondsToTime:[NSNumber numberWithDouble:streamer.progress]];
 		totalTimeLabel.text = [self secondsToTime:track.length];
 	} else {
-		progress.progress = 0;
+		progressSlider.value = 0;
 		currentTimeLabel.text = @"0:00";
 		totalTimeLabel.text = @"0:00";
 	}
@@ -311,6 +313,13 @@
 	} else {
 		shuffleButton.image = [UIImage imageNamed:@"shuffle-off.png"];
 	}
+	
+	// Enable or disable the progress slider depending on the current playback state
+	if([self isPaused]) {
+		progressSlider.enabled = NO;
+	} else {
+		progressSlider.enabled = YES;
+	}
 }
 
 
@@ -334,6 +343,11 @@
 	[webView loadRequest:request];
 	[webView setBackgroundColor:[UIColor clearColor]];
 	[webView setOpaque:NO];
+	
+	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-slider-thumb.png"] forState:UIControlStateNormal];
+	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-slider-thumb-highlighted.png"] forState:UIControlStateHighlighted];
+	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-slider-minimum.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:0] forState:UIControlStateNormal];
+	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-slider-maximum.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:0] forState:UIControlStateNormal];
 }
 
 /*
@@ -542,6 +556,27 @@
 		[[NSUserDefaults standardUserDefaults] setInteger:PL_SHUFFLE_ON forKey:@"PlayerShuffleState"];
 	}
 	[self updatePlayerUIBasedOnPlaybackState];
+}
+
+- (void)seekInTrack:(id)sender {
+	if([self currentTrack]) {
+		[streamer seekToTime:progressSlider.value * [[self currentTrack].length doubleValue]];
+	}
+}
+
+- (void)beginSeeking:(id)sender {
+	isSeeking = YES;
+	NSLog(@"beginSeeking");
+}
+
+- (void)endSeeking:(id)sender {
+	[NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(stopSeeking) userInfo:nil repeats:NO];
+	NSLog(@"endSeeking");
+}
+
+- (void)stopSeeking {
+	isSeeking = NO;
+	NSLog(@"stopSeeking");
 }
 
 - (void)enqueueTrack:(Track *)track andPlay:(BOOL)play {

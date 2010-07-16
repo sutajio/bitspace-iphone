@@ -33,7 +33,7 @@ typedef enum {
 	IBOutlet UIWebView *webView;
 	IBOutlet UIImageView *artwork;
 	IBOutlet UIView *statusBar;
-	IBOutlet UIProgressView *progress;
+	IBOutlet UISlider *progressSlider;
 	IBOutlet UILabel *currentTimeLabel;
 	IBOutlet UILabel *totalTimeLabel;
 	IBOutlet UIToolbar *toolBar;
@@ -47,6 +47,7 @@ typedef enum {
 	AudioStreamer *streamer;
 	NSTimer *progressUpdateTimer;
 	NSMutableArray *playlist;
+	BOOL isSeeking;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
@@ -64,6 +65,9 @@ typedef enum {
 - (IBAction)previousTrack:(id)sender;
 - (IBAction)toggleRepeat:(id)sender;
 - (IBAction)toggleShuffle:(id)sender;
+- (IBAction)seekInTrack:(id)sender;
+- (IBAction)beginSeeking:(id)sender;
+- (IBAction)endSeeking:(id)sender;
 - (void)enqueueTrack:(Track *)track andPlay:(BOOL)play;
 - (void)stopPlayback;
 - (void)clearQueueAndResetPlayer:(BOOL)resetPlayer;
