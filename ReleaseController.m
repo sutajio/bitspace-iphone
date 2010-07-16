@@ -137,8 +137,20 @@
 	// Set the artist and title
 	self.titleLabel.text = theRelease.title;
 	self.artistLabel.text = theRelease.artist;
-	self.releasedByLabel.text = theRelease.label;
-	self.releasedAtLabel.text = theRelease.releaseDate;
+	
+	// Set label and release date
+	if(theRelease.label) {
+		self.releasedByLabel.text = theRelease.label;
+	} else {
+		self.releasedByLabel.text = @"Unknown label";
+		self.releasedByLabel.font = [UIFont italicSystemFontOfSize:10];
+	}
+	
+	if(theRelease.releaseDate) {
+		self.releasedAtLabel.text = theRelease.releaseDate;
+	} else if (theRelease.year) {
+		self.releasedAtLabel.text = [theRelease.year stringValue];
+	}
 	
 	// Set background color of table view to the same as the header view
 	self.tableView.backgroundColor = tableHeaderView.backgroundColor;

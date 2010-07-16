@@ -21,7 +21,7 @@
 @property (nonatomic, retain) Artist *parent;
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *artist;
-@property (nonatomic, retain) NSString *year;
+@property (nonatomic, retain) NSNumber *year;
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, retain) NSString *createdAt;
 @property (nonatomic, retain) NSString *updatedAt;

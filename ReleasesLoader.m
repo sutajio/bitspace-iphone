@@ -144,7 +144,7 @@
 	release.parent.archived = release.archived;
 	
 	if([releaseJSON valueForKey:@"year"] != [NSNull null]) {
-		release.year = [NSString stringWithFormat:@"%d", (NSDecimalNumber*)[releaseJSON valueForKey:@"year"]];
+		release.year = (NSDecimalNumber*)[releaseJSON valueForKey:@"year"];
 	} else {
 		release.year = nil;
 	}

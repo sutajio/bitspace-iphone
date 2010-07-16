@@ -61,7 +61,7 @@
 
 - (void)setRelease:(Release *)value {
 	release = value;
-	
+
 	self.textLabel.text = self.release.title;
 	self.detailTextLabel.text = self.release.artist;
 	

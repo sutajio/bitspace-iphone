@@ -174,7 +174,8 @@
         // Edit the sort keys as appropriate.
 		NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:NO selector:@selector(compare:)];
 		NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"releaseDate" ascending:NO selector:@selector(compare:)];
-		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor1, sortDescriptor2, nil];
+		NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO selector:@selector(compare:)];
+		NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
 		
 		// Edit the filter predicate as appropriate.
@@ -191,6 +192,7 @@
         [fetchRequest release];
         [sortDescriptor1 release];
 		[sortDescriptor2 release];
+		[sortDescriptor3 release];
         [sortDescriptors release];
     }
 	
