@@ -153,7 +153,7 @@
 
 - (void)scrobbleCurrentTrack:(BOOL)nowPlaying {
 	Track *track = [self currentTrack];
-	if(track) {
+	if(track && [track.length intValue] > 30) {
 		NSURL *url;
 		if(nowPlaying == YES) {
 			url = [ProtectedURL URLWithStringAndCredentials:track.nowPlayingUrl 
