@@ -218,17 +218,34 @@
 
 - (void)showPlaybackControls {
 	if([self hasQueuedTracks]) {
+		[UIView beginAnimations:@"MoveAndStrech" context:nil];
+		[UIView setAnimationDuration:0.2f];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		statusBar.alpha = 0.75f;
+		toolBar.alpha = 0.75f;
+		volumeBar.alpha = 0.75f;
+		statusBar.frame = CGRectMake(0, 367, 320, 44);
+		toolBar.frame = CGRectMake(0, 323, 320, 44);
+		volumeBar.frame = CGRectMake(0, 74, 320, 46);
 		statusBar.hidden = NO;
 		toolBar.hidden = NO;
 		volumeBar.hidden = NO;
+		[UIView commitAnimations];
 		self.playbackControlsState = PL_CTRLS_STATE_VISIBLE;
 	}
 }
 
 - (void)hidePlaybackControls {
-	statusBar.hidden = YES;
-	toolBar.hidden = YES;
-	volumeBar.hidden = YES;
+	[UIView beginAnimations:@"MoveAndStrech" context:nil];
+	[UIView setAnimationDuration:0.2f];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	statusBar.alpha = 0.0f;
+	toolBar.alpha = 0.0f;
+	volumeBar.alpha = 0.0f;
+	statusBar.frame = CGRectMake(0, 455, 320, 44);
+	toolBar.frame = CGRectMake(0, 411, 320, 44);
+	volumeBar.frame = CGRectMake(0, 28, 320, 46);
+	[UIView commitAnimations];
 	self.playbackControlsState = PL_CTRLS_STATE_HIDDEN;
 }
 
