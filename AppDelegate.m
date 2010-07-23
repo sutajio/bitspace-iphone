@@ -44,19 +44,6 @@
 	// Set the site URL, which is the Bitspace API end-point where all data is loaded from
 	self.siteURL = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SiteURL"];
 	
-	// Pass self to the controllers
-	playerController.appDelegate = self;
-	artistsController.appDelegate = self;
-	releasesController.appDelegate = self;
-	favoritesController.appDelegate = self;
-	
-	// Add the tab bar controller's current view as a subview of the window
-	[window addSubview:tabBarController.view];
-	[window makeKeyAndVisible];
-	
-	// Select the correct tab if user has used the app before
-	self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
-	
 	// Authenticate user and show sign in screen if authentication fails
 	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
 				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
@@ -107,9 +94,25 @@
 											 selector:@selector(handleNetworkError:) 
 												 name:@"NetworkError" 
 											   object:nil];
+	
+	// Pass self to the controllers
+	playerController.appDelegate = self;
+	artistsController.appDelegate = self;
+	releasesController.appDelegate = self;
+	favoritesController.appDelegate = self;
+	
+	// Add the tab bar controller's current view as a subview of the window
+	[window addSubview:tabBarController.view];
+	[window makeKeyAndVisible];
+	
+	// Select the correct tab if user has used the app before
+	self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
+	
+	// Save application state
+	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	// Save the database if it has changes
     NSError *error = nil;
@@ -188,6 +191,9 @@
 
 - (BOOL)validateUsername:(NSString *)usernameValue andPassword:(NSString *)passwordValue {
 	
+	if(usernameValue == nil || passwordValue == nil)
+		return NO;
+	
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@account", self.siteURL]];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
 															cachePolicy:NSURLRequestReloadIgnoringCacheData
@@ -205,6 +211,8 @@
 		NSLog(@"Network error: %@", [res.error localizedDescription]);
 		if([res.error code] != 401) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:res.error];
+			self.username = usernameValue;
+			self.password = passwordValue;
 			return YES;
 		}
 		return NO;
@@ -433,6 +441,8 @@
     }
 	
     NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: [self databaseFilename]]];
+	
+	NSLog(@"Opening peristent store with URL \"%@\"", storeUrl);
 	
 	NSError *error = nil;
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
