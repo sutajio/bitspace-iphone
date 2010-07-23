@@ -124,7 +124,7 @@
 	static NSOperationQueue *operationQueue;
     if (operationQueue == nil) {
         operationQueue = [[NSOperationQueue alloc] init];
-		[operationQueue setMaxConcurrentOperationCount:3];
+		[operationQueue setMaxConcurrentOperationCount:1];
     }
     return operationQueue;
 }

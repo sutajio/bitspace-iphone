@@ -570,7 +570,7 @@
 }
 
 - (void)endSeeking:(id)sender {
-	[NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector:@selector(stopSeeking) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(stopSeeking) userInfo:nil repeats:NO];
 	NSLog(@"endSeeking");
 }
 
