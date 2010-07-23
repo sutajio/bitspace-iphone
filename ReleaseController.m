@@ -76,11 +76,8 @@
 }
 
 - (void)shuffle:(id)sender {
-	[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
 	NSMutableArray *tracks = [self shuffleArray:[fetchedResultsController fetchedObjects]];
-	for(Track *track in tracks) {
-		[self.appDelegate.playerController enqueueTrack:track andPlay:NO];
-	}
+	[self.appDelegate.playerController enqueueTracks:tracks];
 	[self.appDelegate.playerController nextTrack:nil];
 	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
 }
@@ -266,14 +263,7 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
-	for(Track *track in [fetchedResultsController fetchedObjects]) {
-		if([fetchedResultsController objectAtIndexPath:indexPath] == track) {
-			[self.appDelegate.playerController enqueueTrack:track andPlay:YES];
-		} else {
-			[self.appDelegate.playerController enqueueTrack:track andPlay:NO];
-		}
-	}
+	[self.appDelegate.playerController enqueueTracks:[fetchedResultsController fetchedObjects] andPlayTrackWithIndex:indexPath.row];
 	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
 }
 

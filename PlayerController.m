@@ -209,7 +209,7 @@
 }
 
 - (BOOL)isPlayingLastTrack {
-	return self.playlistPosition == ([playlist count] - 1);
+	return self.playlistPosition == ([self.playlist count] - 1);
 }
 
 - (BOOL)hasQueuedTracks {
@@ -540,7 +540,7 @@
 			self.playlistPosition--;
 		}
 	} else if(self.playerRepeatState == PL_REPEAT_ALL && self.playlistPosition == 0) {
-		self.playlistPosition = [playlist count] - 1;
+		self.playlistPosition = [self.playlist count] - 1;
 	} else {
 		if([self isPlayingFirstTrack] == NO) {
 			self.playlistPosition--;
@@ -596,17 +596,17 @@
 	NSLog(@"stopSeeking");
 }
 
-- (void)enqueueTrack:(Track *)track andPlay:(BOOL)play {
-	NSLog(@"Enqueueing track...");
-	
-	[self.playlist addObject:track];
+- (void)enqueueTracks:(NSArray *)tracks {
+	[self clearQueueAndResetPlayer:NO];
+	[self.playlist addObjectsFromArray:tracks];
 	[self persistPlaylist];
-	
-	if(play == YES) {
-		self.playlistPosition = [self.playlist count] - 1;
+}
+
+- (void)enqueueTracks:(NSArray *)tracks andPlayTrackWithIndex:(NSInteger)index {
+	[self enqueueTracks:tracks];
+	if(index != -1) {
+		self.playlistPosition = index;
 		[self playCurrentTrack];
-	} else {
-		[self updatePlayerUIBasedOnPlaybackState];
 	}
 }
 

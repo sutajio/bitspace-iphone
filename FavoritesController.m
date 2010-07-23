@@ -241,14 +241,7 @@
 	}
 	
 	if(selectedTrack.parent) {
-		[self.appDelegate.playerController clearQueueAndResetPlayer:NO];
-		for(Track *track in fetchedObjects) {
-			if(selectedTrack == track) {
-				[self.appDelegate.playerController enqueueTrack:track andPlay:YES];
-			} else {
-				[self.appDelegate.playerController enqueueTrack:track andPlay:NO];
-			}
-		}
+		[self.appDelegate.playerController enqueueTracks:fetchedObjects andPlayTrackWithIndex:indexPath.row];
 		self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
 	}
 }

@@ -68,7 +68,8 @@ typedef enum {
 - (IBAction)seekInTrack:(id)sender;
 - (IBAction)beginSeeking:(id)sender;
 - (IBAction)endSeeking:(id)sender;
-- (void)enqueueTrack:(Track *)track andPlay:(BOOL)play;
+- (void)enqueueTracks:(NSArray *)tracks;
+- (void)enqueueTracks:(NSArray *)tracks andPlayTrackWithIndex:(NSInteger)index;
 - (void)stopPlayback;
 - (void)clearQueueAndResetPlayer:(BOOL)resetPlayer;
 
