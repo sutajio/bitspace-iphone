@@ -15,12 +15,10 @@
 	Release *theRelease;
 	NSFetchedResultsController *fetchedResultsController;
 	
-	UIView *tableHeaderView;
+	IBOutlet UIView *tableHeaderView;
 	IBOutlet UIImageView *artworkImage;
 	IBOutlet UILabel *artistLabel;
 	IBOutlet UILabel *titleLabel;
-	
-	UIView *tableFooterView;
 	IBOutlet UILabel *releasedAtLabel;
 	IBOutlet UILabel *releasedByLabel;
 }
