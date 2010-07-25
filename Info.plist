@@ -8,8 +8,6 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIconFile</key>
-	<string>logo_200x200.png</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.sutajio.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -31,7 +29,7 @@
 	<key>SiteURL</key>
 	<string>http://bitspace.at/</string>
 	<key>StartPage</key>
-	<string>http://bitspace.at/featured</string>
+	<string>http://localhost:3000/featured</string>
 	<key>SynchronizationInterval</key>
 	<string>86400</string>
 	<key>UIBackgroundModes</key>
@@ -40,5 +38,7 @@
 	</array>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleBlackOpaque</string>
+	<key>UIPrerenderedIcon</key>
+	<true/>
 </dict>
 </plist>

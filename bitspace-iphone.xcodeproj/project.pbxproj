@@ -89,6 +89,8 @@
 		85D0FDF211E78A730030994D /* heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 85D0FDF111E78A730030994D /* heart.png */; };
 		85D4D9E611E4CA9800D9ACD9 /* button-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 85D4D9E511E4CA9800D9ACD9 /* button-default.png */; };
 		85D4D9EE11E4CE5600D9ACD9 /* button-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 85D4D9ED11E4CE5600D9ACD9 /* button-highlighted.png */; };
+		85D67FE011FC9C2700A74832 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85D67FDF11FC9C2700A74832 /* Icon@2x.png */; };
+		85D67FE411FC9F8400A74832 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 85D67FE311FC9F8400A74832 /* Icon-72.png */; };
 		85EA225411E655DF00B1D0EC /* FavoritesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EA225311E655DF00B1D0EC /* FavoritesController.m */; };
 		85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EE799011CBAD5A00714380 /* TrackTableViewCell.m */; };
 		85FE1F2111EC8E6A005D1F15 /* ArtistsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85FE1F2011EC8E6A005D1F15 /* ArtistsController.m */; };
@@ -248,6 +250,8 @@
 		85D0FDF111E78A730030994D /* heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heart.png; sourceTree = "<group>"; };
 		85D4D9E511E4CA9800D9ACD9 /* button-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-default.png"; sourceTree = "<group>"; };
 		85D4D9ED11E4CE5600D9ACD9 /* button-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-highlighted.png"; sourceTree = "<group>"; };
+		85D67FDF11FC9C2700A74832 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		85D67FE311FC9F8400A74832 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		85EA225211E655DF00B1D0EC /* FavoritesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoritesController.h; sourceTree = "<group>"; };
 		85EA225311E655DF00B1D0EC /* FavoritesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoritesController.m; sourceTree = "<group>"; };
 		85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackTableViewCell.h; sourceTree = "<group>"; };
@@ -335,6 +339,8 @@
 				85FE243911F0C2AA005D1F15 /* progress-slider-thumb.png */,
 				85FE236C11EFB873005D1F15 /* logo_200x200.png */,
 				85FE236211EFB78A005D1F15 /* Icon.png */,
+				85D67FDF11FC9C2700A74832 /* Icon@2x.png */,
+				85D67FE311FC9F8400A74832 /* Icon-72.png */,
 				85FE214A11EF6F29005D1F15 /* playing.png */,
 				85FE213F11EF6CA3005D1F15 /* Default.png */,
 				85FE20F911EF5A1F005D1F15 /* sign-in-bg.png */,
@@ -715,6 +721,8 @@
 				85FE246D11F0C7AC005D1F15 /* progress-slider-maximum.png in Resources */,
 				85FE249511F0CCAA005D1F15 /* progress-slider-minimum.png in Resources */,
 				85FE251811F0D824005D1F15 /* MainWindow-iPad.xib in Resources */,
+				85D67FE011FC9C2700A74832 /* Icon@2x.png in Resources */,
+				85D67FE411FC9F8400A74832 /* Icon-72.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
