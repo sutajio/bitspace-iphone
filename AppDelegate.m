@@ -93,6 +93,12 @@
 											 selector:@selector(handleNetworkError:) 
 												 name:@"NetworkError" 
 											   object:nil];
+	
+	// Watch for low memory warnings
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(didReceiveMemoryWarning) 
+												 name:@"UIApplicationDidReceiveMemoryWarningNotification" 
+											   object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -454,6 +460,13 @@
 
 #pragma mark -
 #pragma mark Memory management
+
+- (void)didReceiveMemoryWarning {
+	for(NSManagedObject *obj in [self.managedObjectContext registeredObjects]) {
+		[self.managedObjectContext refreshObject:obj mergeChanges:NO];
+	}	
+}
+
 
 - (void)dealloc {
 	[syncQueue release];

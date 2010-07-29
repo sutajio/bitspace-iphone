@@ -184,10 +184,9 @@
 	}
 }
 
--(void)dealloc {
-	if(smallArtworkImage) { [smallArtworkImage release]; }
-	if(largeArtworkImage) { [largeArtworkImage release]; }
-	[super dealloc];
+- (void)didTurnIntoFault {
+	[smallArtworkImage release]; smallArtworkImage = nil;
+	[largeArtworkImage release]; largeArtworkImage = nil;
 }
 
 @end

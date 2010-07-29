@@ -66,7 +66,7 @@
 	self.detailTextLabel.text = self.release.artist;
 	
 	if(release.smallArtworkImage) {
-		self.imageView.image = release.smallArtworkImage;
+		self.imageView.image = self.release.smallArtworkImage;
 	} else {
 		self.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
 	}
