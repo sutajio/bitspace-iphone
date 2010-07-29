@@ -13,12 +13,16 @@
 
 @synthesize url, delegate;
 
++ (NSString *)cachePathForKey:(NSString *)key {
+	return [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"Tracks/%@", [key stringByReplacingOccurrencesOfString:@"/" withString:@"|"]]];
+}
+
 + (NSOutputStream *)outputStreamForKey:(NSString *)key {
-	[[NSFileManager defaultManager] createDirectoryAtPath:cachePathForKey(@"") 
+	[[NSFileManager defaultManager] createDirectoryAtPath:[TrackLoader cachePathForKey:@""] 
 							  withIntermediateDirectories:YES 
 											   attributes:nil 
 													error:NULL];
-	return [NSOutputStream outputStreamToFileAtPath:cachePathForKey(key) append:NO];
+	return [NSOutputStream outputStreamToFileAtPath:[TrackLoader cachePathForKey:key]  append:NO];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {

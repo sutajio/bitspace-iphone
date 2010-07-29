@@ -28,6 +28,7 @@
 @property (nonatomic, retain) NSDate *lovedAt;
 @property (nonatomic, retain) NSNumber *touched;
 @property (nonatomic, retain) NSNumber *loading;
+@property (nonatomic, retain) NSNumber *cached;
 @property (nonatomic, retain) TrackLoader *loader;
 
 - (BOOL)hasCache;

@@ -28,6 +28,8 @@
 	NSEntityDescription *trackEntityDescription;
 	NSArray *cachedReleases;
 	NSArray *cachedTracks;
+	NSDate *lastUpdateDate;
+	BOOL didFail;
 }
 
 @property (nonatomic, assign) id <ReleasesLoaderDelegate> delegate;
@@ -36,5 +38,7 @@
 @property (nonatomic, retain, readonly) NSEntityDescription *artistEntityDescription;
 @property (nonatomic, retain, readonly) NSEntityDescription *releaseEntityDescription;
 @property (nonatomic, retain, readonly) NSEntityDescription *trackEntityDescription;
+@property (nonatomic, retain) NSDate *lastUpdateDate;
+@property (nonatomic, readonly) BOOL didFail;
 
 @end

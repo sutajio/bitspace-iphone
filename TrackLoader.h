@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define cachePathForKey(key) [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"Tracks/%@", [key stringByReplacingOccurrencesOfString:@"/" withString:@"|"]]]
-
 
 @protocol TrackLoaderDelegate <NSObject>
 @optional
@@ -28,5 +26,7 @@
 
 @property (nonatomic, retain) NSString *url;
 @property (nonatomic, assign) id <TrackLoaderDelegate> delegate;
+
++ (NSString *)cachePathForKey:(NSString *)key;
 
 @end

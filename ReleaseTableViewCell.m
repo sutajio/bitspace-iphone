@@ -18,6 +18,11 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 		
+		artworkImageView = [[[UIImageView alloc] init] autorelease];
+		artworkImageView.frame = CGRectMake(0.0f, 0.0f, 125.0f, 125.0f);
+		artworkImageView.hidden = YES;
+		[self.contentView addSubview:artworkImageView];
+		
 		downloadProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
 		downloadProgressView.frame = CGRectMake(135.0f, 95.0f, 175.0f, 9.0f);
 		downloadProgressView.progress = 0.0f;
@@ -65,10 +70,25 @@
 	self.textLabel.text = self.release.title;
 	self.detailTextLabel.text = self.release.artist;
 	
+	self.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
 	if(release.smallArtworkImage) {
-		self.imageView.image = self.release.smallArtworkImage;
+		artworkImageView.hidden = NO;
+		artworkImageView.image = self.release.smallArtworkImage;
+		[self.contentView bringSubviewToFront:artworkImageView];
+		if(isWaitingForArtwork == YES) {
+			artworkImageView.alpha = 0.0f;
+			[UIView beginAnimations:@"ShowArtwork" context:nil];
+			[UIView setAnimationDuration:0.2f];
+			[UIView setAnimationBeginsFromCurrentState:NO];
+			artworkImageView.alpha = 1.0f;
+			[UIView commitAnimations];
+			isWaitingForArtwork = NO;
+		}
 	} else {
-		self.imageView.image = [UIImage imageNamed:@"cover-art-small.jpg"];
+		if(release.smallArtworkLoader) {
+			isWaitingForArtwork = YES;
+		}
+		artworkImageView.hidden = YES;
 	}
 	
 	if([release hasOfflineTracks] == YES) {

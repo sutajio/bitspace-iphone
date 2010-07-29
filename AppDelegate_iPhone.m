@@ -22,6 +22,11 @@
 
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
+	
+	// Add the tab bar controller's current view as a subview of the window
+	[window addSubview:tabBarController.view];
+	
+	// Call the super class
 	[super applicationDidFinishLaunching:application];
 	
 	// Pass self to the controllers
@@ -29,8 +34,7 @@
 	releasesController.appDelegate = self;
 	favoritesController.appDelegate = self;
 	
-	// Add the tab bar controller's current view as a subview of the window
-	[window addSubview:tabBarController.view];
+	// Show the application window
 	[window makeKeyAndVisible];
 	
 	// Select the correct tab if user has used the app before

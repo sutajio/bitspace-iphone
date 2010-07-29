@@ -21,6 +21,7 @@
 
 @synthesize delegate;
 @synthesize insertionContext, persistentStoreCoordinator, releaseEntityDescription;
+@synthesize didFail, lastUpdateDate;
 
 - (void)dealloc {
 	[insertionContext release];
@@ -191,24 +192,27 @@
 	return release;
 }
 
-- (NSString *)lastUpdateDate {
-	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[fetchRequest setEntity:self.releaseEntityDescription];
-	[fetchRequest setFetchLimit:1];
-	NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO selector:@selector(compare:)] autorelease];
-	NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortDescriptor, nil] autorelease];
-	[fetchRequest setSortDescriptors:sortDescriptors];
-	NSArray *result = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
-	if([result count] > 0) {
-		Release *release = [result objectAtIndex:0];
-		return [release.updatedAt copy];
-	} else {
-		return @"";
-	}
-}
+//- (NSString *)lastUpdateDate {
+//	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+//	[fetchRequest setEntity:self.releaseEntityDescription];
+//	[fetchRequest setFetchLimit:1];
+//	NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO selector:@selector(compare:)] autorelease];
+//	NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortDescriptor, nil] autorelease];
+//	[fetchRequest setSortDescriptors:sortDescriptors];
+//	NSArray *result = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+//	if([result count] > 0) {
+//		Release *release = [result objectAtIndex:0];
+//		return [release.updatedAt copy];
+//	} else {
+//		return @"";
+//	}
+//}
 
 - (void)main {
 	NSLog(@"ReleasesLoader#main");
+	
+	// Reset fail state
+	didFail = NO;
 	
 	// Create a new autorelease pool for this thread
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -225,7 +229,8 @@
 	[delegate loaderDidStart:self];
 	
 	int page = 1;
-	NSString *since = [self lastUpdateDate];
+	[ObjectiveResourceDateFormatter setSerializeFormat:DateTime];
+	NSString *since = self.lastUpdateDate ? [ObjectiveResourceDateFormatter formatDate:self.lastUpdateDate] : @"";
 	
 	do {
 		// Request a page from the server...
@@ -241,6 +246,7 @@
 		Response *res = [Connection sendRequest:request withUser:appDelegate.username andPassword:appDelegate.password];
 		if([res isError]) {
 			NSLog(@"%@", [res.error localizedDescription]);
+			didFail = YES;
 			[delegate loader:self didFailWithError:res.error];
 			break;
 		}

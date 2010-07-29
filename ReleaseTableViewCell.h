@@ -12,7 +12,9 @@
 
 @interface ReleaseTableViewCell : UITableViewCell {
 	Release *release;
+	UIImageView *artworkImageView;
 	UIProgressView *downloadProgressView;
+	BOOL isWaitingForArtwork;
 }
 
 @property (readwrite, assign) Release *release;

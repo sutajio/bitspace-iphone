@@ -27,10 +27,11 @@
 @dynamic lovedAt;
 @dynamic touched;
 @dynamic loading;
+@dynamic cached;
 @dynamic loader;
 
 - (BOOL)hasCache {
-	return [[NSFileManager defaultManager] fileExistsAtPath:cachePathForKey(self.url)];
+	return [self.cached boolValue];
 }
 
 - (BOOL)isLoading {
@@ -38,7 +39,7 @@
 }
 
 - (NSString *)cachedFilePath {
-	return cachePathForKey(self.url);
+	return [TrackLoader cachePathForKey:self.url];
 }
 
 - (void)loaderDidBegin {
@@ -54,6 +55,7 @@
 	if([NSThread isMainThread] == YES) {
 		self.loading = [NSNumber numberWithBool:NO];
 		self.loader = nil;
+		self.cached = [NSNumber numberWithBool:[[NSFileManager defaultManager] fileExistsAtPath:[TrackLoader cachePathForKey:self.url]]];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackOfflineModeDownloadDidFinish" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(loaderDidFinish) withObject:nil waitUntilDone:NO];
@@ -85,7 +87,8 @@
 - (void)clearCache {
 	if([self hasCache] && self.isLoading == NO) {
 		NSLog(@"Zapp!! %@", self.url);
-		[[NSFileManager defaultManager] removeItemAtPath:cachePathForKey(self.url) error:nil];
+		self.cached = [NSNumber numberWithBool:NO];
+		[[NSFileManager defaultManager] removeItemAtPath:[TrackLoader cachePathForKey:self.url] error:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackOfflineModeDidClear" object:self];
 	}
 }

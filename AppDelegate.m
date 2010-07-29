@@ -93,12 +93,6 @@
 											 selector:@selector(handleNetworkError:) 
 												 name:@"NetworkError" 
 											   object:nil];
-	
-	// Watch for low memory warnings
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(didReceiveMemoryWarning) 
-												 name:@"UIApplicationDidReceiveMemoryWarningNotification" 
-											   object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -114,6 +108,10 @@
 			abort();
         } 
     }
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+	[self applicationDidReceiveMemoryWarning:application];
 }
 
 
@@ -291,6 +289,7 @@
 		releasesLoader = [[ReleasesLoader alloc] init];
 		releasesLoader.delegate = self;
 		releasesLoader.persistentStoreCoordinator = self.persistentStoreCoordinator;
+		releasesLoader.lastUpdateDate = [self lastSynchronizationDate];
 		[self.operationQueue addOperation:releasesLoader];
 	}
 }
@@ -320,7 +319,9 @@
 - (void)loaderDidFinish:(ReleasesLoader *)loader {
 	if([NSThread isMainThread]) {
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesSync"];
+		if(loader.didFail == NO) {
+			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesSync"];
+		}
 		[releasesLoader release];
 		releasesLoader = nil;
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidFinish" object:self];
@@ -461,10 +462,10 @@
 #pragma mark -
 #pragma mark Memory management
 
-- (void)didReceiveMemoryWarning {
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
 	for(NSManagedObject *obj in [self.managedObjectContext registeredObjects]) {
 		[self.managedObjectContext refreshObject:obj mergeChanges:NO];
-	}	
+	}
 }
 
 
