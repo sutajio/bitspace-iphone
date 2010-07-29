@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ReleasesLoader.h"
 
-@class PlayerController, ArtistsController, ReleasesController, FavoritesController, SyncQueue;
+@class PlayerController, SyncQueue;
 
 @interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, ReleasesLoaderDelegate> {
     NSString *siteURL;
@@ -19,11 +19,7 @@
 	NSOperationQueue *operationQueue;
 	
 	UIWindow *window;
-    UITabBarController *tabBarController;
 	PlayerController *playerController;
-	ArtistsController *artistsController;
-	ReleasesController *releasesController;
-	FavoritesController *favoritesController;
 	
 	NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;	    
@@ -41,11 +37,7 @@
 @property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
 @property (nonatomic, retain) IBOutlet PlayerController *playerController;
-@property (nonatomic, retain) IBOutlet ArtistsController *artistsController;
-@property (nonatomic, retain) IBOutlet ReleasesController *releasesController;
-@property (nonatomic, retain) IBOutlet FavoritesController *favoritesController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
@@ -58,8 +50,6 @@
 
 @property (nonatomic, readonly) NSString *applicationDocumentsDirectory;
 
-- (void)requestAuthenticationFromUser;
-- (BOOL)validateUsername:(NSString *)username andPassword:(NSString *)password;
-- (void)resetAppState;
+- (void)showPlayer;
 
 @end

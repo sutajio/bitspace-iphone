@@ -8,28 +8,24 @@
 
 #import "AppDelegate.h"
 #import "ObjectiveResource.h"
-#import "PlayerController.h"
-#import "ArtistsController.h"
-#import "ReleasesController.h"
-#import "FavoritesController.h"
-#import "SignInController.h"
 #import "Connection.h"
 #import "Response.h"
 #import "SyncQueue.h"
+#import "PlayerController.h"
+
+
+@interface AppDelegate ()
+- (BOOL)validateUsername:(NSString *)username andPassword:(NSString *)password;
+- (void)requestAuthenticationFromUser;
+@end
+
 
 @implementation AppDelegate
 
-@synthesize siteURL, username, password;
-
-@synthesize operationQueue;
-
 @synthesize window;
-@synthesize tabBarController;
 @synthesize playerController;
-@synthesize artistsController;
-@synthesize releasesController;
-@synthesize favoritesController;
-
+@synthesize siteURL, username, password;
+@synthesize operationQueue;
 @synthesize releasesLoader, lastSynchronizationDate;
 
 
@@ -58,6 +54,9 @@
 		[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 	}
 #endif
+	
+	// Pass self to the player controller
+	self.playerController.appDelegate = self;
 	
 	// Watch for release-synchronization events
 	[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -94,19 +93,6 @@
 											 selector:@selector(handleNetworkError:) 
 												 name:@"NetworkError" 
 											   object:nil];
-	
-	// Pass self to the controllers
-	playerController.appDelegate = self;
-	artistsController.appDelegate = self;
-	releasesController.appDelegate = self;
-	favoritesController.appDelegate = self;
-	
-	// Add the tab bar controller's current view as a subview of the window
-	[window addSubview:tabBarController.view];
-	[window makeKeyAndVisible];
-	
-	// Select the correct tab if user has used the app before
-	self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -125,18 +111,12 @@
 }
 
 
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+#pragma mark -
+#pragma mark Player
 
-	// Save which tab the user has selected
-	[[NSUserDefaults standardUserDefaults] setInteger:self.tabBarController.selectedIndex forKey:@"TabBarSelectedIndex"];
+- (void)showPlayer {
+	// This method is overriden in the device specific AppDelegate classes
 }
-
-
-/*
-// Optional UITabBarControllerDelegate method
-- (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed {
-}
-*/
 
 
 #pragma mark -
@@ -177,15 +157,8 @@
 #pragma mark -
 #pragma mark Authentication
 
-
 - (void)requestAuthenticationFromUser {
-	
-	// Show sign in screen
-	SignInController *signInController = [[SignInController alloc] init];
-	signInController.appDelegate = self;
-	signInController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self.tabBarController presentModalViewController:signInController animated:YES];
-	[signInController release];
+	// This method is overriden in the device specific AppDelegate classes
 }
 
 
@@ -225,23 +198,26 @@
 }
 
 
+- (void)resetUI {
+	// This method is overriden in the device specific AppDelegate classes
+}
+
+
 - (void)resetAppState {
 	NSLog(@"AppDelegate#resetAppState");
 	
+	// Show the player
+	[self showPlayer];
+	
 	// Stop audio playback
 	[self.playerController stopPlayback];
+	[self.playerController clearQueueAndResetPlayer:YES];
+	
+	// Reset the user interface
+	[self resetUI];
 	
 	// Stop operation queue
 	[self.operationQueue cancelAllOperations];
-	
-	// Select the player controller
-	self.tabBarController.selectedViewController = self.playerController;
-	
-	// Reset all views
-	[playerController clearQueueAndResetPlayer:YES];
-	[artistsController resetView];
-	[releasesController resetView];
-	[favoritesController resetView];
 	
 	// Reset CoreData
 	[managedObjectContext release]; managedObjectContext = nil;
@@ -486,7 +462,6 @@
     [managedObjectModel release];
     [persistentStoreCoordinator release];
     
-	[tabBarController release];
 	[window release];
 	[super dealloc];
 }

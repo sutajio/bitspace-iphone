@@ -242,7 +242,7 @@
 	
 	if(selectedTrack.parent) {
 		[self.appDelegate.playerController enqueueTracks:fetchedObjects andPlayTrackWithIndex:indexPath.row];
-		self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
+		[self.appDelegate showPlayer];
 	}
 }
 

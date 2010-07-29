@@ -79,7 +79,7 @@
 	NSMutableArray *tracks = [self shuffleArray:[fetchedResultsController fetchedObjects]];
 	[self.appDelegate.playerController enqueueTracks:tracks];
 	[self.appDelegate.playerController nextTrack:nil];
-	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
+	[self.appDelegate showPlayer];
 }
 
 
@@ -264,7 +264,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[self.appDelegate.playerController enqueueTracks:[fetchedResultsController fetchedObjects] andPlayTrackWithIndex:indexPath.row];
-	self.appDelegate.tabBarController.selectedViewController = self.appDelegate.playerController;
+	[self.appDelegate showPlayer];
 }
 
 
