@@ -443,7 +443,7 @@
 				   self.playerShuffleState == PL_SHUFFLE_ON) {
 					[self nextTrack:nil];
 				} else {
-					[self clearQueueAndResetPlayer:NO];
+					[self clearQueueAndResetPlayer:YES];
 				}
 			} else {
 				[self nextTrack:nil];
