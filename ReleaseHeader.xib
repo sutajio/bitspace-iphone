@@ -132,7 +132,7 @@
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<string key="IBUIText">Label Name</string>
-						<object class="NSFont" key="IBUIFont" id="760582392">
+						<object class="NSFont" key="IBUIFont" id="253111433">
 							<string key="NSName">Helvetica</string>
 							<double key="NSSize">10</double>
 							<int key="NSfFlags">16</int>
@@ -157,7 +157,7 @@
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<string key="IBUIText">2010-07-15</string>
-						<reference key="IBUIFont" ref="760582392"/>
+						<reference key="IBUIFont" ref="253111433"/>
 						<reference key="IBUITextColor" ref="963543450"/>
 						<nil key="IBUIHighlightedColor"/>
 						<reference key="IBUIShadowColor" ref="477462032"/>
@@ -182,9 +182,9 @@
 						</object>
 						<string key="IBUITitleShadowOffset">{0, 1}</string>
 						<string key="IBUINormalTitle">Offline</string>
-						<object class="NSColor" key="IBUIHighlightedTitleColor" id="126774166">
+						<object class="NSColor" key="IBUIHighlightedTitleColor" id="766214468">
 							<int key="NSColorSpace">3</int>
-							<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
+							<bytes key="NSWhite">MQA</bytes>
 						</object>
 						<reference key="IBUINormalTitleColor" ref="963543450"/>
 						<object class="NSColor" key="IBUINormalTitleShadowColor">
@@ -213,7 +213,7 @@
 						<reference key="IBUIFont" ref="723603217"/>
 						<string key="IBUITitleShadowOffset">{0, 1}</string>
 						<string key="IBUINormalTitle">Shuffle</string>
-						<reference key="IBUIHighlightedTitleColor" ref="126774166"/>
+						<reference key="IBUIHighlightedTitleColor" ref="766214468"/>
 						<reference key="IBUINormalTitleColor" ref="963543450"/>
 						<object class="NSColor" key="IBUINormalTitleShadowColor">
 							<int key="NSColorSpace">3</int>

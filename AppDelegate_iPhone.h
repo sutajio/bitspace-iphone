@@ -12,7 +12,8 @@
 @class ArtistsController, ReleasesController, FavoritesController;
 
 @interface AppDelegate_iPhone : AppDelegate {
-    UITabBarController *tabBarController;
+	UITabBarController *tabBarController;
+	UIImageView *indicatorImage;
 	ArtistsController *artistsController;
 	ReleasesController *releasesController;
 	FavoritesController *favoritesController;
