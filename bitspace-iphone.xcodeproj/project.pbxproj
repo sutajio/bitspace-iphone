@@ -84,6 +84,9 @@
 		85783A3F1200CC9A00991D60 /* LibraryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85783A3D1200CC9A00991D60 /* LibraryController.m */; };
 		85783A401200CC9A00991D60 /* LibraryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85783A3E1200CC9A00991D60 /* LibraryController.xib */; };
 		85783A9F1200D87D00991D60 /* BrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85783A9E1200D87D00991D60 /* BrowserController.m */; };
+		85783E061203295400991D60 /* PlayerDefault.png in Resources */ = {isa = PBXBuildFile; fileRef = 85783E051203295400991D60 /* PlayerDefault.png */; };
+		85783E101203374900991D60 /* Loading.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85783E0F1203374900991D60 /* Loading.xib */; };
+		85783E7B1203431E00991D60 /* LoadingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85783E7A1203431E00991D60 /* LoadingController.m */; };
 		8595C84F11E3A3F700C8B8A1 /* release-header.png in Resources */ = {isa = PBXBuildFile; fileRef = 8595C84E11E3A3F700C8B8A1 /* release-header.png */; };
 		8595C9E411E3E63C00C8B8A1 /* TrackLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */; };
 		85C8930911E2997C00FD030C /* volume-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8930811E2997C00FD030C /* volume-high.png */; };
@@ -252,6 +255,10 @@
 		85783A3E1200CC9A00991D60 /* LibraryController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LibraryController.xib; sourceTree = "<group>"; };
 		85783A9D1200D87D00991D60 /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
 		85783A9E1200D87D00991D60 /* BrowserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserController.m; sourceTree = "<group>"; };
+		85783E051203295400991D60 /* PlayerDefault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PlayerDefault.png; sourceTree = "<group>"; };
+		85783E0F1203374900991D60 /* Loading.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Loading.xib; sourceTree = "<group>"; };
+		85783E791203431E00991D60 /* LoadingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingController.h; sourceTree = "<group>"; };
+		85783E7A1203431E00991D60 /* LoadingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingController.m; sourceTree = "<group>"; };
 		8595C84E11E3A3F700C8B8A1 /* release-header.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release-header.png"; sourceTree = "<group>"; };
 		8595C9E211E3E63C00C8B8A1 /* TrackLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackLoader.h; sourceTree = "<group>"; };
 		8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackLoader.m; sourceTree = "<group>"; };
@@ -349,6 +356,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				85783E051203295400991D60 /* PlayerDefault.png */,
 				85FE249411F0CCAA005D1F15 /* progress-slider-minimum.png */,
 				85FE246C11F0C7AC005D1F15 /* progress-slider-maximum.png */,
 				85FE246811F0C620005D1F15 /* progress-slider-thumb-highlighted.png */,
@@ -453,6 +461,8 @@
 			children = (
 				855913E811DA0A3C00583C21 /* SignInController.h */,
 				855913E911DA0A3C00583C21 /* SignInController.m */,
+				85783E791203431E00991D60 /* LoadingController.h */,
+				85783E7A1203431E00991D60 /* LoadingController.m */,
 				8559192011DE326600583C21 /* PullToRefreshTableViewController.h */,
 				8559192111DE326600583C21 /* PullToRefreshTableViewController.m */,
 				85D0FCE911E762E40030994D /* Player */,
@@ -645,6 +655,7 @@
 				855913DC11DA059B00583C21 /* SignIn.xib */,
 				8559190711DE317B00583C21 /* RefreshTableHeaderView.h */,
 				8559190811DE317B00583C21 /* RefreshTableHeaderView.m */,
+				85783E0F1203374900991D60 /* Loading.xib */,
 			);
 			name = "Views-iPhone";
 			sourceTree = "<group>";
@@ -751,6 +762,8 @@
 				85D6802211FCA58200A74832 /* MainWindow-iPad.xib in Resources */,
 				8578399C11FE588A00991D60 /* Browser.xib in Resources */,
 				85783A401200CC9A00991D60 /* LibraryController.xib in Resources */,
+				85783E061203295400991D60 /* PlayerDefault.png in Resources */,
+				85783E101203374900991D60 /* Loading.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,6 +832,7 @@
 				85D67FF811FCA3E200A74832 /* AppDelegate_iPhone.m in Sources */,
 				85783A3F1200CC9A00991D60 /* LibraryController.m in Sources */,
 				85783A9F1200D87D00991D60 /* BrowserController.m in Sources */,
+				85783E7B1203431E00991D60 /* LoadingController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

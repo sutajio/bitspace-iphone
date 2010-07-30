@@ -12,6 +12,7 @@
 #import "Response.h"
 #import "SyncQueue.h"
 #import "PlayerController.h"
+#import "LoadingController.h"
 
 
 @interface AppDelegate ()
@@ -120,6 +121,34 @@
 
 - (void)showPlayer {
 	// This method is overriden in the device specific AppDelegate classes
+}
+
+
+#pragma mark -
+#pragma mark Modal loading indicator
+
+- (void)presentModalLoadingIndicator {
+	if(modalLoadingIndicator == nil) {
+		modalLoadingIndicator = [[LoadingController alloc] initWithNibName:@"Loading" bundle:nil];
+		modalLoadingIndicator.view.alpha = 0.0f;
+		[window addSubview:modalLoadingIndicator.view];
+	}
+	[UIView beginAnimations:@"ModalLoadingIndicator" context:nil];
+	[UIView setAnimationDuration:0.5f];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	modalLoadingIndicator.view.alpha = 1.0f;
+	[UIView commitAnimations];
+}
+
+
+- (void)dismissModalLoadingIndicator {
+	if(modalLoadingIndicator) {
+		[UIView beginAnimations:@"ModalLoadingIndicator" context:nil];
+		[UIView setAnimationDuration:0.5f];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		modalLoadingIndicator.view.alpha = 0.0f;
+		[UIView commitAnimations];
+	}
 }
 
 
@@ -319,6 +348,7 @@
 - (void)loaderDidFinish:(ReleasesLoader *)loader {
 	if([NSThread isMainThread]) {
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+		[self dismissModalLoadingIndicator];
 		if(loader.didFail == NO) {
 			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesSync"];
 		}
@@ -351,7 +381,11 @@
 
 - (void)loaderDidStart:(ReleasesLoader *)loader {
 	if([NSThread isMainThread]) {
-		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+		if([self lastSynchronizationDate]) {
+			[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+		} else {
+			[self presentModalLoadingIndicator];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidStart" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(loaderDidStart:) withObject:loader waitUntilDone:NO];

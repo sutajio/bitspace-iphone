@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="72"/>
+			<integer value="13"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -42,6 +42,18 @@
 				<int key="NSvFlags">292</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
+					<object class="IBUIImageView" id="1069028532">
+						<reference key="NSNextResponder" ref="649839942"/>
+						<int key="NSvFlags">274</int>
+						<string key="NSFrameSize">{320, 410}</string>
+						<reference key="NSSuperview" ref="649839942"/>
+						<bool key="IBUIUserInteractionEnabled">NO</bool>
+						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+						<object class="NSCustomResource" key="IBUIImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">PlayerDefault.png</string>
+						</object>
+					</object>
 					<object class="IBUIWebView" id="433267160">
 						<reference key="NSNextResponder" ref="649839942"/>
 						<int key="NSvFlags">274</int>
@@ -594,6 +606,7 @@
 							<reference ref="180247752"/>
 							<reference ref="447210005"/>
 							<reference ref="877853531"/>
+							<reference ref="1069028532"/>
 							<reference ref="433267160"/>
 						</object>
 						<reference key="parent" ref="0"/>
@@ -749,6 +762,11 @@
 						<reference key="object" ref="12154819"/>
 						<reference key="parent" ref="447210005"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">109</int>
+						<reference key="object" ref="1069028532"/>
+						<reference key="parent" ref="649839942"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -758,6 +776,7 @@
 					<string>-1.CustomClassName</string>
 					<string>-2.CustomClassName</string>
 					<string>100.IBPluginDependency</string>
+					<string>109.IBPluginDependency</string>
 					<string>13.IBEditorWindowLastContentRect</string>
 					<string>13.IBPluginDependency</string>
 					<string>14.IBPluginDependency</string>
@@ -791,7 +810,8 @@
 					<string>PlayerController</string>
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{424, 276}, {320, 480}}</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<string>{{787, 276}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -836,7 +856,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">108</int>
+			<int key="maxID">109</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1414,6 +1434,7 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>PlayerDefault.png</string>
 				<string>cover-art-large.jpg</string>
 				<string>repeat-off.png</string>
 				<string>shuffle-off.png</string>
@@ -1422,6 +1443,7 @@
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{320, 410}</string>
 				<string>{315, 315}</string>
 				<string>{25, 25}</string>
 				<string>{25, 25}</string>

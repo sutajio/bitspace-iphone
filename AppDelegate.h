@@ -12,7 +12,7 @@
 @class PlayerController, SyncQueue;
 
 @interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, ReleasesLoaderDelegate> {
-    NSString *siteURL;
+	NSString *siteURL;
 	NSString *username;
 	NSString *password;
 	
@@ -22,12 +22,12 @@
 	PlayerController *playerController;
 	
 	NSManagedObjectModel *managedObjectModel;
-    NSManagedObjectContext *managedObjectContext;	    
-    NSPersistentStoreCoordinator *persistentStoreCoordinator;
+	NSManagedObjectContext *managedObjectContext;	    
+	NSPersistentStoreCoordinator *persistentStoreCoordinator;
 	
 	SyncQueue *syncQueue;
-	
 	ReleasesLoader *releasesLoader;
+	UIViewController *modalLoadingIndicator;
 }
 
 @property (nonatomic, retain) NSString *siteURL;
@@ -44,7 +44,6 @@
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 @property (nonatomic, retain, readonly) SyncQueue *syncQueue;
-
 @property (nonatomic, retain, readonly) ReleasesLoader *releasesLoader;
 @property (nonatomic, readonly) NSDate *lastSynchronizationDate;
 
