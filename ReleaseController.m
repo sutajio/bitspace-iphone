@@ -113,6 +113,11 @@
     if (tableHeaderView == nil) {
         [[NSBundle mainBundle] loadNibNamed:@"ReleaseHeader" owner:self options:nil];
     }
+	
+	// Load the release footer nib
+    if (tableFooterView == nil) {
+        [[NSBundle mainBundle] loadNibNamed:@"ReleaseFooter" owner:self options:nil];
+    }
 
 	// Fetch the tracks from CoreData
 	[self refreshRelease];
@@ -121,8 +126,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	
-	// Set the table header
+	// Set the table header and footer
 	self.tableView.tableHeaderView = tableHeaderView;
+	self.tableView.tableFooterView = tableFooterView;
 	
 	// Set the artwork
 	if(theRelease.smallArtworkImage) {
@@ -139,8 +145,8 @@
 	if(theRelease.label) {
 		self.releasedByLabel.text = theRelease.label;
 	} else {
-		self.releasedByLabel.text = @"Unknown label";
-		self.releasedByLabel.font = [UIFont italicSystemFontOfSize:10];
+		self.releasedByLabel.hidden = YES;
+		self.releasedAtLabel.frame = self.releasedByLabel.frame;
 	}
 	
 	if(theRelease.releaseDate) {
