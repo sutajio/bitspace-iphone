@@ -172,7 +172,7 @@
         cell = [[[TrackTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 	}
 	
-	cell.index = [indexPath row]+1;
+	cell.index = -1;
 	cell.showAlbumArtist = YES;
     
 	if(tableView == searchController.searchResultsTableView) {
@@ -354,7 +354,7 @@
 			
 		case NSFetchedResultsChangeUpdate:
 			cell = (TrackTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-			cell.index = [indexPath row]+1;
+			cell.index = -1;
 			cell.showAlbumArtist = YES;
 			cell.track = [controller objectAtIndexPath:indexPath];
 			break;

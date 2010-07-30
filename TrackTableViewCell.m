@@ -120,10 +120,20 @@
 	if([[(AppDelegate *)[[UIApplication sharedApplication] delegate] playerController] currentTrack] == track) {
 		trackNrLabel.hidden = YES;
 		playingImage.hidden = NO;
+		textLabel.frame = CGRectMake(40.0f, 10.0f, 220.0f, 22.0f);
+		detailTextLabel.frame = CGRectMake(40.0f, 28.0f, 220.0f, 22.0f);
 	} else {
-		trackNrLabel.text = [NSString stringWithFormat:@"%d", self.index];
-		trackNrLabel.hidden = NO;
 		playingImage.hidden = YES;
+		if(self.index == -1) {
+			trackNrLabel.hidden = YES;
+			textLabel.frame = CGRectMake(10.0f, 10.0f, 250.0f, 22.0f);
+			detailTextLabel.frame = CGRectMake(10.0f, 28.0f, 250.0f, 22.0f);
+		} else {
+			trackNrLabel.text = [NSString stringWithFormat:@"%d", self.index];
+			trackNrLabel.hidden = NO;
+			textLabel.frame = CGRectMake(40.0f, 10.0f, 220.0f, 22.0f);
+			detailTextLabel.frame = CGRectMake(40.0f, 28.0f, 220.0f, 22.0f);
+		}
 	}
 	
 	textLabel.text = track.title;
