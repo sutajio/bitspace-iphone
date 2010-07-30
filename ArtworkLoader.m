@@ -47,7 +47,12 @@
 - (void)main {
 	NSLog(@"ArtworkLoader#main");
 	NSData *artworkData = [self cachedArtworkWithKey:self.url];
-	UIImage *artworkImage = [UIImage imageWithData:artworkData];
+	UIImage *artworkImage;
+	if(artworkData) {
+		artworkImage = [UIImage imageWithData:artworkData];
+	} else {
+		artworkImage = [UIImage imageNamed:@"cover-art-large.jpg"];
+	}
 	[delegate loaderDidFinishLoadingArtwork:artworkImage fromURL:self.url];
 }
 
