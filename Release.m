@@ -184,6 +184,11 @@
 	}
 }
 
+- (void)didReceiveMemoryWarning {
+	[smallArtworkImage release]; smallArtworkImage = nil;
+	[largeArtworkImage release]; largeArtworkImage = nil;
+}
+
 - (void)didTurnIntoFault {
 	[smallArtworkImage release]; smallArtworkImage = nil;
 	[largeArtworkImage release]; largeArtworkImage = nil;

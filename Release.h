@@ -47,5 +47,6 @@
 - (NSInteger)numberOfOfflineTracks;
 - (NSInteger)numberOfSets;
 - (NSInteger)numberOfTracksInSet:(NSInteger)setNr;
+- (void)didReceiveMemoryWarning;
 
 @end

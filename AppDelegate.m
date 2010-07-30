@@ -464,7 +464,8 @@
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
 	for(NSManagedObject *obj in [self.managedObjectContext registeredObjects]) {
-		[self.managedObjectContext refreshObject:obj mergeChanges:NO];
+		if([obj respondsToSelector:@selector(didReceiveMemoryWarning)])
+			[obj performSelector:@selector(didReceiveMemoryWarning)];
 	}
 }
 
