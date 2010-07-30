@@ -74,7 +74,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
-	self.navigationBar.tintColor = [UIColor blackColor];
+	self.navigationBar.tintColor = [UIColor darkGrayColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
