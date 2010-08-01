@@ -183,7 +183,9 @@ void MyAudioQueueIsRunningCallback(void *inUserData, AudioQueueRef inAQ, AudioQu
 void MyAudioSessionInterruptionListener(void *inClientData, UInt32 inInterruptionState)
 {
 	AudioStreamer* streamer = (AudioStreamer *)inClientData;
-	[streamer handleInterruptionChangeToState:inInterruptionState];
+	if(streamer) {
+		[streamer handleInterruptionChangeToState:inInterruptionState];
+	}
 }
 #endif
 
