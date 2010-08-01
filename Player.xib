@@ -42,7 +42,7 @@
 				<int key="NSvFlags">292</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="IBUIImageView" id="1069028532">
+					<object class="IBUIImageView" id="160139538">
 						<reference key="NSNextResponder" ref="649839942"/>
 						<int key="NSvFlags">274</int>
 						<string key="NSFrameSize">{320, 410}</string>
@@ -112,7 +112,7 @@
 					</object>
 					<object class="IBUIView" id="447210005">
 						<reference key="NSNextResponder" ref="649839942"/>
-						<int key="NSvFlags">-2147483360</int>
+						<int key="NSvFlags">-2147483382</int>
 						<object class="NSMutableArray" key="NSSubviews">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBUILabel" id="1040909609">
@@ -265,7 +265,7 @@
 					</object>
 					<object class="IBUIView" id="180247752">
 						<reference key="NSNextResponder" ref="649839942"/>
-						<int key="NSvFlags">-2147483382</int>
+						<int key="NSvFlags">-2147483358</int>
 						<object class="NSMutableArray" key="NSSubviews">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBUISlider" id="340641486">
@@ -606,7 +606,7 @@
 							<reference ref="180247752"/>
 							<reference ref="447210005"/>
 							<reference ref="877853531"/>
-							<reference ref="1069028532"/>
+							<reference ref="160139538"/>
 							<reference ref="433267160"/>
 						</object>
 						<reference key="parent" ref="0"/>
@@ -764,7 +764,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">109</int>
-						<reference key="object" ref="1069028532"/>
+						<reference key="object" ref="160139538"/>
 						<reference key="parent" ref="649839942"/>
 					</object>
 				</object>
@@ -811,7 +811,7 @@
 					<string>UIResponder</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>{{787, 276}, {320, 480}}</string>
+					<string>{{343, 215}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
