@@ -91,6 +91,8 @@
 		85783EC112034F7500991D60 /* release-footer.png in Resources */ = {isa = PBXBuildFile; fileRef = 85783EC012034F7500991D60 /* release-footer.png */; };
 		85783F4212036D4C00991D60 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 85783F4112036D4C00991D60 /* arrow.png */; };
 		858B4C491205D94100A5DD9F /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 858B4C481205D94100A5DD9F /* iTunesArtwork */; };
+		858B4D1D12087AA100A5DD9F /* Aluminium.m in Sources */ = {isa = PBXBuildFile; fileRef = 858B4D1C12087AA100A5DD9F /* Aluminium.m */; };
+		858B4D3312087B7800A5DD9F /* aluminium.png in Resources */ = {isa = PBXBuildFile; fileRef = 858B4D3212087B7800A5DD9F /* aluminium.png */; };
 		8595C84F11E3A3F700C8B8A1 /* release-header.png in Resources */ = {isa = PBXBuildFile; fileRef = 8595C84E11E3A3F700C8B8A1 /* release-header.png */; };
 		8595C9E411E3E63C00C8B8A1 /* TrackLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */; };
 		85C8930911E2997C00FD030C /* volume-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8930811E2997C00FD030C /* volume-high.png */; };
@@ -266,6 +268,10 @@
 		85783EC012034F7500991D60 /* release-footer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release-footer.png"; sourceTree = "<group>"; };
 		85783F4112036D4C00991D60 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		858B4C481205D94100A5DD9F /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		858B4CCB120603AB00A5DD9F /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
+		858B4D1B12087AA100A5DD9F /* Aluminium.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Aluminium.h; sourceTree = "<group>"; };
+		858B4D1C12087AA100A5DD9F /* Aluminium.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Aluminium.m; sourceTree = "<group>"; };
+		858B4D3212087B7800A5DD9F /* aluminium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = aluminium.png; sourceTree = "<group>"; };
 		8595C84E11E3A3F700C8B8A1 /* release-header.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release-header.png"; sourceTree = "<group>"; };
 		8595C9E211E3E63C00C8B8A1 /* TrackLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackLoader.h; sourceTree = "<group>"; };
 		8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackLoader.m; sourceTree = "<group>"; };
@@ -362,6 +368,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				858B4D3212087B7800A5DD9F /* aluminium.png */,
 				858B4C481205D94100A5DD9F /* iTunesArtwork */,
 				85783F4112036D4C00991D60 /* arrow.png */,
 				85783E051203295400991D60 /* PlayerDefault.png */,
@@ -397,6 +404,7 @@
 				8541AE4511C91DF60004C4C9 /* cover-art-small.jpg */,
 				8541AE2911C91C0D0004C4C9 /* cover-art-large.jpg */,
 				8D1107310486CEB800E47090 /* Info.plist */,
+				858B4CCB120603AB00A5DD9F /* Entitlements.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -446,6 +454,8 @@
 				8559184811DDFB4100583C21 /* SyncQueue.m */,
 				855918A111DE0B7C00583C21 /* ProtectedURL.h */,
 				855918A211DE0B7C00583C21 /* ProtectedURL.m */,
+				858B4D1B12087AA100A5DD9F /* Aluminium.h */,
+				858B4D1C12087AA100A5DD9F /* Aluminium.m */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -776,6 +786,7 @@
 				85783EC112034F7500991D60 /* release-footer.png in Resources */,
 				85783F4212036D4C00991D60 /* arrow.png in Resources */,
 				858B4C491205D94100A5DD9F /* iTunesArtwork in Resources */,
+				858B4D3312087B7800A5DD9F /* aluminium.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,6 +856,7 @@
 				85783A3F1200CC9A00991D60 /* LibraryController.m in Sources */,
 				85783A9F1200D87D00991D60 /* BrowserController.m in Sources */,
 				85783E7B1203431E00991D60 /* LoadingController.m in Sources */,
+				858B4D1D12087AA100A5DD9F /* Aluminium.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -856,16 +868,18 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "~/Projects/Sutajio/bitspace-iphone/Entitlements.plist";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = bitspace_iphone_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PRODUCT_NAME = Bitspace;
 				SDKROOT = iphoneos4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Debug;
 		};
@@ -874,14 +888,16 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "~/Projects/Sutajio/bitspace-iphone/Entitlements.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = bitspace_iphone_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PRODUCT_NAME = Bitspace;
 				SDKROOT = iphoneos4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -894,7 +910,9 @@
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PREBINDING = NO;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
@@ -903,11 +921,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PREBINDING = NO;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos4.0;
 			};
 			name = Release;

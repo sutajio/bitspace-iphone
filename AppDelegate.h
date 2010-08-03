@@ -49,6 +49,7 @@
 
 @property (nonatomic, readonly) NSString *applicationDocumentsDirectory;
 
+- (BOOL)validateUsername:(NSString *)usernameValue andPassword:(NSString *)passwordValue;
 - (void)showPlayer;
 
 @end

@@ -42,7 +42,7 @@
 				<int key="NSvFlags">292</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="IBUIImageView" id="160139538">
+					<object class="IBUIImageView" id="529435959">
 						<reference key="NSNextResponder" ref="649839942"/>
 						<int key="NSvFlags">274</int>
 						<string key="NSFrameSize">{320, 410}</string>
@@ -56,7 +56,7 @@
 					</object>
 					<object class="IBUIWebView" id="433267160">
 						<reference key="NSNextResponder" ref="649839942"/>
-						<int key="NSvFlags">274</int>
+						<int key="NSvFlags">-2147483374</int>
 						<string key="NSFrameSize">{320, 410}</string>
 						<reference key="NSSuperview" ref="649839942"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -606,7 +606,7 @@
 							<reference ref="180247752"/>
 							<reference ref="447210005"/>
 							<reference ref="877853531"/>
-							<reference ref="160139538"/>
+							<reference ref="529435959"/>
 							<reference ref="433267160"/>
 						</object>
 						<reference key="parent" ref="0"/>
@@ -764,7 +764,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">109</int>
-						<reference key="object" ref="160139538"/>
+						<reference key="object" ref="529435959"/>
 						<reference key="parent" ref="649839942"/>
 					</object>
 				</object>

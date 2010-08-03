@@ -12,6 +12,7 @@
 #import "ReleaseController.h"
 #import "AppDelegate.h"
 #import "ReleaseTableViewCell.h"
+#import "Aluminium.h"
 
 
 @implementation ReleasesController
@@ -74,7 +75,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
-	self.navigationBar.tintColor = [UIColor darkGrayColor];
+	self.navigationBar.tintColor = [UIColor aluminiumColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];

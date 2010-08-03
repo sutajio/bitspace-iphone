@@ -270,6 +270,7 @@
 			if([self isCancelled] == YES)
 				break;
 		}
+		[responseString release];
 		
 		page++;
 	} while(true);
