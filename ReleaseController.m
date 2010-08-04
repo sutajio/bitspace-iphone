@@ -93,6 +93,15 @@
 }
 
 
+- (void)updateArtwork {
+	if(theRelease.smallArtworkImage) {
+		self.artworkImage.image = theRelease.smallArtworkImage;
+	} else {
+		self.artworkImage.image = [UIImage imageNamed:@"cover-art-small.jpg"];
+	}
+}
+
+
 #pragma mark View methods
 
 /*
@@ -120,6 +129,9 @@
 
 	// Fetch the tracks from CoreData
 	[self refreshRelease];
+	
+	// Watch for the artwork to load
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateArtwork) name:@"finishedLoadingSmallArtwork" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -130,11 +142,7 @@
 	self.tableView.tableFooterView = tableFooterView;
 	
 	// Set the artwork
-	if(theRelease.smallArtworkImage) {
-		self.artworkImage.image = theRelease.smallArtworkImage;
-	} else {
-		self.artworkImage.image = [UIImage imageNamed:@"cover-art-small.jpg"];
-	}
+	[self updateArtwork];
 	
 	// Set the artist and title
 	self.titleLabel.text = theRelease.title;
@@ -195,6 +203,7 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
