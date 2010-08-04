@@ -61,6 +61,7 @@
 
 
 - (void)requestAuthenticationFromUser {
+	[self dismissModalLoadingIndicator];
 	
 	// Show sign in screen
 	SignInController *signInController = [[SignInController alloc] init];
