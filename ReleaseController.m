@@ -88,8 +88,7 @@
 - (void)refreshRelease {
 	NSError *error = nil;
 	if (![[self fetchedResultsController] performFetch:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		abort();
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DatabaseError" object:error];
 	}
 }
 

@@ -94,6 +94,12 @@
 											 selector:@selector(handleNetworkError:) 
 												 name:@"NetworkError" 
 											   object:nil];
+	
+	// Watch for database error events
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(handleDatabaseError:) 
+												 name:@"DatabaseError" 
+											   object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -105,8 +111,7 @@
     NSError *error = nil;
     if (managedObjectContext != nil) {
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-			abort();
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"DatabaseError" object:error];
         } 
     }
 }
@@ -174,6 +179,13 @@
 			[alertView release];
 			break;
 	}
+}
+
+- (void)handleDatabaseError:(NSNotification *)notification {
+	NSError *error = (NSError *)[notification object];
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Database error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[alertView show];
+	[alertView release];
 }
 
 #pragma mark -
@@ -464,18 +476,7 @@
 	NSError *error = nil;
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
-		/*
-		 Replace this implementation with code to handle the error appropriately.
-		 
-		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-		 
-		 Typical reasons for an error here include:
-		 * The persistent store is not accessible
-		 * The schema for the persistent store is incompatible with current managed object model
-		 Check the error message to determine what the actual problem was.
-		 */
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		abort();
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DatabaseError" object:error];
     }    
 	
     return persistentStoreCoordinator;

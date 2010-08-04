@@ -56,6 +56,10 @@
 		self.loading = [NSNumber numberWithBool:NO];
 		self.loader = nil;
 		self.cached = [NSNumber numberWithBool:[[NSFileManager defaultManager] fileExistsAtPath:[TrackLoader cachePathForKey:self.url]]];
+		NSError *error = nil;
+		if(![self.managedObjectContext save:&error]) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"DatabaseError" object:error];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackOfflineModeDownloadDidFinish" object:self];
 	} else {
 		[self performSelectorOnMainThread:@selector(loaderDidFinish) withObject:nil waitUntilDone:NO];
@@ -88,6 +92,10 @@
 	if([self hasCache] && self.isLoading == NO) {
 		NSLog(@"Zapp!! %@", self.url);
 		self.cached = [NSNumber numberWithBool:NO];
+		NSError *error = nil;
+		if(![self.managedObjectContext save:&error]) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"DatabaseError" object:error];
+		}
 		[[NSFileManager defaultManager] removeItemAtPath:[TrackLoader cachePathForKey:self.url] error:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackOfflineModeDidClear" object:self];
 	}
@@ -112,7 +120,10 @@
 		[request setHTTPBody:[@"toggle=on" dataUsingEncoding:NSUTF8StringEncoding]];
 		self.lovedAt = [NSDate date];
 	}
-	[self.managedObjectContext save:nil];
+	NSError *error = nil;
+	if(![self.managedObjectContext save:&error]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DatabaseError" object:error];
+	}
 	[appDelegate.syncQueue enqueueRequest:request];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackLoveStateDidChange" object:self];
 }
