@@ -130,7 +130,7 @@
 }
 
 -(UIImage *)smallArtworkImage {
-	if(smallArtworkImage == nil) {
+	if(smallArtworkImage == nil && self.smallArtworkUrl != nil) {
 		if(smallArtworkLoader == nil) {
 			smallArtworkLoader = [[ArtworkLoader alloc] init];
 			smallArtworkLoader.url = self.smallArtworkUrl;
@@ -143,7 +143,7 @@
 }
 
 -(UIImage *)largeArtworkImage {
-	if(largeArtworkImage == nil) {
+	if(largeArtworkImage == nil && self.largeArtworkUrl != nil) {
 		if(largeArtworkLoader == nil) {
 			largeArtworkLoader = [[ArtworkLoader alloc] init];
 			largeArtworkLoader.url = self.largeArtworkUrl;
