@@ -80,7 +80,6 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
 	self.navigationBar.tintColor = [UIColor aluminiumColor];
-	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
 	searchBar.delegate = self;
@@ -107,11 +106,12 @@
 	[self.fetchedResultsController performFetch:nil];
 }
 
-/*
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	
+	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];

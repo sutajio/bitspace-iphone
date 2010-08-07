@@ -107,11 +107,12 @@
 	[self.fetchedResultsController performFetch:nil];
 }
 
-/*
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	
+	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];

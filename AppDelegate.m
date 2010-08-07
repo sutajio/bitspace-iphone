@@ -269,9 +269,6 @@
 	[managedObjectModel release]; managedObjectModel = nil;
 	[persistentStoreCoordinator release]; persistentStoreCoordinator = nil;
 	
-	// Reset the last synchronization date, to force a synchronization
-	[[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"LastReleasesSync"];
-	
 	// Send out a ResetAppState message to all controllers
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetAppState" object:nil];
 }
@@ -313,8 +310,12 @@
 #pragma mark -
 #pragma mark Synchronization
 
+- (NSString *)lastReleasesSyncKey {
+	return [NSString stringWithFormat:@"LastReleasesSync-%@", self.username];
+}
+
 - (NSDate *)lastSynchronizationDate {
-	return [[NSUserDefaults standardUserDefaults] objectForKey:@"LastReleasesSync"];
+	return [[NSUserDefaults standardUserDefaults] objectForKey:[self lastReleasesSyncKey]];
 }
 
 
@@ -362,7 +363,7 @@
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 		[self dismissModalLoadingIndicator];
 		if(loader.didFail == NO) {
-			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastReleasesSync"];
+			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:[self lastReleasesSyncKey]];
 		}
 		[releasesLoader release];
 		releasesLoader = nil;
