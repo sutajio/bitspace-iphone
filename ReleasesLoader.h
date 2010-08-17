@@ -13,7 +13,7 @@
 @protocol ReleasesLoaderDelegate <NSObject>
 @optional
 - (void)loaderDidFinish:(ReleasesLoader *)loader;
-- (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader;
+- (void)loader:(ReleasesLoader *)loader didFinishLoadingPage:(NSInteger)page of:(NSInteger)total;
 - (void)loaderDidFinishParsingRelease:(ReleasesLoader *)loader;
 - (void)loaderDidStart:(ReleasesLoader *)loader;
 - (void)loader:(ReleasesLoader *)loader didFailWithError:(NSError *)error;

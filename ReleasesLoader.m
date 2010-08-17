@@ -57,8 +57,8 @@
 
 }
 
-- (Artist *)findOrCreateArtistWithName:(NSString *)artistName andSortName:(NSString *)sortName {
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", artistName];
+- (Artist *)findOrCreateArtist:(NSDictionary *)artistJSON {
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@",  (NSString *)[artistJSON valueForKey:@"name"]];
 	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Artist" inManagedObjectContext:self.insertionContext];
 	[fetchRequest setEntity:entity];
@@ -67,8 +67,12 @@
 	
 	if([filteredArray count] == 0) {
 		Artist *artist = [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
-		artist.name = artistName;
-		artist.sortName = (NSNull *)sortName == [NSNull null] ? artistName : sortName;
+		artist.name = (NSString *)[artistJSON valueForKey:@"name"];
+		if((NSNull *)[artistJSON valueForKey:@"sort_name"] == [NSNull null]) {
+			artist.sortName = artist.name;
+		} else {
+			artist.sortName = (NSString *)[artistJSON valueForKey:@"sort_name"];
+		}
 		artist.sectionName = [artist.sortName substringToIndex:1];
 		return artist;
 	} else {
@@ -136,9 +140,9 @@
 	
 	Release *release = [self findOrCreateReleaseWithURL:(NSString*)[releaseJSON valueForKey:@"url"]];
 
-	release.parent = [self findOrCreateArtistWithName:(NSString*)[releaseJSON valueForKey:@"artist"] andSortName:(NSString*)[releaseJSON valueForKey:@"artist_sort_name"]];
+	release.parent = [self findOrCreateArtist:(NSDictionary *)[releaseJSON valueForKey:@"artist"]];
 	release.title = (NSString*)[releaseJSON valueForKey:@"title"];
-	release.artist = (NSString*)[releaseJSON valueForKey:@"artist"];
+	release.artist = release.parent.name;
 	release.url = (NSString*)[releaseJSON valueForKey:@"url"];
 	release.createdAt = (NSString*)[releaseJSON valueForKey:@"created_at"];
 	release.updatedAt = (NSString*)[releaseJSON valueForKey:@"updated_at"];
@@ -152,7 +156,8 @@
 	}
 	
 	if([releaseJSON valueForKey:@"label"] != [NSNull null]) {
-		release.label = (NSString *)[releaseJSON valueForKey:@"label"];
+		NSDictionary *label = (NSDictionary *)[releaseJSON valueForKey:@"label"];
+		release.label = (NSString *)[label valueForKey:@"name"];
 	} else {
 		release.label = nil;
 	}
@@ -248,7 +253,7 @@
 		// Request a page from the server...
 		NSLog(@"Requesting page #%d", page);
 		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?page=%d&since=%@", appDelegate.siteURL, page, since]];
+		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?simple=no&page=%d&since=%@", appDelegate.siteURL, page, since]];
 		NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
 																cachePolicy:NSURLRequestReloadIgnoringCacheData
 															timeoutInterval:[Connection timeout]];
@@ -265,7 +270,9 @@
 		
 		// Parse the returned response
 		NSString *responseString = [[NSString alloc] initWithData:res.body encoding:NSUTF8StringEncoding];
-		NSArray *releases = [responseString JSONValue];
+		NSDictionary *responseJSON = [responseString JSONValue];
+		NSNumber *totalPages = (NSNumber *)[responseJSON valueForKey:@"pages"];
+		NSArray *releases = (NSArray *)[responseJSON valueForKey:@"releases"];
 		if ([releases count] == 0) {
 			break;
 		} else {
@@ -281,7 +288,7 @@
 				[delegate loader:self didFailWithError:error];
 				break;
 			}
-			[delegate loaderDidFinishLoadingPage:self];
+			[delegate loader:self didFinishLoadingPage:page of:[totalPages intValue]];
 			if([self isCancelled] == YES)
 				break;
 		}

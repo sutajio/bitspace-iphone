@@ -11,6 +11,11 @@
 
 @interface LoadingController : UIViewController {
 	IBOutlet UIView *roundedRect;
+	IBOutlet UIActivityIndicatorView *activityIndicatorView;
+	IBOutlet UIProgressView *progressView;
 }
+
+@property (nonatomic, readonly) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic, readonly) UIProgressView *progressView;
 
 @end

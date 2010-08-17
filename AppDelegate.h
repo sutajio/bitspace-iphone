@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ReleasesLoader.h"
 
-@class PlayerController, SyncQueue;
+@class PlayerController, SyncQueue, LoadingController;
 
 @interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, ReleasesLoaderDelegate> {
 	NSString *siteURL;
@@ -27,7 +27,7 @@
 	
 	SyncQueue *syncQueue;
 	ReleasesLoader *releasesLoader;
-	UIViewController *modalLoadingIndicator;
+	LoadingController *modalLoadingIndicator;
 }
 
 @property (nonatomic, retain) NSString *siteURL;

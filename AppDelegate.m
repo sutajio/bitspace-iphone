@@ -157,6 +157,19 @@
 }
 
 
+- (void)updateModalLoadingProgress:(NSNumber *)progress {
+	if(modalLoadingIndicator) {
+		[UIView beginAnimations:@"ModalLoadingIndicator" context:nil];
+		[UIView setAnimationDuration:0.5f];
+		[UIView setAnimationBeginsFromCurrentState:YES];
+		modalLoadingIndicator.activityIndicatorView.alpha = 0.0f;
+		modalLoadingIndicator.progressView.alpha = 1.0f;
+		modalLoadingIndicator.progressView.progress = [progress floatValue];
+		[UIView commitAnimations];
+	}
+}
+
+
 #pragma mark -
 #pragma mark Error handling
 
@@ -375,11 +388,16 @@
 
 
 - (void)loaderDidFinishLoadingPage:(ReleasesLoader *)loader {
-	if([NSThread isMainThread]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidFinishLoadingPage" object:self];
-	} else {
-		[self performSelectorOnMainThread:@selector(loaderDidFinishLoadingPage:) withObject:loader waitUntilDone:NO];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ReleasesSynchronizationDidFinishLoadingPage" object:self];
+}
+
+
+- (void)loader:(ReleasesLoader *)loader didFinishLoadingPage:(NSInteger)page of:(NSInteger)total {
+	if(total > 1) {
+		NSNumber *progress = [NSNumber numberWithFloat:(float)page / (float)total];
+		[self performSelectorOnMainThread:@selector(updateModalLoadingProgress:) withObject:progress waitUntilDone:NO];
 	}
+	[self performSelectorOnMainThread:@selector(loaderDidFinishLoadingPage:) withObject:loader waitUntilDone:NO];
 }
 
 
