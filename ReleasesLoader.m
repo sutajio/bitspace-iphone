@@ -277,6 +277,9 @@
 			[self.insertionContext save:&error];
 			if(error) {
 				NSLog(@"%@", [error userInfo]);
+				didFail = YES;
+				[delegate loader:self didFailWithError:error];
+				break;
 			}
 			[delegate loaderDidFinishLoadingPage:self];
 			if([self isCancelled] == YES)
