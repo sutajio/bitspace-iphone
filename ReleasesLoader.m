@@ -163,11 +163,23 @@
 		release.releaseDate = nil;
 	}
 	
-	if([releaseJSON valueForKey:@"small_artwork_url"] != [NSNull null]) {
-		release.smallArtworkUrl = (NSString*)[releaseJSON valueForKey:@"small_artwork_url"];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+	if([[UIScreen mainScreen] scale] <= 1.0) {
+#endif
+		if([releaseJSON valueForKey:@"small_artwork_url"] != [NSNull null]) {
+			release.smallArtworkUrl = (NSString*)[releaseJSON valueForKey:@"small_artwork_url"];
+		} else {
+			release.smallArtworkUrl = nil;
+		}
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	} else {
-		release.smallArtworkUrl = nil;
+		if([releaseJSON valueForKey:@"medium_artwork_url"] != [NSNull null]) {
+			release.smallArtworkUrl = (NSString*)[releaseJSON valueForKey:@"medium_artwork_url"];
+		} else {
+			release.smallArtworkUrl = nil;
+		}
 	}
+#endif
 	
 	if([releaseJSON valueForKey:@"large_artwork_url"] != [NSNull null]) {
 		release.largeArtworkUrl = (NSString*)[releaseJSON valueForKey:@"large_artwork_url"];
