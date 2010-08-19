@@ -7,6 +7,8 @@
 //
 
 #import "Artist.h"
+#import "AppDelegate.h"
+#import "ProtectedURL.h"
 
 
 @implementation Artist
@@ -14,6 +16,111 @@
 @dynamic name;
 @dynamic sortName;
 @dynamic sectionName;
+@dynamic artistType;
+@dynamic beginDate;
+@dynamic endDate;
+@dynamic website;
+@dynamic smallArtworkUrl;
+@dynamic largeArtworkUrl;
+@dynamic biographyUrl;
 @dynamic archived;
+
+@synthesize smallArtworkImage, largeArtworkImage;
+@synthesize smallArtworkLoader, largeArtworkLoader;
+
++ (NSOperationQueue *)operationQueue {
+	static NSOperationQueue *operationQueue;
+    if (operationQueue == nil) {
+        operationQueue = [[NSOperationQueue alloc] init];
+		[operationQueue setMaxConcurrentOperationCount:1];
+    }
+    return operationQueue;
+}
+
+- (UIImage *)smallArtworkImage {
+	if(smallArtworkImage == nil && self.smallArtworkUrl != nil) {
+		if(smallArtworkLoader == nil) {
+			smallArtworkLoader = [[ArtworkLoader alloc] init];
+			smallArtworkLoader.url = self.smallArtworkUrl;
+			smallArtworkLoader.delegate = self;
+			[[Artist operationQueue] addOperation:smallArtworkLoader];
+			[smallArtworkLoader release];
+		}
+	}
+	return smallArtworkImage;
+}
+
+- (UIImage *)largeArtworkImage {
+	if(largeArtworkImage == nil && self.largeArtworkUrl != nil) {
+		if(largeArtworkLoader == nil) {
+			largeArtworkLoader = [[ArtworkLoader alloc] init];
+			largeArtworkLoader.url = self.largeArtworkUrl;
+			largeArtworkLoader.delegate = self;
+			[[Artist operationQueue] addOperation:largeArtworkLoader];
+			[largeArtworkLoader release];
+		}
+	}
+	return largeArtworkImage;
+}
+
+- (void)finishedLoadingSmallArtwork {
+	if([NSThread isMainThread]) {
+		smallArtworkLoader = nil;
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingSmallArtwork" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(finishedLoadingSmallArtwork) withObject:nil waitUntilDone:NO];
+	}
+}
+
+- (void)finishedLoadingLargeArtwork {
+	if([NSThread isMainThread]) {
+		largeArtworkLoader = nil;
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingLargeArtwork" object:self];
+	} else {
+		[self performSelectorOnMainThread:@selector(finishedLoadingLargeArtwork) withObject:nil waitUntilDone:NO];
+	}
+}
+
+- (void)loaderDidFinishLoadingArtwork:(UIImage *)artworkImage fromURL:(NSString *)url {
+	if([url isEqualToString:self.smallArtworkUrl]) {
+		self.smallArtworkImage = artworkImage;
+		[self finishedLoadingSmallArtwork];
+	}
+	if([url isEqualToString:self.largeArtworkUrl]) {
+		self.largeArtworkImage = artworkImage;
+		[self finishedLoadingLargeArtwork];
+	}
+}
+
+- (void)didReceiveMemoryWarning {
+	[smallArtworkImage release]; smallArtworkImage = nil;
+	[largeArtworkImage release]; largeArtworkImage = nil;
+	[biographyCache release]; biographyCache = nil;
+}
+
+- (void)didTurnIntoFault {
+	[smallArtworkImage release]; smallArtworkImage = nil;
+	[largeArtworkImage release]; largeArtworkImage = nil;
+	[biographyCache release]; biographyCache = nil;
+}
+
+- (NSString *)biography {
+	if(self.biographyUrl) {
+		if(biographyCache) {
+			return biographyCache;
+		} else {
+			AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+			biographyCache = [[NSString stringWithContentsOfURL:[ProtectedURL URLWithStringAndCredentials:self.biographyUrl 
+																								withUser:appDelegate.username 
+																							 andPassword:appDelegate.password] 
+													  encoding:NSUTF8StringEncoding 
+														 error:nil] retain];
+			return biographyCache;
+		}
+	} else {
+		return nil;
+	}
+
+}
 
 @end

@@ -11,11 +11,20 @@
 #import "Artist.h"
 #import "ReleaseTableViewCell.h"
 #import "ReleaseController.h"
+#import "BiographyController.h"
 
 
 @implementation ArtistController
 
 @synthesize appDelegate, theArtist, fetchedResultsController;
+
+
+- (void)showBiography {
+	BiographyController *biographyController = [[BiographyController alloc] initWithNibName:@"Biography" bundle:nil];
+	biographyController.theArtist = self.theArtist;
+	[self.navigationController pushViewController:biographyController animated:YES];
+	[biographyController release];
+}
 
 
 #pragma mark -
@@ -34,6 +43,7 @@
     [super viewWillAppear:animated];
 	
 	self.navigationItem.title = theArtist.name;
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Biography" style:UIBarButtonItemStylePlain target:self action:@selector(showBiography)];
 	
 	[[self fetchedResultsController] performFetch:nil];
 	[self.tableView reloadData];
@@ -269,6 +279,7 @@
 - (void)viewDidUnload {
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
+	self.navigationItem.rightBarButtonItem = nil;
 }
 
 

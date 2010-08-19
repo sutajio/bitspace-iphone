@@ -70,6 +70,8 @@
 		854A9A9A10C507F00007D0F8 /* NSString+XMLSerializableSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7710C507F00007D0F8 /* NSString+XMLSerializableSupport.m */; };
 		854A9A9B10C507F00007D0F8 /* ObjectiveResourceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7C10C507F00007D0F8 /* ObjectiveResourceConfig.m */; };
 		854A9A9C10C507F00007D0F8 /* Response.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7E10C507F00007D0F8 /* Response.m */; };
+		8558A39D121AEF1A002ECB40 /* BiographyController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8558A39B121AEF1A002ECB40 /* BiographyController.m */; };
+		8558A39E121AEF1A002ECB40 /* Biography.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8558A39C121AEF1A002ECB40 /* Biography.xib */; };
 		8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8559112E11D946B200583C21 /* ReleaseTableViewCell.m */; };
 		855913DD11DA059B00583C21 /* SignIn.xib in Resources */ = {isa = PBXBuildFile; fileRef = 855913DC11DA059B00583C21 /* SignIn.xib */; };
 		855913EA11DA0A3C00583C21 /* SignInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 855913E911DA0A3C00583C21 /* SignInController.m */; };
@@ -262,6 +264,9 @@
 		854A9A7C10C507F00007D0F8 /* ObjectiveResourceConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveResourceConfig.m; sourceTree = "<group>"; };
 		854A9A7D10C507F00007D0F8 /* Response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Response.h; sourceTree = "<group>"; };
 		854A9A7E10C507F00007D0F8 /* Response.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Response.m; sourceTree = "<group>"; };
+		8558A39A121AEF1A002ECB40 /* BiographyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BiographyController.h; sourceTree = "<group>"; };
+		8558A39B121AEF1A002ECB40 /* BiographyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BiographyController.m; sourceTree = "<group>"; };
+		8558A39C121AEF1A002ECB40 /* Biography.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Biography.xib; sourceTree = "<group>"; };
 		8559112D11D946B200583C21 /* ReleaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseTableViewCell.h; sourceTree = "<group>"; };
 		8559112E11D946B200583C21 /* ReleaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseTableViewCell.m; sourceTree = "<group>"; };
 		855913DC11DA059B00583C21 /* SignIn.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignIn.xib; sourceTree = "<group>"; };
@@ -742,6 +747,7 @@
 				8541B09B11CA85F30004C4C9 /* Release.xib */,
 				8541B19411CA9DCB0004C4C9 /* ReleaseHeader.xib */,
 				85783EBC12034E7000991D60 /* ReleaseFooter.xib */,
+				8558A39C121AEF1A002ECB40 /* Biography.xib */,
 				85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */,
 				85EE799011CBAD5A00714380 /* TrackTableViewCell.m */,
 				8559112D11D946B200583C21 /* ReleaseTableViewCell.h */,
@@ -761,6 +767,8 @@
 				85FE1F2011EC8E6A005D1F15 /* ArtistsController.m */,
 				85FE206011EF27BC005D1F15 /* ArtistController.h */,
 				85FE206111EF27BC005D1F15 /* ArtistController.m */,
+				8558A39A121AEF1A002ECB40 /* BiographyController.h */,
+				8558A39B121AEF1A002ECB40 /* BiographyController.m */,
 			);
 			name = Artists;
 			sourceTree = "<group>";
@@ -887,6 +895,7 @@
 				858B4EF81209EB1A00A5DD9F /* love-off@2x.png in Resources */,
 				858B50281209ED6200A5DD9F /* button-default@2x.png in Resources */,
 				858B50301209EDCA00A5DD9F /* button-highlighted@2x.png in Resources */,
+				8558A39E121AEF1A002ECB40 /* Biography.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -957,6 +966,7 @@
 				85783A9F1200D87D00991D60 /* BrowserController.m in Sources */,
 				85783E7B1203431E00991D60 /* LoadingController.m in Sources */,
 				858B4D1D12087AA100A5DD9F /* Aluminium.m in Sources */,
+				8558A39D121AEF1A002ECB40 /* BiographyController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

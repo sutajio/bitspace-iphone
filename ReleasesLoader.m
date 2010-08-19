@@ -74,6 +74,42 @@
 			artist.sortName = (NSString *)[artistJSON valueForKey:@"sort_name"];
 		}
 		artist.sectionName = [artist.sortName substringToIndex:1];
+		if([artistJSON valueForKey:@"artist_type"] != [NSNull null]) {
+			artist.artistType = (NSString *)[artistJSON valueForKey:@"artist_type"];
+		} else {
+			artist.artistType = nil;
+		}
+		if([artistJSON valueForKey:@"begin_date"] != [NSNull null]) {
+			artist.beginDate = (NSString *)[artistJSON valueForKey:@"begin_date"];
+		} else {
+			artist.beginDate = nil;
+		}
+		if([artistJSON valueForKey:@"end_date"] != [NSNull null]) {
+			artist.endDate = (NSString *)[artistJSON valueForKey:@"end_date"];
+		} else {
+			artist.endDate = nil;
+		}
+		if([artistJSON valueForKey:@"website"] != [NSNull null]) {
+			artist.website = (NSString *)[artistJSON valueForKey:@"website"];
+		} else {
+			artist.website = nil;
+		}
+		if([artistJSON valueForKey:@"small_artwork_url"] != [NSNull null]) {
+			artist.smallArtworkUrl = (NSString *)[artistJSON valueForKey:@"small_artwork_url"];
+		} else {
+			artist.smallArtworkUrl = nil;
+		}
+		if([artistJSON valueForKey:@"large_artwork_url"] != [NSNull null]) {
+			artist.largeArtworkUrl = (NSString *)[artistJSON valueForKey:@"large_artwork_url"];
+		} else {
+			artist.largeArtworkUrl = nil;
+		}
+		if([artistJSON valueForKey:@"biography_url"] != [NSNull null]) {
+			artist.biographyUrl = (NSString *)[artistJSON valueForKey:@"biography_url"];
+		} else {
+			artist.biographyUrl = nil;
+		}
+		artist.archived = (NSNumber *)[artistJSON valueForKey:@"archived"];
 		return artist;
 	} else {
 		return [filteredArray objectAtIndex:0];
@@ -147,7 +183,6 @@
 	release.createdAt = (NSString*)[releaseJSON valueForKey:@"created_at"];
 	release.updatedAt = (NSString*)[releaseJSON valueForKey:@"updated_at"];
 	release.archived = (NSNumber*)[releaseJSON valueForKey:@"archived"];
-	release.parent.archived = release.archived;
 	
 	if([releaseJSON valueForKey:@"year"] != [NSNull null]) {
 		release.year = (NSDecimalNumber*)[releaseJSON valueForKey:@"year"];
