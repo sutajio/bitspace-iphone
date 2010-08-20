@@ -122,6 +122,8 @@
 		858B4EF81209EB1A00A5DD9F /* love-off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 858B4EF71209EB1A00A5DD9F /* love-off@2x.png */; };
 		858B50281209ED6200A5DD9F /* button-default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 858B50271209ED6200A5DD9F /* button-default@2x.png */; };
 		858B50301209EDCA00A5DD9F /* button-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 858B502F1209EDCA00A5DD9F /* button-highlighted@2x.png */; };
+		85933C2D121EBD810087F575 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85933C2C121EBD810087F575 /* SystemConfiguration.framework */; };
+		85933C61121EC1C80087F575 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 85933C60121EC1C80087F575 /* Reachability.m */; };
 		8595C84F11E3A3F700C8B8A1 /* release-header.png in Resources */ = {isa = PBXBuildFile; fileRef = 8595C84E11E3A3F700C8B8A1 /* release-header.png */; };
 		8595C9E411E3E63C00C8B8A1 /* TrackLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */; };
 		85C8930911E2997C00FD030C /* volume-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8930811E2997C00FD030C /* volume-high.png */; };
@@ -330,6 +332,9 @@
 		858B4EF71209EB1A00A5DD9F /* love-off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "love-off@2x.png"; sourceTree = "<group>"; };
 		858B50271209ED6200A5DD9F /* button-default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-default@2x.png"; sourceTree = "<group>"; };
 		858B502F1209EDCA00A5DD9F /* button-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-highlighted@2x.png"; sourceTree = "<group>"; };
+		85933C2C121EBD810087F575 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		85933C5F121EC1C80087F575 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		85933C60121EC1C80087F575 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		8595C84E11E3A3F700C8B8A1 /* release-header.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "release-header.png"; sourceTree = "<group>"; };
 		8595C9E211E3E63C00C8B8A1 /* TrackLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackLoader.h; sourceTree = "<group>"; };
 		8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackLoader.m; sourceTree = "<group>"; };
@@ -382,6 +387,7 @@
 				854357591173508E00438D2D /* CoreData.framework in Frameworks */,
 				8559191C11DE322100583C21 /* QuartzCore.framework in Frameworks */,
 				8558A61C121D7B81002ECB40 /* AVFoundation.framework in Frameworks */,
+				85933C2D121EBD810087F575 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,6 +510,7 @@
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765070DF74369002DB57D /* CoreGraphics.framework */,
 				8558A61B121D7B81002ECB40 /* AVFoundation.framework */,
+				85933C2C121EBD810087F575 /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -540,6 +547,8 @@
 				855918A211DE0B7C00583C21 /* ProtectedURL.m */,
 				858B4D1B12087AA100A5DD9F /* Aluminium.h */,
 				858B4D1C12087AA100A5DD9F /* Aluminium.m */,
+				85933C5F121EC1C80087F575 /* Reachability.h */,
+				85933C60121EC1C80087F575 /* Reachability.m */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -971,6 +980,7 @@
 				85783E7B1203431E00991D60 /* LoadingController.m in Sources */,
 				858B4D1D12087AA100A5DD9F /* Aluminium.m in Sources */,
 				8558A39D121AEF1A002ECB40 /* BiographyController.m in Sources */,
+				85933C61121EC1C80087F575 /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -447,9 +447,6 @@ void ASReadStreamCallBack
 			stopReason = AS_STOPPING_ERROR;
 			AudioQueueStop(audioQueue, true);
 		}
-		
-		[self presentAlertWithTitle:NSLocalizedStringFromTable(@"File Error", @"Errors", nil)
-							message:NSLocalizedStringFromTable(@"Unable to configure network read stream.", @"Errors", nil)];
 	}
 }
 
@@ -1205,7 +1202,7 @@ cleanup:
 	
 	if (eventType == kCFStreamEventErrorOccurred)
 	{
-		[self failWithErrorCode:AS_AUDIO_DATA_NOT_FOUND];
+		[self failWithErrorCode:AS_NETWORK_CONNECTION_FAILED];
 	}
 	else if (eventType == kCFStreamEventEndEncountered)
 	{

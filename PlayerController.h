@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class AppDelegate, AudioStreamer, Release, Track, MPVolumeView;
+@class AppDelegate, AudioStreamer, Release, Track, MPVolumeView, Reachability;
 
 typedef enum {
 	PL_CTRLS_STATE_UNDEFINED = 0,
@@ -51,6 +51,9 @@ typedef enum {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	UIBackgroundTaskIdentifier backgroundTask;
 #endif
+	Reachability *reachability;
+	BOOL isTemporarilyOffline;
+	double startPlayingAt;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;

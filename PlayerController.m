@@ -13,7 +13,11 @@
 #import "Release.h"
 #import "SyncQueue.h"
 #import "ProtectedURL.h"
+#import "Reachability.h"
 
+@interface PlayerController ()
+- (void)playCurrentTrackFrom:(double)time;
+@end
 
 @implementation PlayerController
 
@@ -357,6 +361,10 @@
 	
 	backgroundTask = UIBackgroundTaskInvalid;
 	
+	reachability = [[Reachability reachabilityForInternetConnection] retain];
+	[reachability startNotifier];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged) name:@"kNetworkReachabilityChangedNotification" object:nil];
+	
 	NSString *startPage = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"StartPage"];
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:startPage]];
 	[webView loadRequest:request];
@@ -413,6 +421,9 @@
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[reachability stopNotifier];
+	[reachability release];
 	[playlist release];
 	[self destroyStreamer];
     [super dealloc];
@@ -421,20 +432,105 @@
 
 #pragma mark Playback controls and callbacks
 
+- (void)beginBackgroundTask {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+	if([[UIApplication sharedApplication] respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		if(backgroundTask == UIBackgroundTaskInvalid) {
+			backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+		}
+	}
+#endif
+}
+
+- (void)endBackgroundTask {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+	if([[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)]) {
+		if(backgroundTask != UIBackgroundTaskInvalid) {
+			[[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+			backgroundTask = UIBackgroundTaskInvalid;
+		}
+	}
+#endif
+}
+
+- (void)enableOfflineMode {
+	if(isTemporarilyOffline == NO) {
+		NSLog(@"Pausing playback and going to offline mode...");
+		isTemporarilyOffline = YES;
+		[streamer pause];
+		[self beginBackgroundTask];
+		[activityIndicator startAnimating];
+	}
+}
+
+- (void)disableOfflineMode {
+	if(isTemporarilyOffline == YES) {
+		NSLog(@"Going out of offline mode and restarting playback...");
+		isTemporarilyOffline = NO;
+		[self playCurrentTrackFrom:streamer.progress];
+	}
+}
+
+- (void)presentAlertWithTitle:(NSString*)title message:(NSString*)message {
+#ifdef TARGET_OS_IPHONE
+	UIAlertView *alert = [
+						  [[UIAlertView alloc]
+						   initWithTitle:title
+						   message:message
+						   delegate:self
+						   cancelButtonTitle:NSLocalizedString(@"OK", @"")
+						   otherButtonTitles: nil]
+						  autorelease];
+	[alert
+	 performSelector:@selector(show)
+	 onThread:[NSThread mainThread]
+	 withObject:nil
+	 waitUntilDone:NO];
+#else
+	NSAlert *alert =
+	[NSAlert
+	 alertWithMessageText:title
+	 defaultButton:NSLocalizedString(@"OK", @"")
+	 alternateButton:nil
+	 otherButton:nil
+	 informativeTextWithFormat:message];
+	[alert
+	 performSelector:@selector(runModal)
+	 onThread:[NSThread mainThread]
+	 withObject:nil
+	 waitUntilDone:NO];
+#endif
+}
+
+- (void)handleStreamerError {
+	if(streamer.errorCode != AS_NO_ERROR) {
+		switch (streamer.errorCode) {
+			case AS_AUDIO_DATA_NOT_FOUND:
+			case AS_NETWORK_CONNECTION_FAILED:
+				[self enableOfflineMode];
+				break;
+			default:
+				[self presentAlertWithTitle:@"Sorry!"
+									message:[AudioStreamer stringForErrorCode:streamer.errorCode]];
+				break;
+		}
+	}
+	[self updatePlayerUIBasedOnPlaybackState];	
+}
+
 - (void)playbackStateChanged:(id)notification {
 	switch (streamer.state) {
 		case AS_PLAYING:
 			NSLog(@"AS_PLAYING");
 			[activityIndicator stopAnimating];
-			[self updatePlayerUIBasedOnPlaybackState];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
-			if([[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)]) {
-				if(backgroundTask != UIBackgroundTaskInvalid) {
-					[[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
-					backgroundTask = UIBackgroundTaskInvalid;
-				}
+			if(startPlayingAt > 0.0f) {
+				[self beginSeeking:nil];
+				[streamer seekToTime:startPlayingAt];
+				[self endSeeking:nil];
+				startPlayingAt = 0.0f;
 			}
-#endif
+			[self updatePlayerUIBasedOnPlaybackState];
+			[self endBackgroundTask];
 			break;
 		case AS_PAUSED:
 			NSLog(@"AS_PAUSED");
@@ -442,17 +538,13 @@
 			break;
 		case AS_STOPPING:
 			NSLog(@"AS_STOPPING");
-			NSLog(@"Error code: %d", streamer.errorCode);
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
-			if([[UIApplication sharedApplication] respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
-				if(backgroundTask == UIBackgroundTaskInvalid) {
-					backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-				}
-			}
-#endif
+			[self beginBackgroundTask];
+			[self handleStreamerError];
 			break;
 		case AS_STOPPED:
 			NSLog(@"AS_STOPPED");
+			if(isTemporarilyOffline)
+				break;
 			[self scrobbleCurrentTrack:NO];
 			if([self isPlayingLastTrack]) {
 				if(self.playerRepeatState == PL_REPEAT_ALL ||
@@ -468,17 +560,12 @@
 			break;
 		case AS_BUFFERING:
 			NSLog(@"AS_BUFFERING");
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
-			if([[UIApplication sharedApplication] respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
-				if(backgroundTask == UIBackgroundTaskInvalid) {
-					backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-				}
-			}
-#endif
+			[self beginBackgroundTask];
 			[activityIndicator startAnimating];
 			break;
 		case AS_INITIALIZED:
 			NSLog(@"AS_INITIALIZED");
+			[self handleStreamerError];
 			break;
 		case AS_STARTING_FILE_THREAD:
 			NSLog(@"AS_STARTING_FILE_THREAD");
@@ -498,8 +585,10 @@
 	}
 }
 
-- (void)playCurrentTrack {
+- (void)playCurrentTrackFrom:(double)time {
 	NSLog(@"Playing current track...");
+	
+	startPlayingAt = time;
 	
 	Track *track = [self currentTrack];
 	if(track) {
@@ -509,6 +598,10 @@
 	
 	[self updatePlayerUIBasedOnPlaybackState];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackDidStartPlaying" object:track];
+}
+
+- (void)playCurrentTrack {
+	[self playCurrentTrackFrom:0.0f];
 }
 
 - (void)togglePlaybackControls:(id)sender {
@@ -660,6 +753,20 @@
 		statusBar.hidden = YES;
 		toolBar.hidden = YES;
 		volumeBar.hidden = YES;
+	}
+}
+
+- (void)reachabilityChanged {
+	NetworkStatus reachabilityStatus = [reachability currentReachabilityStatus];
+	if(reachabilityStatus == NotReachable) {
+		[self enableOfflineMode];
+	} else {
+		if([reachability connectionRequired] == NO) {
+			[self enableOfflineMode];
+			[self disableOfflineMode];
+		} else {
+			[self enableOfflineMode];
+		}
 	}
 }
 
