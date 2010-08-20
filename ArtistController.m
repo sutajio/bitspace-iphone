@@ -189,7 +189,7 @@
         [fetchRequest setSortDescriptors:sortDescriptors];
 		
 		// Edit the filter predicate as appropriate.
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"artist == %@", theArtist.name];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"artist == %@ AND archived == NO", theArtist.name];
 		[fetchRequest setPredicate:predicate];
         
         // Edit the section name key path and cache name if appropriate.
