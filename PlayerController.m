@@ -355,6 +355,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+	backgroundTask = UIBackgroundTaskInvalid;
+	
 	NSString *startPage = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"StartPage"];
 	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:startPage]];
 	[webView loadRequest:request];
@@ -420,12 +422,19 @@
 #pragma mark Playback controls and callbacks
 
 - (void)playbackStateChanged:(id)notification {
-	NSLog(@"playbackStateChanged");
 	switch (streamer.state) {
 		case AS_PLAYING:
 			NSLog(@"AS_PLAYING");
 			[activityIndicator stopAnimating];
 			[self updatePlayerUIBasedOnPlaybackState];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+			if([[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)]) {
+				if(backgroundTask != UIBackgroundTaskInvalid) {
+					[[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+					backgroundTask = UIBackgroundTaskInvalid;
+				}
+			}
+#endif
 			break;
 		case AS_PAUSED:
 			NSLog(@"AS_PAUSED");
@@ -433,6 +442,14 @@
 			break;
 		case AS_STOPPING:
 			NSLog(@"AS_STOPPING");
+			NSLog(@"Error code: %d", streamer.errorCode);
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+			if([[UIApplication sharedApplication] respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+				if(backgroundTask == UIBackgroundTaskInvalid) {
+					backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+				}
+			}
+#endif
 			break;
 		case AS_STOPPED:
 			NSLog(@"AS_STOPPED");
@@ -451,6 +468,13 @@
 			break;
 		case AS_BUFFERING:
 			NSLog(@"AS_BUFFERING");
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+			if([[UIApplication sharedApplication] respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+				if(backgroundTask == UIBackgroundTaskInvalid) {
+					backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+				}
+			}
+#endif
 			[activityIndicator startAnimating];
 			break;
 		case AS_INITIALIZED:
@@ -465,6 +489,9 @@
 			break;
 		case AS_WAITING_FOR_QUEUE_TO_START:
 			NSLog(@"AS_WAITING_FOR_QUEUE_TO_START");
+			break;
+		case AS_FLUSHING_EOF:
+			NSLog(@"AS_FLUSHING_EOF");
 			break;
 		default:
 			break;

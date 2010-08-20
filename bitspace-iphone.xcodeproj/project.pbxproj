@@ -72,6 +72,7 @@
 		854A9A9C10C507F00007D0F8 /* Response.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7E10C507F00007D0F8 /* Response.m */; };
 		8558A39D121AEF1A002ECB40 /* BiographyController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8558A39B121AEF1A002ECB40 /* BiographyController.m */; };
 		8558A39E121AEF1A002ECB40 /* Biography.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8558A39C121AEF1A002ECB40 /* Biography.xib */; };
+		8558A61C121D7B81002ECB40 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8558A61B121D7B81002ECB40 /* AVFoundation.framework */; };
 		8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8559112E11D946B200583C21 /* ReleaseTableViewCell.m */; };
 		855913DD11DA059B00583C21 /* SignIn.xib in Resources */ = {isa = PBXBuildFile; fileRef = 855913DC11DA059B00583C21 /* SignIn.xib */; };
 		855913EA11DA0A3C00583C21 /* SignInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 855913E911DA0A3C00583C21 /* SignInController.m */; };
@@ -267,6 +268,7 @@
 		8558A39A121AEF1A002ECB40 /* BiographyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BiographyController.h; sourceTree = "<group>"; };
 		8558A39B121AEF1A002ECB40 /* BiographyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BiographyController.m; sourceTree = "<group>"; };
 		8558A39C121AEF1A002ECB40 /* Biography.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Biography.xib; sourceTree = "<group>"; };
+		8558A61B121D7B81002ECB40 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8559112D11D946B200583C21 /* ReleaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseTableViewCell.h; sourceTree = "<group>"; };
 		8559112E11D946B200583C21 /* ReleaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseTableViewCell.m; sourceTree = "<group>"; };
 		855913DC11DA059B00583C21 /* SignIn.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignIn.xib; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 				854356C5116D315D00438D2D /* CFNetwork.framework in Frameworks */,
 				854357591173508E00438D2D /* CoreData.framework in Frameworks */,
 				8559191C11DE322100583C21 /* QuartzCore.framework in Frameworks */,
+				8558A61C121D7B81002ECB40 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,6 +503,7 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765070DF74369002DB57D /* CoreGraphics.framework */,
+				8558A61B121D7B81002ECB40 /* AVFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -48,6 +48,9 @@ typedef enum {
 	NSTimer *progressUpdateTimer;
 	NSMutableArray *playlist;
 	BOOL isSeeking;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+	UIBackgroundTaskIdentifier backgroundTask;
+#endif
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;

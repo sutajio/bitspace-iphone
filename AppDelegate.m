@@ -13,6 +13,7 @@
 #import "SyncQueue.h"
 #import "PlayerController.h"
 #import "LoadingController.h"
+#import "AVFoundation/AVAudioSession.h"
 
 
 @interface AppDelegate ()
@@ -34,6 +35,10 @@
 #pragma mark Application lifecycle
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
+	
+	// Make sure iOS knows we are playing music
+	[[AVAudioSession sharedInstance] setDelegate: self];
+	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
 	
 	// Never accept cookies
 	[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyNever];
