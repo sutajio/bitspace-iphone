@@ -30,7 +30,6 @@ typedef enum {
 @interface PlayerController : UIViewController {
 	AppDelegate *appDelegate;
 	IBOutlet UINavigationBar *navigationBar;
-	IBOutlet UIWebView *webView;
 	IBOutlet UIImageView *artwork;
 	IBOutlet UIView *statusBar;
 	IBOutlet UISlider *progressSlider;

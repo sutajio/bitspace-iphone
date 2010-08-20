@@ -365,12 +365,6 @@
 	[reachability startNotifier];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged) name:@"kNetworkReachabilityChangedNotification" object:nil];
 	
-	NSString *startPage = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"StartPage"];
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:startPage]];
-	[webView loadRequest:request];
-	[webView setBackgroundColor:[UIColor clearColor]];
-	[webView setOpaque:NO];
-	
 	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-slider-thumb.png"] forState:UIControlStateNormal];
 	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-slider-thumb-highlighted.png"] forState:UIControlStateHighlighted];
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-slider-minimum.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:0] forState:UIControlStateNormal];

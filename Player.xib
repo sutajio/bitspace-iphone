@@ -54,20 +54,6 @@
 							<string key="NSResourceName">PlayerDefault.png</string>
 						</object>
 					</object>
-					<object class="IBUIWebView" id="433267160">
-						<reference key="NSNextResponder" ref="649839942"/>
-						<int key="NSvFlags">-2147483374</int>
-						<string key="NSFrameSize">{320, 410}</string>
-						<reference key="NSSuperview" ref="649839942"/>
-						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">3</int>
-							<bytes key="NSWhite">MAA</bytes>
-						</object>
-						<bool key="IBUIOpaque">NO</bool>
-						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<int key="IBUIDataDetectorTypes">1</int>
-						<bool key="IBUIDetectsPhoneNumbers">YES</bool>
-					</object>
 					<object class="IBUIImageView" id="943990271">
 						<reference key="NSNextResponder" ref="649839942"/>
 						<int key="NSvFlags">-2147483360</int>
@@ -532,14 +518,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">webView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="433267160"/>
-					</object>
-					<int key="connectionID">99</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">progressSlider</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="12154819"/>
@@ -607,7 +585,6 @@
 							<reference ref="447210005"/>
 							<reference ref="877853531"/>
 							<reference ref="529435959"/>
-							<reference ref="433267160"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -748,11 +725,6 @@
 						<reference key="parent" ref="180247752"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">98</int>
-						<reference key="object" ref="433267160"/>
-						<reference key="parent" ref="649839942"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">92</int>
 						<reference key="object" ref="340641486"/>
 						<reference key="parent" ref="180247752"/>
@@ -803,7 +775,6 @@
 					<string>92.IBPluginDependency</string>
 					<string>95.IBPluginDependency</string>
 					<string>96.IBPluginDependency</string>
-					<string>98.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -834,7 +805,6 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>MPVolumeView</string>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1005,7 +975,6 @@
 							<string>totalTimeLabel</string>
 							<string>volumeBar</string>
 							<string>volumeSlider</string>
-							<string>webView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1023,7 +992,6 @@
 							<string>UILabel</string>
 							<string>UIView</string>
 							<string>MPVolumeView</string>
-							<string>UIWebView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1044,7 +1012,6 @@
 							<string>totalTimeLabel</string>
 							<string>volumeBar</string>
 							<string>volumeSlider</string>
-							<string>webView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1103,10 +1070,6 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">volumeSlider</string>
 								<string key="candidateClassName">MPVolumeView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">webView</string>
-								<string key="candidateClassName">UIWebView</string>
 							</object>
 						</object>
 					</object>
@@ -1401,14 +1364,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">UIKit.framework/Headers/UIViewController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">UIWebView</string>
-					<string key="superclassName">UIView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">UIKit.framework/Headers/UIWebView.h</string>
 					</object>
 				</object>
 			</object>
