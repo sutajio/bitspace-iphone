@@ -53,6 +53,10 @@ typedef enum {
 	Reachability *reachability;
 	BOOL isTemporarilyOffline;
 	double startPlayingAt;
+	double previousPlayedTime;
+	double totalPlayedTime;
+	BOOL shouldScrobble;
+	BOOL hasScrobbled;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;

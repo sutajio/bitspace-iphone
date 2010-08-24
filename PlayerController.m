@@ -56,7 +56,7 @@
 	
 	progressUpdateTimer =
 	[NSTimer
-	 scheduledTimerWithTimeInterval:0.1
+	 scheduledTimerWithTimeInterval:0.5
 	 target:self
 	 selector:@selector(updateProgress:)
 	 userInfo:nil
@@ -157,19 +157,24 @@
 
 - (void)scrobbleCurrentTrack:(BOOL)nowPlaying {
 	Track *track = [self currentTrack];
+	NSURL *url = nil;
 	if(track && [track.length intValue] > 30) {
-		NSURL *url;
 		if(nowPlaying == YES) {
 			url = [ProtectedURL URLWithStringAndCredentials:track.nowPlayingUrl 
 												   withUser:self.appDelegate.username 
 												andPassword:self.appDelegate.password];
 			NSLog(@"Now playing");
 		} else {
-			url = [ProtectedURL URLWithStringAndCredentials:track.scrobbleUrl 
-												   withUser:self.appDelegate.username 
-												andPassword:self.appDelegate.password];
-			NSLog(@"Scrobble");
+			if(shouldScrobble == YES && hasScrobbled == NO) {
+				hasScrobbled = YES;
+				url = [ProtectedURL URLWithStringAndCredentials:track.scrobbleUrl 
+													   withUser:self.appDelegate.username 
+													andPassword:self.appDelegate.password];
+				NSLog(@"Scrobble");
+			}
 		}
+	}
+	if(url) {	
 		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
 															   cachePolicy:NSURLRequestReloadIgnoringCacheData
 														   timeoutInterval:5.0];
@@ -193,6 +198,15 @@
 		}
 		currentTimeLabel.text = [self secondsToTime:[NSNumber numberWithDouble:streamer.progress]];
 		totalTimeLabel.text = [self secondsToTime:track.length];
+		
+		// Calculate relative progress to determine if the track should be scrobbled
+		if(fabs(streamer.progress - previousPlayedTime) < 1.0) {
+			totalPlayedTime = totalPlayedTime + fabs(streamer.progress - previousPlayedTime);
+			if((totalPlayedTime > 240.0 || totalPlayedTime > ([track.length doubleValue] * 0.5)) && shouldScrobble == NO) {
+				shouldScrobble = YES;
+			}
+		}
+		previousPlayedTime = streamer.progress;
 	} else {
 		progressSlider.value = 0;
 		currentTimeLabel.text = @"0:00";
@@ -583,6 +597,10 @@
 	NSLog(@"Playing current track...");
 	
 	startPlayingAt = time;
+	previousPlayedTime = 0.0;
+	totalPlayedTime = 0.0;
+	shouldScrobble = NO;;
+	hasScrobbled = NO;
 	
 	Track *track = [self currentTrack];
 	if(track) {
@@ -613,6 +631,7 @@
 			[streamer start];
 		} else {
 			[streamer pause];
+			[self scrobbleCurrentTrack:NO];
 		}
 	} else {
 		[self playCurrentTrack];
@@ -622,6 +641,7 @@
 
 - (void)nextTrack:(id)sender {
 	NSLog(@"nextTrack");
+	[self scrobbleCurrentTrack:NO];
 	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
 		self.playlistPosition = rand() % [self.playlist count];
@@ -644,6 +664,7 @@
 
 - (void)previousTrack:(id)sender {
 	NSLog(@"previousTrack");
+	[self scrobbleCurrentTrack:NO];
 	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
 		self.playlistPosition = rand() % [self.playlist count];
@@ -719,6 +740,7 @@
 - (void)enqueueTracks:(NSArray *)tracks andPlayTrackWithIndex:(NSInteger)index {
 	[self enqueueTracks:tracks];
 	if(index != -1) {
+		[self scrobbleCurrentTrack:NO];
 		self.playlistPosition = index;
 		[self playCurrentTrack];
 	}
@@ -734,6 +756,8 @@
 
 - (void)clearQueueAndResetPlayer:(BOOL)resetPlayer {
 	Track *oldTrack = [self currentTrack];
+	
+	[self scrobbleCurrentTrack:NO];
 	
 	[self.playlist removeAllObjects];
 	[self persistPlaylist];
