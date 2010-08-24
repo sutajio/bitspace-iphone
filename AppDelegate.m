@@ -15,10 +15,13 @@
 #import "LoadingController.h"
 #import "AVFoundation/AVAudioSession.h"
 
+#define DB_VERSION_STRING @"1.1"
+
 
 @interface AppDelegate ()
 - (BOOL)validateUsername:(NSString *)username andPassword:(NSString *)password;
 - (void)requestAuthenticationFromUser;
+- (void)userDidSignIn;
 @end
 
 
@@ -45,12 +48,6 @@
 	
 	// Set the site URL, which is the Bitspace API end-point where all data is loaded from
 	self.siteURL = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SiteURL"];
-	
-	// Authenticate user and show sign in screen if authentication fails
-	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
-				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
-		[self requestAuthenticationFromUser];
-	}
 	
 	// Begin receiving remote control events
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
@@ -105,6 +102,15 @@
 											 selector:@selector(handleDatabaseError:) 
 												 name:@"DatabaseError" 
 											   object:nil];
+	
+	// Authenticate user and show sign in screen if authentication fails
+	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
+				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
+		[self requestAuthenticationFromUser];
+	} else {
+		[self userDidSignIn];
+	}
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -122,6 +128,7 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+	[[NSUserDefaults standardUserDefaults] synchronize];
 	[self applicationDidReceiveMemoryWarning:application];
 }
 
@@ -332,7 +339,16 @@
 	return [NSString stringWithFormat:@"LastReleasesSync-%@", self.username];
 }
 
+- (NSString *)dbVersionKey {
+	return [NSString stringWithFormat:@"DBVersion-%@", self.username];
+}
+
 - (NSDate *)lastSynchronizationDate {
+	NSString *dbVersion = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:[self dbVersionKey]];
+	if(dbVersion == nil || [dbVersion isEqualToString:DB_VERSION_STRING] == NO) {
+		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[self lastReleasesSyncKey]];
+		[[NSUserDefaults standardUserDefaults] setObject:DB_VERSION_STRING forKey:[self dbVersionKey]];
+	}
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[self lastReleasesSyncKey]];
 }
 
