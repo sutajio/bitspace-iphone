@@ -94,14 +94,14 @@
 					<object class="IBUILabel" id="172370577">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{60, 224}, {200, 80}}</string>
+						<string key="NSFrame">{{65, 224}, {190, 80}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-						<string key="IBUIText">Your library is being synchronized for the first time. This will only need to be done once and can take several minutes depending on the size of your library.</string>
+						<string key="IBUIText">Your library is being synchronized. This will only need to be done once and can take several minutes depending on the size of your library.</string>
 						<object class="NSFont" key="IBUIFont">
 							<string key="NSName">Helvetica</string>
 							<double key="NSSize">12</double>
