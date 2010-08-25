@@ -57,8 +57,8 @@
 
 }
 
-- (Artist *)findOrCreateArtist:(NSDictionary *)artistJSON {
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@",  (NSString *)[artistJSON valueForKey:@"name"]];
+- (Artist *)findOrCreateArtistWithName:(NSString *)artistName {
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@",  artistName];
 	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Artist" inManagedObjectContext:self.insertionContext];
 	[fetchRequest setEntity:entity];
@@ -67,53 +67,61 @@
 	
 	if([filteredArray count] == 0) {
 		Artist *artist = [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
-		artist.name = (NSString *)[artistJSON valueForKey:@"name"];
-		if((NSNull *)[artistJSON valueForKey:@"sort_name"] == [NSNull null]) {
-			artist.sortName = artist.name;
-		} else {
-			artist.sortName = (NSString *)[artistJSON valueForKey:@"sort_name"];
-		}
-		artist.sectionName = [artist.sortName substringToIndex:1];
-		if([artistJSON valueForKey:@"artist_type"] != [NSNull null]) {
-			artist.artistType = (NSString *)[artistJSON valueForKey:@"artist_type"];
-		} else {
-			artist.artistType = nil;
-		}
-		if([artistJSON valueForKey:@"begin_date"] != [NSNull null]) {
-			artist.beginDate = (NSString *)[artistJSON valueForKey:@"begin_date"];
-		} else {
-			artist.beginDate = nil;
-		}
-		if([artistJSON valueForKey:@"end_date"] != [NSNull null]) {
-			artist.endDate = (NSString *)[artistJSON valueForKey:@"end_date"];
-		} else {
-			artist.endDate = nil;
-		}
-		if([artistJSON valueForKey:@"website"] != [NSNull null]) {
-			artist.website = (NSString *)[artistJSON valueForKey:@"website"];
-		} else {
-			artist.website = nil;
-		}
-		if([artistJSON valueForKey:@"small_artwork_url"] != [NSNull null]) {
-			artist.smallArtworkUrl = (NSString *)[artistJSON valueForKey:@"small_artwork_url"];
-		} else {
-			artist.smallArtworkUrl = nil;
-		}
-		if([artistJSON valueForKey:@"large_artwork_url"] != [NSNull null]) {
-			artist.largeArtworkUrl = (NSString *)[artistJSON valueForKey:@"large_artwork_url"];
-		} else {
-			artist.largeArtworkUrl = nil;
-		}
-		if([artistJSON valueForKey:@"biography_url"] != [NSNull null]) {
-			artist.biographyUrl = (NSString *)[artistJSON valueForKey:@"biography_url"];
-		} else {
-			artist.biographyUrl = nil;
-		}
-		artist.archived = (NSNumber *)[artistJSON valueForKey:@"archived"];
 		return artist;
 	} else {
 		return [filteredArray objectAtIndex:0];
 	}
+}
+
+- (Artist *)addArtist:(NSDictionary *)artistJSON {
+	
+	Artist *artist = [self findOrCreateArtistWithName:(NSString *)[artistJSON valueForKey:@"name"]];
+	
+	artist.name = (NSString *)[artistJSON valueForKey:@"name"];
+	if((NSNull *)[artistJSON valueForKey:@"sort_name"] == [NSNull null]) {
+		artist.sortName = artist.name;
+	} else {
+		artist.sortName = (NSString *)[artistJSON valueForKey:@"sort_name"];
+	}
+	artist.sectionName = [artist.sortName substringToIndex:1];
+	if([artistJSON valueForKey:@"artist_type"] != [NSNull null]) {
+		artist.artistType = (NSString *)[artistJSON valueForKey:@"artist_type"];
+	} else {
+		artist.artistType = nil;
+	}
+	if([artistJSON valueForKey:@"begin_date"] != [NSNull null]) {
+		artist.beginDate = (NSString *)[artistJSON valueForKey:@"begin_date"];
+	} else {
+		artist.beginDate = nil;
+	}
+	if([artistJSON valueForKey:@"end_date"] != [NSNull null]) {
+		artist.endDate = (NSString *)[artistJSON valueForKey:@"end_date"];
+	} else {
+		artist.endDate = nil;
+	}
+	if([artistJSON valueForKey:@"website"] != [NSNull null]) {
+		artist.website = (NSString *)[artistJSON valueForKey:@"website"];
+	} else {
+		artist.website = nil;
+	}
+	if([artistJSON valueForKey:@"small_artwork_url"] != [NSNull null]) {
+		artist.smallArtworkUrl = (NSString *)[artistJSON valueForKey:@"small_artwork_url"];
+	} else {
+		artist.smallArtworkUrl = nil;
+	}
+	if([artistJSON valueForKey:@"large_artwork_url"] != [NSNull null]) {
+		artist.largeArtworkUrl = (NSString *)[artistJSON valueForKey:@"large_artwork_url"];
+	} else {
+		artist.largeArtworkUrl = nil;
+	}
+	if([artistJSON valueForKey:@"biography_url"] != [NSNull null]) {
+		artist.biographyUrl = (NSString *)[artistJSON valueForKey:@"biography_url"];
+	} else {
+		artist.biographyUrl = nil;
+	}
+	artist.archived = (NSNumber *)[artistJSON valueForKey:@"archived"];
+	
+	return artist;
 }
 
 - (NSArray *)filteredTracksArrayUsingPredicate:(NSPredicate *)predicate {
@@ -176,7 +184,7 @@
 	
 	Release *release = [self findOrCreateReleaseWithURL:(NSString*)[releaseJSON valueForKey:@"url"]];
 
-	release.parent = [self findOrCreateArtist:(NSDictionary *)[releaseJSON valueForKey:@"artist"]];
+	release.parent = [self addArtist:(NSDictionary *)[releaseJSON valueForKey:@"artist"]];
 	release.title = (NSString*)[releaseJSON valueForKey:@"title"];
 	release.artist = release.parent.name;
 	release.url = (NSString*)[releaseJSON valueForKey:@"url"];
