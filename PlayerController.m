@@ -462,7 +462,7 @@
 }
 
 - (void)enableOfflineMode {
-	if(isTemporarilyOffline == NO) {
+	if(isTemporarilyOffline == NO && [self isPaused] == NO) {
 		NSLog(@"Pausing playback and going to offline mode...");
 		isTemporarilyOffline = YES;
 		[streamer pause];
