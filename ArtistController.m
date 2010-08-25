@@ -43,7 +43,9 @@
     [super viewWillAppear:animated];
 	
 	self.navigationItem.title = theArtist.name;
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Biography" style:UIBarButtonItemStylePlain target:self action:@selector(showBiography)];
+	if(theArtist.biographyUrl || theArtist.largeArtworkUrl) {
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Biography" style:UIBarButtonItemStylePlain target:self action:@selector(showBiography)];
+	}
 	
 	[[self fetchedResultsController] performFetch:nil];
 	[self.tableView reloadData];
