@@ -28,7 +28,7 @@
 	NSEntityDescription *trackEntityDescription;
 	NSArray *cachedArtists;
 	NSArray *cachedReleases;
-	NSArray *cachedTracks;
+	NSMutableDictionary *cachedTracks;
 	NSDate *lastUpdateDate;
 	BOOL didFail;
 }

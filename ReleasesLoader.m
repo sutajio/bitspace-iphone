@@ -127,23 +127,25 @@
 	return artist;
 }
 
-- (NSArray *)filteredTracksArrayUsingPredicate:(NSPredicate *)predicate {
+- (Track *)findTrackWithURL:(NSString *)url {
 	if(cachedTracks == nil) {
 		NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[fetchRequest setEntity:self.trackEntityDescription];
-		cachedTracks = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+		NSArray *tracks = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+		cachedTracks = [NSMutableDictionary dictionaryWithCapacity:[tracks count]];
+		for(Track *t in tracks) {
+			[cachedTracks setObject:t forKey:t.url];
+		}
 	}
-	return [cachedTracks filteredArrayUsingPredicate:predicate];
+	return [cachedTracks valueForKey:url];
 }
 
 - (Track *)findOrCreateTrackWithURL:(NSString *)url {
-	NSPredicate *predicate = [self predicateForURL:url];
-	NSArray *filteredArray = [self filteredTracksArrayUsingPredicate:predicate];
-	
-	if([filteredArray count] == 0) {
-		return [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.insertionContext];
+	Track *track = [self findTrackWithURL:url];
+	if(track) {
+		return track;
 	} else {
-		return [filteredArray objectAtIndex:0];
+		return [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.insertionContext];
 	}
 }
 
