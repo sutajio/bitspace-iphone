@@ -17,8 +17,8 @@
 	NSFetchedResultsController *searchResultsController;
 	
 	IBOutlet UINavigationBar *navigationBar;
-	
-	UISearchBar *searchBar;
+	IBOutlet UIView *tableHeaderView;
+	IBOutlet UISearchBar *searchBar;
 	UISearchDisplayController *searchController;
 }
 
@@ -32,5 +32,8 @@
 @property (nonatomic, retain) UISearchDisplayController *searchController;
 
 - (void)resetView;
+
+- (IBAction)playAllTracks:(id)sender;
+- (IBAction)shuffleAllTracks:(id)sender;
 
 @end

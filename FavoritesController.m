@@ -10,6 +10,7 @@
 #import "TrackTableViewCell.h"
 #import "AppDelegate.h"
 #import "PlayerController.h"
+#import "Release.h"
 #import "Track.h"
 #import "Aluminium.h"
 
@@ -58,6 +59,40 @@
 
 
 #pragma mark -
+#pragma mark All tracks
+
+- (NSMutableArray *)shuffleArray:(NSArray *)array {
+	NSMutableArray *shuffledArray = [NSMutableArray arrayWithCapacity:[array count]];
+	[shuffledArray addObjectsFromArray:array];
+	if ([shuffledArray count] > 1) {
+		for (NSUInteger shuffleIndex = [shuffledArray count] - 1; shuffleIndex > 0; shuffleIndex--)
+			[shuffledArray exchangeObjectAtIndex:shuffleIndex withObjectAtIndex:arc4random() % (shuffleIndex + 1)];
+	}
+	return shuffledArray;
+}
+
+
+- (void)playAllTracks:(id)sender {
+	NSArray *tracks = [fetchedResultsController fetchedObjects];
+	if([tracks count] > 0) {
+		[self.appDelegate.playerController enqueueTracks:tracks];
+		[self.appDelegate.playerController nextTrack:nil];
+		[self.appDelegate showPlayer];
+	}
+}
+
+
+- (void)shuffleAllTracks:(id)sender {
+	NSArray *tracks = [self shuffleArray:[fetchedResultsController fetchedObjects]];
+	if([tracks count] > 0) {
+		[self.appDelegate.playerController enqueueTracks:tracks];
+		[self.appDelegate.playerController nextTrack:nil];
+		[self.appDelegate showPlayer];
+	}
+}
+
+
+#pragma mark -
 #pragma mark Initialization
 
 /*
@@ -82,10 +117,9 @@
 	self.navigationBar.tintColor = [UIColor aluminiumColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
-	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
-	searchBar.delegate = self;
-	searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"All", @"Title", @"Artist", @"Release", nil];
-	self.tableView.tableHeaderView = searchBar;
+	if(tableHeaderView == nil) {
+		[[NSBundle mainBundle] loadNibNamed:@"FavoritesHeaderView" owner:self options:nil];
+	}
 	
 	searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
 	searchController.delegate = self;
@@ -111,6 +145,7 @@
     [super viewWillAppear:animated];
 	
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+	self.tableView.tableHeaderView = tableHeaderView;
 }
 
 /*

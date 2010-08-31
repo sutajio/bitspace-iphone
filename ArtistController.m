@@ -9,15 +9,21 @@
 #import "ArtistController.h"
 #import "AppDelegate.h"
 #import "Artist.h"
+#import "Release.h"
+#import "Track.h"
 #import "ReleaseTableViewCell.h"
 #import "ReleaseController.h"
 #import "BiographyController.h"
+#import "PlayerController.h"
 
 
 @implementation ArtistController
 
 @synthesize appDelegate, theArtist, fetchedResultsController;
 
+
+#pragma mark -
+#pragma mark Biography
 
 - (void)showBiography {
 	BiographyController *biographyController = [[BiographyController alloc] initWithNibName:@"Biography" bundle:nil];
@@ -28,19 +34,73 @@
 
 
 #pragma mark -
+#pragma mark All tracks
+
+- (NSMutableArray *)allTracks {
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"trackNr" ascending:YES selector:@selector(compare:)];
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+	NSMutableArray *tracks = [NSMutableArray arrayWithCapacity:0];
+	for(Release *release in [fetchedResultsController fetchedObjects]) {
+		NSArray *sortedTracks = [release.tracks sortedArrayUsingDescriptors:sortDescriptors];
+		for(Track *track in sortedTracks) {
+			[tracks addObject:track];
+		}
+	}
+	[sortDescriptors release];
+	[sortDescriptor release];
+	return tracks;
+}
+
+
+- (NSMutableArray *)shuffleArray:(NSArray *)array {
+	NSMutableArray *shuffledArray = [NSMutableArray arrayWithCapacity:[array count]];
+	[shuffledArray addObjectsFromArray:array];
+	if ([shuffledArray count] > 1) {
+		for (NSUInteger shuffleIndex = [shuffledArray count] - 1; shuffleIndex > 0; shuffleIndex--)
+			[shuffledArray exchangeObjectAtIndex:shuffleIndex withObjectAtIndex:arc4random() % (shuffleIndex + 1)];
+	}
+	return shuffledArray;
+}
+
+
+- (void)playAllTracks:(id)sender {
+	NSArray *tracks = [self allTracks];
+	if([tracks count] > 0) {
+		[self.appDelegate.playerController enqueueTracks:tracks];
+		[self.appDelegate.playerController nextTrack:nil];
+		[self.appDelegate showPlayer];
+	}
+}
+
+
+- (void)shuffleAllTracks:(id)sender {
+	NSArray *tracks = [self shuffleArray:[self allTracks]];
+	if([tracks count] > 0) {
+		[self.appDelegate.playerController enqueueTracks:tracks];
+		[self.appDelegate.playerController nextTrack:nil];
+		[self.appDelegate showPlayer];
+	}
+}
+
+
+#pragma mark -
 #pragma mark View lifecycle
 
-/*
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	if(tableHeaderView == nil) {
+		[[NSBundle mainBundle] loadNibNamed:@"ArtistHeaderView" owner:self options:nil];
+	}
 }
-*/
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	
+	self.tableView.tableHeaderView = tableHeaderView;
 	
 	self.navigationItem.title = theArtist.name;
 	if(theArtist.biographyUrl || theArtist.largeArtworkUrl) {

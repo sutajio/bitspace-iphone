@@ -70,7 +70,7 @@
 	[shuffledArray addObjectsFromArray:array];
 	if ([shuffledArray count] > 1) {
 		for (NSUInteger shuffleIndex = [shuffledArray count] - 1; shuffleIndex > 0; shuffleIndex--)
-			[shuffledArray exchangeObjectAtIndex:shuffleIndex withObjectAtIndex:random() % (shuffleIndex + 1)];
+			[shuffledArray exchangeObjectAtIndex:shuffleIndex withObjectAtIndex:arc4random() % (shuffleIndex + 1)];
 	}
 	return shuffledArray;
 }

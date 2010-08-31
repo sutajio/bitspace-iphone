@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "ReleaseTableViewCell.h"
 #import "Aluminium.h"
+#import "PlayerController.h"
 
 
 @implementation ReleasesController
@@ -61,6 +62,56 @@
 
 
 #pragma mark -
+#pragma mark All tracks
+
+- (NSMutableArray *)allTracks {
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"trackNr" ascending:YES selector:@selector(compare:)];
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+	NSMutableArray *tracks = [NSMutableArray arrayWithCapacity:0];
+	for(Release *release in [fetchedResultsController fetchedObjects]) {
+		NSArray *sortedTracks = [release.tracks sortedArrayUsingDescriptors:sortDescriptors];
+		for(Track *track in sortedTracks) {
+			[tracks addObject:track];
+		}
+	}
+	[sortDescriptors release];
+	[sortDescriptor release];
+	return tracks;
+}
+
+
+- (NSMutableArray *)shuffleArray:(NSArray *)array {
+	NSMutableArray *shuffledArray = [NSMutableArray arrayWithCapacity:[array count]];
+	[shuffledArray addObjectsFromArray:array];
+	if ([shuffledArray count] > 1) {
+		for (NSUInteger shuffleIndex = [shuffledArray count] - 1; shuffleIndex > 0; shuffleIndex--)
+			[shuffledArray exchangeObjectAtIndex:shuffleIndex withObjectAtIndex:arc4random() % (shuffleIndex + 1)];
+	}
+	return shuffledArray;
+}
+
+
+- (void)playAllTracks:(id)sender {
+	NSArray *tracks = [self allTracks];
+	if([tracks count] > 0) {
+		[self.appDelegate.playerController enqueueTracks:tracks];
+		[self.appDelegate.playerController nextTrack:nil];
+		[self.appDelegate showPlayer];
+	}
+}
+
+
+- (void)shuffleAllTracks:(id)sender {
+	NSArray *tracks = [self shuffleArray:[self allTracks]];
+	if([tracks count] > 0) {
+		[self.appDelegate.playerController enqueueTracks:tracks];
+		[self.appDelegate.playerController nextTrack:nil];
+		[self.appDelegate showPlayer];
+	}
+}
+
+
+#pragma mark -
 #pragma mark UIViewController overrides
 
 /*
@@ -78,10 +129,9 @@
 	self.navigationBar.tintColor = [UIColor aluminiumColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
-	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
-	searchBar.delegate = self;
-	searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"All", @"Title", @"Artist", @"Label", nil];
-	self.tableView.tableHeaderView = searchBar;
+	if(tableHeaderView == nil) {
+		[[NSBundle mainBundle] loadNibNamed:@"ReleasesHeaderView" owner:self options:nil];
+	}
 	
 	searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
 	searchController.delegate = self;
@@ -107,6 +157,7 @@
     [super viewWillAppear:animated];
 	
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+	self.tableView.tableHeaderView = tableHeaderView;
 }
 
 /*

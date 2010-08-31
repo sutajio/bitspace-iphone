@@ -15,11 +15,15 @@
 	Artist *theArtist;
 	NSFetchedResultsController *fetchedResultsController;
 	NSFetchedResultsController *searchResultsController;
+	IBOutlet UIView *tableHeaderView;
 	
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) Artist *theArtist;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+
+- (IBAction)playAllTracks:(id)sender;
+- (IBAction)shuffleAllTracks:(id)sender;
 
 @end

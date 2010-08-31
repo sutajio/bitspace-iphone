@@ -648,7 +648,7 @@
 	[self scrobbleCurrentTrack:NO];
 	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
-		self.playlistPosition = rand() % [self.playlist count];
+		self.playlistPosition = arc4random() % [self.playlist count];
 	} else if(self.playerRepeatState == PL_REPEAT_TRACK) {
 		if(sender == nil) {
 			self.playlistPosition = self.playlistPosition;
@@ -671,7 +671,7 @@
 	[self scrobbleCurrentTrack:NO];
 	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
-		self.playlistPosition = rand() % [self.playlist count];
+		self.playlistPosition = arc4random() % [self.playlist count];
 	} else if(self.playerRepeatState == PL_REPEAT_TRACK) {
 		if(sender == nil) {
 			self.playlistPosition = self.playlistPosition;

@@ -127,6 +127,12 @@
 		8595C84F11E3A3F700C8B8A1 /* release-header.png in Resources */ = {isa = PBXBuildFile; fileRef = 8595C84E11E3A3F700C8B8A1 /* release-header.png */; };
 		8595C9E411E3E63C00C8B8A1 /* TrackLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */; };
 		85AB2E49122D0D02000210A1 /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 85AB2E48122D0D02000210A1 /* GradientView.m */; };
+		85AB2E84122D1D95000210A1 /* ReleasesHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2E83122D1D95000210A1 /* ReleasesHeaderView.xib */; };
+		85AB2EB3122D2B6D000210A1 /* table-button-hilight.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EB2122D2B6D000210A1 /* table-button-hilight.png */; };
+		85AB2EBA122D2D02000210A1 /* all-tracks.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EB8122D2D02000210A1 /* all-tracks.png */; };
+		85AB2EBB122D2D02000210A1 /* all-tracks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EB9122D2D02000210A1 /* all-tracks@2x.png */; };
+		85AB2EE9122D3F55000210A1 /* ArtistHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EE8122D3F55000210A1 /* ArtistHeaderView.xib */; };
+		85AB2EEE122D4068000210A1 /* FavoritesHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EED122D4068000210A1 /* FavoritesHeaderView.xib */; };
 		85C8930911E2997C00FD030C /* volume-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8930811E2997C00FD030C /* volume-high.png */; };
 		85C8930B11E29A4D00FD030C /* volume-low.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8930A11E29A4D00FD030C /* volume-low.png */; };
 		85C8931C11E2A4C400FD030C /* artist.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8931B11E2A4C400FD030C /* artist.png */; };
@@ -341,6 +347,12 @@
 		8595C9E311E3E63C00C8B8A1 /* TrackLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackLoader.m; sourceTree = "<group>"; };
 		85AB2E47122D0D02000210A1 /* GradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GradientView.h; sourceTree = "<group>"; };
 		85AB2E48122D0D02000210A1 /* GradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GradientView.m; sourceTree = "<group>"; };
+		85AB2E83122D1D95000210A1 /* ReleasesHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReleasesHeaderView.xib; sourceTree = "<group>"; };
+		85AB2EB2122D2B6D000210A1 /* table-button-hilight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table-button-hilight.png"; sourceTree = "<group>"; };
+		85AB2EB8122D2D02000210A1 /* all-tracks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "all-tracks.png"; sourceTree = "<group>"; };
+		85AB2EB9122D2D02000210A1 /* all-tracks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "all-tracks@2x.png"; sourceTree = "<group>"; };
+		85AB2EE8122D3F55000210A1 /* ArtistHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArtistHeaderView.xib; sourceTree = "<group>"; };
+		85AB2EED122D4068000210A1 /* FavoritesHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FavoritesHeaderView.xib; sourceTree = "<group>"; };
 		85C8930811E2997C00FD030C /* volume-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "volume-high.png"; sourceTree = "<group>"; };
 		85C8930A11E29A4D00FD030C /* volume-low.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "volume-low.png"; sourceTree = "<group>"; };
 		85C8931B11E2A4C400FD030C /* artist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = artist.png; sourceTree = "<group>"; };
@@ -435,6 +447,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				85AB2EB8122D2D02000210A1 /* all-tracks.png */,
+				85AB2EB9122D2D02000210A1 /* all-tracks@2x.png */,
+				85AB2EB2122D2B6D000210A1 /* table-button-hilight.png */,
 				858B4D3212087B7800A5DD9F /* aluminium.png */,
 				858B4C481205D94100A5DD9F /* iTunesArtwork */,
 				85783F4112036D4C00991D60 /* arrow.png */,
@@ -774,6 +789,9 @@
 				85783E0F1203374900991D60 /* Loading.xib */,
 				85AB2E47122D0D02000210A1 /* GradientView.h */,
 				85AB2E48122D0D02000210A1 /* GradientView.m */,
+				85AB2E83122D1D95000210A1 /* ReleasesHeaderView.xib */,
+				85AB2EE8122D3F55000210A1 /* ArtistHeaderView.xib */,
+				85AB2EED122D4068000210A1 /* FavoritesHeaderView.xib */,
 			);
 			name = "Views-iPhone";
 			sourceTree = "<group>";
@@ -914,6 +932,12 @@
 				858B50281209ED6200A5DD9F /* button-default@2x.png in Resources */,
 				858B50301209EDCA00A5DD9F /* button-highlighted@2x.png in Resources */,
 				8558A39E121AEF1A002ECB40 /* Biography.xib in Resources */,
+				85AB2E84122D1D95000210A1 /* ReleasesHeaderView.xib in Resources */,
+				85AB2EB3122D2B6D000210A1 /* table-button-hilight.png in Resources */,
+				85AB2EBA122D2D02000210A1 /* all-tracks.png in Resources */,
+				85AB2EBB122D2D02000210A1 /* all-tracks@2x.png in Resources */,
+				85AB2EE9122D3F55000210A1 /* ArtistHeaderView.xib in Resources */,
+				85AB2EEE122D4068000210A1 /* FavoritesHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
