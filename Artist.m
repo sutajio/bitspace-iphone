@@ -24,6 +24,7 @@
 @dynamic largeArtworkUrl;
 @dynamic biographyUrl;
 @dynamic archived;
+@dynamic releases;
 
 @synthesize smallArtworkImage, largeArtworkImage;
 @synthesize smallArtworkLoader, largeArtworkLoader;

@@ -26,6 +26,7 @@
 	NSEntityDescription *artistEntityDescription;
 	NSEntityDescription *releaseEntityDescription;
 	NSEntityDescription *trackEntityDescription;
+	NSArray *cachedArtists;
 	NSArray *cachedReleases;
 	NSArray *cachedTracks;
 	NSDate *lastUpdateDate;

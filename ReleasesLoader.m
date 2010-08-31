@@ -54,20 +54,23 @@
 	} else {
 		return [filteredArray objectAtIndex:0];
 	}
+}
 
+- (NSArray *)filteredArtistsArrayUsingPredicate:(NSPredicate *)predicate {
+	if(cachedArtists == nil) {
+		NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[fetchRequest setEntity:self.artistEntityDescription];
+		cachedArtists = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+	}
+	return [cachedArtists filteredArrayUsingPredicate:predicate];
 }
 
 - (Artist *)findOrCreateArtistWithName:(NSString *)artistName {
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@",  artistName];
-	NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
-	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Artist" inManagedObjectContext:self.insertionContext];
-	[fetchRequest setEntity:entity];
-	[fetchRequest setPredicate:predicate];
-	NSArray *filteredArray = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+	NSArray *filteredArray = [self filteredArtistsArrayUsingPredicate:predicate];
 	
 	if([filteredArray count] == 0) {
-		Artist *artist = [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
-		return artist;
+		return [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
 	} else {
 		return [filteredArray objectAtIndex:0];
 	}
@@ -339,6 +342,19 @@
 		
 		page++;
 	} while(true);
+	
+	// Remove empty releases and artists
+	for(Release *r in cachedReleases) {
+		if([r.tracks count] == 0) {
+			[self.insertionContext deleteObject:r];
+		}
+	}
+	for(Artist *a in cachedArtists) {
+		if([a.releases count] == 0) {
+			[self.insertionContext deleteObject:a];
+		}
+	}
+	[self.insertionContext save:nil];
 	
 	// Tell the delegate that we have finished loading
 	[delegate loaderDidFinish:self];

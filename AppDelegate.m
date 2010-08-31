@@ -347,7 +347,6 @@
 	NSString *dbVersion = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:[self dbVersionKey]];
 	if(dbVersion == nil || [dbVersion isEqualToString:DB_VERSION_STRING] == NO) {
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[self lastReleasesSyncKey]];
-		[[NSUserDefaults standardUserDefaults] setObject:DB_VERSION_STRING forKey:[self dbVersionKey]];
 	}
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[self lastReleasesSyncKey]];
 }
@@ -398,6 +397,8 @@
 		[self dismissModalLoadingIndicator];
 		if(loader.didFail == NO) {
 			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:[self lastReleasesSyncKey]];
+			[[NSUserDefaults standardUserDefaults] setObject:DB_VERSION_STRING forKey:[self dbVersionKey]];
+			[[NSUserDefaults standardUserDefaults] synchronize];
 		}
 		[releasesLoader release];
 		releasesLoader = nil;

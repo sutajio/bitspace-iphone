@@ -29,6 +29,7 @@
 @property (nonatomic, retain) NSString *largeArtworkUrl;
 @property (nonatomic, retain) NSString *biographyUrl;
 @property (nonatomic, retain) NSNumber *archived;
+@property (nonatomic, retain) NSSet *releases;
 
 @property (nonatomic, retain) UIImage *smallArtworkImage;
 @property (nonatomic, retain) UIImage *largeArtworkImage;
