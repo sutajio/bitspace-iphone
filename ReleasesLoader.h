@@ -26,8 +26,8 @@
 	NSEntityDescription *artistEntityDescription;
 	NSEntityDescription *releaseEntityDescription;
 	NSEntityDescription *trackEntityDescription;
-	NSArray *cachedArtists;
-	NSArray *cachedReleases;
+	NSMutableDictionary *cachedArtists;
+	NSMutableDictionary *cachedReleases;
 	NSMutableDictionary *cachedTracks;
 	NSDate *lastUpdateDate;
 	BOOL didFail;

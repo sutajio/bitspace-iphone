@@ -36,43 +36,51 @@
 	return [NSPredicate predicateWithFormat:@"url == %@", url];
 }
 
-- (NSArray *)filteredReleasesArrayUsingPredicate:(NSPredicate *)predicate {
+- (Release *)findReleaseWithURL:(NSString *)url {
 	if(cachedReleases == nil) {
 		NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[fetchRequest setEntity:self.releaseEntityDescription];
-		cachedReleases = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+		NSArray *releases = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+		cachedReleases = [NSMutableDictionary dictionaryWithCapacity:[releases count]];
+		for(Release *r in releases) {
+			[cachedReleases setObject:r forKey:r.url];
+		}
 	}
-	return [cachedReleases filteredArrayUsingPredicate:predicate];
+	return [cachedReleases valueForKey:url];
 }
 
 - (Release *)findOrCreateReleaseWithURL:(NSString *)url {
-	NSPredicate *predicate = [self predicateForURL:url];
-	NSArray *filteredArray = [self filteredReleasesArrayUsingPredicate:predicate];
-	
-	if([filteredArray count] == 0) {
-		return [NSEntityDescription insertNewObjectForEntityForName:@"Release" inManagedObjectContext:self.insertionContext];
+	Release *release = [self findReleaseWithURL:url];
+	if(release) {
+		return release;
 	} else {
-		return [filteredArray objectAtIndex:0];
+		release = [NSEntityDescription insertNewObjectForEntityForName:@"Release" inManagedObjectContext:self.insertionContext];
+		[cachedReleases setObject:release forKey:url];
+		return release;
 	}
 }
 
-- (NSArray *)filteredArtistsArrayUsingPredicate:(NSPredicate *)predicate {
+- (Artist *)findArtistWithName:(NSString *)name {
 	if(cachedArtists == nil) {
 		NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[fetchRequest setEntity:self.artistEntityDescription];
-		cachedArtists = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+		NSArray *artists = [self.insertionContext executeFetchRequest:fetchRequest error:nil];
+		cachedArtists = [NSMutableDictionary dictionaryWithCapacity:[artists count]];
+		for(Artist *a in artists) {
+			[cachedArtists setObject:a forKey:a.name];
+		}
 	}
-	return [cachedArtists filteredArrayUsingPredicate:predicate];
+	return [cachedArtists valueForKey:name];
 }
 
 - (Artist *)findOrCreateArtistWithName:(NSString *)artistName {
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@",  artistName];
-	NSArray *filteredArray = [self filteredArtistsArrayUsingPredicate:predicate];
-	
-	if([filteredArray count] == 0) {
-		return [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
+	Artist *artist = [self findArtistWithName:artistName];
+	if(artist) {
+		return artist;
 	} else {
-		return [filteredArray objectAtIndex:0];
+		artist = [NSEntityDescription insertNewObjectForEntityForName:@"Artist" inManagedObjectContext:self.insertionContext];
+		[cachedArtists setObject:artist forKey:artistName];
+		return artist;
 	}
 }
 
@@ -145,7 +153,9 @@
 	if(track) {
 		return track;
 	} else {
-		return [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.insertionContext];
+		track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:self.insertionContext];
+		[cachedTracks setObject:track forKey:url];
+		return track;
 	}
 }
 
@@ -346,12 +356,12 @@
 	} while(true);
 	
 	// Remove empty releases and artists
-	for(Release *r in cachedReleases) {
+	for(Release *r in [cachedReleases allValues]) {
 		if([r.tracks count] == 0) {
 			[self.insertionContext deleteObject:r];
 		}
 	}
-	for(Artist *a in cachedArtists) {
+	for(Artist *a in [cachedArtists allValues]) {
 		if([a.releases count] == 0) {
 			[self.insertionContext deleteObject:a];
 		}
