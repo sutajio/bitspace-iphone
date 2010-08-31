@@ -212,7 +212,7 @@
 	}
 	
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
-	if([[UIScreen mainScreen] scale] <= 1.0) {
+	if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == NO || [[UIScreen mainScreen] scale] <= 1.0) {
 #endif
 		if([releaseJSON valueForKey:@"small_artwork_url"] != [NSNull null]) {
 			release.smallArtworkUrl = (NSString*)[releaseJSON valueForKey:@"small_artwork_url"];

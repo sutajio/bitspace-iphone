@@ -373,7 +373,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	backgroundTask = UIBackgroundTaskInvalid;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
+	if([[UIApplication sharedApplication] respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)]) {
+		backgroundTask = UIBackgroundTaskInvalid;
+	}
+#endif
 	
 	reachability = [[Reachability reachabilityForInternetConnection] retain];
 	[reachability startNotifier];
