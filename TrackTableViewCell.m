@@ -162,7 +162,6 @@
 		textLabel.textColor = [UIColor darkTextColor];
 		detailTextLabel.textColor = [UIColor darkTextColor];
 		trackNrLabel.textColor = [UIColor darkTextColor];
-		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:1.0f alpha:1.0f];
 		bgView.gradientEnabled = NO;
 	}
 	
