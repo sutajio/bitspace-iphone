@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class Release;
+@class Release, GradientView;
 
 @interface ReleaseTableViewCell : UITableViewCell {
 	Release *release;
+	GradientView *bgView;
 	UIImageView *artworkImageView;
 	UIProgressView *downloadProgressView;
 	BOOL isWaitingForArtwork;

@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@class Track;
+@class Track, GradientView;
 
 @interface TrackTableViewCell : UITableViewCell {
 	Track *track;
 	NSInteger index;
 	BOOL showAlbumArtist;
-	UIView *bgView;
+	GradientView *bgView;
 	UIImageView *playingImage;
 	UILabel *trackNrLabel;
 	UILabel *textLabel;

@@ -9,6 +9,7 @@
 #import "ReleaseTableViewCell.h"
 #import "Release.h"
 #import "Track.h"
+#import "GradientView.h"
 
 
 @implementation ReleaseTableViewCell
@@ -17,6 +18,12 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+		
+		bgView = [[GradientView alloc] initWithFrame:self.frame];
+		bgView.backgroundColor = [UIColor whiteColor];
+		bgView.gradientEnabled = NO;
+		self.backgroundView = bgView;
+		[bgView release];
 		
 		artworkImageView = [[[UIImageView alloc] init] autorelease];
 		artworkImageView.frame = CGRectMake(0.0f, 0.0f, 125.0f, 125.0f);
@@ -93,8 +100,16 @@
 	
 	if([release hasOfflineTracks] == YES) {
 		self.textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+		self.textLabel.backgroundColor = [UIColor clearColor];
+		self.detailTextLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+		self.detailTextLabel.backgroundColor = [UIColor clearColor];
+		bgView.backgroundColor = [UIColor colorWithHue:0.36f saturation:0.03f brightness:1.0f alpha:1.0f];
+		bgView.gradientEnabled = YES;
 	} else {
 		self.textLabel.textColor = [UIColor darkTextColor];
+		self.detailTextLabel.textColor = [UIColor darkTextColor];
+		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:1.0f alpha:1.0f];
+		bgView.gradientEnabled = NO;
 	}
 	
 	float downloadProgress = (float)[release numberOfOfflineTracks] / (float)[release numberOfTracks];

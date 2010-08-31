@@ -11,6 +11,7 @@
 #import "Release.h"
 #import "AppDelegate.h"
 #import "PlayerController.h"
+#import "GradientView.h"
 
 
 @implementation TrackTableViewCell
@@ -20,8 +21,9 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 	
-		bgView = [[UIView alloc] initWithFrame:self.frame];
+		bgView = [[GradientView alloc] initWithFrame:self.frame];
 		bgView.backgroundColor = [UIColor whiteColor];
+		bgView.gradientEnabled = NO;
 		self.backgroundView = bgView;
 		[bgView release];
 		
@@ -152,8 +154,16 @@
 	
 	if([track hasCache] == YES && [track isLoading] == NO) {
 		textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+		detailTextLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+		trackNrLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+		bgView.backgroundColor = [UIColor colorWithHue:0.36f saturation:0.03f brightness:1.0f alpha:1.0f];
+		bgView.gradientEnabled = YES;
 	} else {
 		textLabel.textColor = [UIColor darkTextColor];
+		detailTextLabel.textColor = [UIColor darkTextColor];
+		trackNrLabel.textColor = [UIColor darkTextColor];
+		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:1.0f alpha:1.0f];
+		bgView.gradientEnabled = NO;
 	}
 	
 	if([track isLoading] == YES) {
