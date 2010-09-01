@@ -267,6 +267,28 @@
 	self.playbackControlsState = PL_CTRLS_STATE_HIDDEN;
 }
 
+- (void)disablePlaybackControlsAutoHiding {
+	if(autoHidePlaybackControlsTimer && [autoHidePlaybackControlsTimer isValid]) {
+		[autoHidePlaybackControlsTimer invalidate];
+		autoHidePlaybackControlsTimer = nil;
+	}
+}
+
+- (void)autoHidePlaybackControlsTrigger {
+	[self hidePlaybackControls];
+	autoHidePlaybackControlsTimer = nil;
+}
+
+- (void)autoHidePlaybackControls {
+	[self disablePlaybackControlsAutoHiding];
+	autoHidePlaybackControlsTimer = [NSTimer
+								 scheduledTimerWithTimeInterval:AUTO_HIDE_PLAYBACK_CONTROLS_TIMEOUT_IN_SECONDS
+								 target:self
+								 selector:@selector(autoHidePlaybackControlsTrigger)
+								 userInfo:nil
+								 repeats:NO];
+}
+
 - (void)showArtwork:(NSNotification *)notification {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"finishedLoadingLargeArtwork" object:[notification object]];
 	Track *track = [self currentTrack];
@@ -625,6 +647,7 @@
 		[self hidePlaybackControls];
 	} else {
 		[self showPlaybackControls];
+		[self autoHidePlaybackControls];
 	}
 }
 
@@ -722,6 +745,7 @@
 
 - (void)beginSeeking:(id)sender {
 	isSeeking = YES;
+	[self disablePlaybackControlsAutoHiding];
 	NSLog(@"beginSeeking");
 }
 
@@ -732,6 +756,7 @@
 
 - (void)stopSeeking {
 	isSeeking = NO;
+	[self autoHidePlaybackControls];
 	NSLog(@"stopSeeking");
 }
 

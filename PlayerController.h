@@ -27,6 +27,8 @@ typedef enum {
 	PL_SHUFFLE_ON
 } PlayerShuffleState;
 
+#define AUTO_HIDE_PLAYBACK_CONTROLS_TIMEOUT_IN_SECONDS 10
+
 @interface PlayerController : UIViewController {
 	AppDelegate *appDelegate;
 	IBOutlet UINavigationBar *navigationBar;
@@ -57,6 +59,7 @@ typedef enum {
 	double totalPlayedTime;
 	BOOL shouldScrobble;
 	BOOL hasScrobbled;
+	NSTimer *autoHidePlaybackControlsTimer;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
