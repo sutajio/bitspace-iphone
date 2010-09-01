@@ -633,9 +633,21 @@ void ASReadStreamCallBack
 		
 		if([url isFileURL]) {
 			
-			//stream = (CFReadStreamRef)[NSInputStream inputStreamWithFileAtPath:path];
+			//
+			// Open the file as a read stream
+			//
 			stream = CFReadStreamCreateWithFile(NULL, (CFURLRef)url);
 			fileLength = [[[NSFileManager defaultManager] attributesOfItemAtPath:[url path] error:nil] fileSize];
+			
+			//
+			// If we are creating this request to seek to a location, set the
+			// requested byte range in the headers.
+			//
+			if (fileLength > 0 && seekByteOffset > 0)
+			{
+				CFReadStreamSetProperty(stream, kCFStreamPropertyFileCurrentOffset, CFNumberCreate(NULL, kCFNumberLongType, &seekByteOffset));
+				discontinuous = YES;
+			}
 			
 		} else {
 			//
