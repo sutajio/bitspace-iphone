@@ -817,15 +817,17 @@
 }
 
 - (void)reachabilityChanged {
-	NetworkStatus reachabilityStatus = [reachability currentReachabilityStatus];
-	if(reachabilityStatus == NotReachable) {
-		[self enableOfflineMode];
-	} else {
-		if([reachability connectionRequired] == NO) {
+	if([[self currentTrack] hasCache] == NO) {
+		NetworkStatus reachabilityStatus = [reachability currentReachabilityStatus];
+		if(reachabilityStatus == NotReachable) {
 			[self enableOfflineMode];
-			[self disableOfflineMode];
 		} else {
-			[self enableOfflineMode];
+			if([reachability connectionRequired] == NO) {
+				[self enableOfflineMode];
+				[self disableOfflineMode];
+			} else {
+				[self enableOfflineMode];
+			}
 		}
 	}
 }
