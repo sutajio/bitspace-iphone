@@ -539,7 +539,6 @@
 - (void)handleStreamerError {
 	if(streamer.errorCode != AS_NO_ERROR) {
 		switch (streamer.errorCode) {
-			case AS_AUDIO_DATA_NOT_FOUND:
 			case AS_NETWORK_CONNECTION_FAILED:
 				[self enableOfflineMode];
 				break;
@@ -573,7 +572,21 @@
 		case AS_STOPPING:
 			NSLog(@"AS_STOPPING");
 			[self beginBackgroundTask];
-			[self handleStreamerError];
+			switch (streamer.stopReason) {
+				case AS_STOPPING_EOF:
+					NSLog(@"AS_STOPPING_EOF");
+					break;
+				case AS_STOPPING_USER_ACTION:
+					NSLog(@"AS_STOPPING_USER_ACTION");
+					break;
+				case AS_STOPPING_ERROR:
+					NSLog(@"AS_STOPPING_ERROR");
+					[self handleStreamerError];
+					break;
+				case AS_STOPPING_TEMPORARILY:
+					NSLog(@"AS_STOPPING_TEMPORARILY");
+					break;
+			}
 			break;
 		case AS_STOPPED:
 			NSLog(@"AS_STOPPED");
