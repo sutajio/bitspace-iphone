@@ -71,7 +71,7 @@
 	[self performSelectorInBackground:@selector(updateBiography) withObject:nil];
 	[self updateArtwork];
 	
-	[[biographyView _documentView] addSubview:artworkView];
+	[[[biographyView subviews] objectAtIndex:0] addSubview:artworkView];
 }
 
 /*
