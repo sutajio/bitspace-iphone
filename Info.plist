@@ -27,7 +27,7 @@
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow-iPad</string>
 	<key>SiteURL</key>
-	<string>http://bitspace.at/</string>
+	<string>http://api.bitspaceapp.com/</string>
 	<key>SynchronizationInterval</key>
 	<string>86400</string>
 	<key>UIBackgroundModes</key>
