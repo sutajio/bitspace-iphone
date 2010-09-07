@@ -24,8 +24,6 @@
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
-	<key>NSMainNibFile~ipad</key>
-	<string>MainWindow-iPad</string>
 	<key>SiteURL</key>
 	<string>http://api.bitspaceapp.com/</string>
 	<key>SynchronizationInterval</key>
