@@ -12,7 +12,7 @@
 @implementation UIColor (Aluminium)
 
 + (UIColor *)aluminiumColor {
-	return [UIColor darkGrayColor];
+	return [UIColor blackColor];
 }
 
 + (UIColor *)aluminiumPattern {
