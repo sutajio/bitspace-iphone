@@ -499,7 +499,7 @@
 	NSPredicate *predicate = nil;
 	if ([searchString length]) {
 		if (searchOption == 0) {
-			predicate = [NSPredicate predicateWithFormat:@"archived == NO AND (title contains[cd] %@ OR artist contains[cd] %@ OR label contains[cd] %@)", searchString, searchString, searchString];
+			predicate = [NSPredicate predicateWithFormat:@"archived == NO AND (title contains[cd] %@ OR artist contains[cd] %@ OR year contains[cd] %@)", searchString, searchString, searchString];
 		} else {
 			predicate = [NSPredicate predicateWithFormat:@"archived == NO AND (%K contains[cd] %@)", [[controller.searchBar.scopeButtonTitles objectAtIndex:searchOption] lowercaseString], searchString];
 		}

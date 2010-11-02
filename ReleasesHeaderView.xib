@@ -68,7 +68,7 @@
 							<string>All</string>
 							<string>Title</string>
 							<string>Artist</string>
-							<string>Label</string>
+							<string>Year</string>
 						</object>
 					</object>
 					<object class="IBUIButton" id="51599411">
