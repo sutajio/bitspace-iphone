@@ -101,33 +101,6 @@
 	}
 }
 
-- (void)toggleLove {
-	NSLog(@"Love");
-	AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-	NSURL *url = [ProtectedURL URLWithStringAndCredentials:self.loveUrl withUser:appDelegate.username andPassword:appDelegate.password];
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-														   cachePolicy:NSURLRequestReloadIgnoringCacheData
-													   timeoutInterval:5.0];
-	[request setHTTPMethod:@"PUT"];
-	[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-	[request addValue:[ProtectedURL authorizationHeaderWithUser:appDelegate.username 
-													andPassword:appDelegate.password] forHTTPHeaderField:@"Authorization"];
-	if(self.lovedAt) {
-		[request setHTTPBody:[@"toggle=off" dataUsingEncoding:NSUTF8StringEncoding]];
-		self.lovedAt = nil;
-	} else {
-		[request setHTTPBody:[@"toggle=on" dataUsingEncoding:NSUTF8StringEncoding]];
-		self.lovedAt = [NSDate date];
-	}
-	NSError *error = nil;
-	if(![self.managedObjectContext save:&error]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DatabaseError" object:error];
-	}
-	[appDelegate.syncQueue enqueueRequest:request];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackLoveStateDidChange" object:self];
-}
-
 - (void)touch {
 	self.touched = [NSNumber numberWithBool:YES];
 }

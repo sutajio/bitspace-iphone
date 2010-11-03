@@ -155,40 +155,6 @@
 	}
 }
 
-- (void)scrobbleCurrentTrack:(BOOL)nowPlaying {
-	Track *track = [self currentTrack];
-	NSURL *url = nil;
-	if(track && [track.length intValue] > 30) {
-		if(nowPlaying == YES) {
-			url = [ProtectedURL URLWithStringAndCredentials:track.nowPlayingUrl 
-												   withUser:self.appDelegate.username 
-												andPassword:self.appDelegate.password];
-			NSLog(@"Now playing");
-		} else {
-			if(shouldScrobble == YES && hasScrobbled == NO) {
-				hasScrobbled = YES;
-				url = [ProtectedURL URLWithStringAndCredentials:track.scrobbleUrl 
-													   withUser:self.appDelegate.username 
-													andPassword:self.appDelegate.password];
-				NSLog(@"Scrobble");
-			}
-		}
-	}
-	if(url) {	
-		NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-															   cachePolicy:NSURLRequestReloadIgnoringCacheData
-														   timeoutInterval:5.0];
-		[request setHTTPMethod:@"POST"];
-		[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-		[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-		[request addValue:[ProtectedURL authorizationHeaderWithUser:self.appDelegate.username 
-														andPassword:self.appDelegate.password]
-											  forHTTPHeaderField:@"Authorization"];
-		[self.appDelegate.syncQueue enqueueRequest:request];
-	}
-	
-}
-
 - (void)updateProgress:(NSTimer *)updatedTimer
 {
 	Track *track = [self currentTrack];
@@ -592,7 +558,6 @@
 			NSLog(@"AS_STOPPED");
 			if(isTemporarilyOffline)
 				break;
-			[self scrobbleCurrentTrack:NO];
 			if([self isPlayingLastTrack]) {
 				if(self.playerRepeatState == PL_REPEAT_ALL ||
 				   self.playerRepeatState == PL_REPEAT_TRACK ||
@@ -644,7 +609,6 @@
 	Track *track = [self currentTrack];
 	if(track) {
 		[self createStreamer:track];
-		[self scrobbleCurrentTrack:YES];
 	}
 	
 	[self updatePlayerUIBasedOnPlaybackState];
@@ -671,7 +635,6 @@
 			[streamer start];
 		} else {
 			[streamer pause];
-			[self scrobbleCurrentTrack:NO];
 		}
 	} else {
 		[self playCurrentTrack];
@@ -681,7 +644,6 @@
 
 - (void)nextTrack:(id)sender {
 	NSLog(@"nextTrack");
-	[self scrobbleCurrentTrack:NO];
 	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
 		self.playlistPosition = arc4random() % [self.playlist count];
@@ -704,7 +666,6 @@
 
 - (void)previousTrack:(id)sender {
 	NSLog(@"previousTrack");
-	[self scrobbleCurrentTrack:NO];
 	Track *oldTrack = [self currentTrack];
 	if(self.playerShuffleState == PL_SHUFFLE_ON) {
 		self.playlistPosition = arc4random() % [self.playlist count];
@@ -782,7 +743,6 @@
 - (void)enqueueTracks:(NSArray *)tracks andPlayTrackWithIndex:(NSInteger)index {
 	[self enqueueTracks:tracks];
 	if(index != -1) {
-		[self scrobbleCurrentTrack:NO];
 		self.playlistPosition = index;
 		[self playCurrentTrack];
 	}
@@ -798,8 +758,6 @@
 
 - (void)clearQueueAndResetPlayer:(BOOL)resetPlayer {
 	Track *oldTrack = [self currentTrack];
-	
-	[self scrobbleCurrentTrack:NO];
 	
 	[self.playlist removeAllObjects];
 	[self persistPlaylist];

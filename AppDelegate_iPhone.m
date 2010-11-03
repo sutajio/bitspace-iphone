@@ -7,10 +7,8 @@
 //
 
 #import "AppDelegate_iPhone.h"
-#import "ArtistsController.h"
 #import "ReleasesController.h"
 #import "FavoritesController.h"
-#import "SignInController.h"
 
 @interface AppDelegate_iPhone ()
 - (void)animateArrowIndicatorToIndex:(int)index;
@@ -19,7 +17,6 @@
 @implementation AppDelegate_iPhone
 
 @synthesize tabBarController;
-@synthesize artistsController;
 @synthesize releasesController;
 @synthesize favoritesController;
 
@@ -33,7 +30,6 @@
 	[super applicationDidFinishLaunching:application];
 	
 	// Pass self to the controllers
-	artistsController.appDelegate = self;
 	releasesController.appDelegate = self;
 	favoritesController.appDelegate = self;
 	
@@ -57,27 +53,6 @@
 	
 	// Save which tab the user has selected
 	[[NSUserDefaults standardUserDefaults] setInteger:self.tabBarController.selectedIndex forKey:@"TabBarSelectedIndex"];
-}
-
-
-- (void)requestAuthenticationFromUser {
-	[self dismissModalLoadingIndicator];
-	
-	// Show sign in screen
-	SignInController *signInController = [[SignInController alloc] init];
-	signInController.appDelegate = self;
-	signInController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	[self.tabBarController presentModalViewController:signInController animated:YES];
-	[signInController release];
-}
-
-
-- (void)resetUI {
-	
-	// Reset all views
-	[self.artistsController resetView];
-	[self.releasesController resetView];
-	[self.favoritesController resetView];
 }
 
 

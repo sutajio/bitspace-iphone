@@ -45,38 +45,15 @@ static NSMutableArray *activeDelegates;
 	}
 }
 
-+ (Response *)sendRequest:(NSMutableURLRequest *)request withUser:(NSString *)user andPassword:(NSString *)password {
-	
-	//lots of servers fail to implement http basic authentication correctly, so we pass the credentials even if they are not asked for
-	//TODO make this configurable?
-	NSURL *url = [request URL];
-	if(user && password) {
-		NSString *authString = [[[NSString stringWithFormat:@"%@:%@",user, password] dataUsingEncoding:NSUTF8StringEncoding] base64Encoding];
-		[request addValue:[NSString stringWithFormat:@"Basic %@", authString] forHTTPHeaderField:@"Authorization"]; 
-		NSString *escapedUser = (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 									(CFStringRef)user, NULL, (CFStringRef)@"@.:", kCFStringEncodingUTF8);
-		NSString *escapedPassword = (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,								(CFStringRef)password, NULL, (CFStringRef)@"@.:", kCFStringEncodingUTF8);
-		NSMutableString *urlString = [NSMutableString stringWithFormat:@"%@://%@:%@@%@",[url scheme],escapedUser,escapedPassword,[url host],nil];
-		if([url port]) {
-			[urlString appendFormat:@":%@",[url port],nil];
-		}
-		[urlString appendString:[url path]];
-		if([url query]){
-			[urlString appendFormat:@"?%@",[url query],nil];
-		}
-		[request setURL:[NSURL URLWithString:urlString]];
-		[escapedUser release];
-		[escapedPassword release];
-	}
-
-
-	[self logRequest:request to:[url absoluteString]];
++ (Response *)sendRequest:(NSMutableURLRequest *)request {
+	[self logRequest:request to:[[request URL] absoluteString]];
 	
 	ConnectionDelegate *connectionDelegate = [[[ConnectionDelegate alloc] init] autorelease];
-
+	
 	[[self activeDelegates] addObject:connectionDelegate];
 	NSURLConnection *connection = [[[NSURLConnection alloc] initWithRequest:request delegate:connectionDelegate startImmediately:NO] autorelease];
 	connectionDelegate.connection = connection;
-
+	
 	
 	//use a custom runloop
 	static NSString *runLoopMode = @"com.yfactorial.objectiveresource.connectionLoop";
@@ -100,6 +77,32 @@ static NSMutableArray *activeDelegates;
 	}
 	
 	return resp;
+}
+
++ (Response *)sendRequest:(NSMutableURLRequest *)request withUser:(NSString *)user andPassword:(NSString *)password {
+	
+	//lots of servers fail to implement http basic authentication correctly, so we pass the credentials even if they are not asked for
+	//TODO make this configurable?
+	NSURL *url = [request URL];
+	if(user && password) {
+		NSString *authString = [[[NSString stringWithFormat:@"%@:%@",user, password] dataUsingEncoding:NSUTF8StringEncoding] base64Encoding];
+		[request addValue:[NSString stringWithFormat:@"Basic %@", authString] forHTTPHeaderField:@"Authorization"]; 
+		NSString *escapedUser = (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 									(CFStringRef)user, NULL, (CFStringRef)@"@.:", kCFStringEncodingUTF8);
+		NSString *escapedPassword = (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,								(CFStringRef)password, NULL, (CFStringRef)@"@.:", kCFStringEncodingUTF8);
+		NSMutableString *urlString = [NSMutableString stringWithFormat:@"%@://%@:%@@%@",[url scheme],escapedUser,escapedPassword,[url host],nil];
+		if([url port]) {
+			[urlString appendFormat:@":%@",[url port],nil];
+		}
+		[urlString appendString:[url path]];
+		if([url query]){
+			[urlString appendFormat:@"?%@",[url query],nil];
+		}
+		[request setURL:[NSURL URLWithString:urlString]];
+		[escapedUser release];
+		[escapedPassword release];
+	}
+
+	return [self sendRequest:request];
 }
 
 + (Response *)post:(NSString *)body to:(NSString *)url {

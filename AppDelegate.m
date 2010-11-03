@@ -18,18 +18,11 @@
 #define DB_VERSION_STRING @"1.1"
 
 
-@interface AppDelegate ()
-- (BOOL)validateUsername:(NSString *)username andPassword:(NSString *)password;
-- (void)requestAuthenticationFromUser;
-- (void)userDidSignIn;
-@end
-
-
 @implementation AppDelegate
 
 @synthesize window;
 @synthesize playerController;
-@synthesize siteURL, username, password;
+@synthesize siteURL;
 @synthesize operationQueue;
 @synthesize releasesLoader, lastSynchronizationDate;
 
@@ -103,13 +96,8 @@
 												 name:@"DatabaseError" 
 											   object:nil];
 	
-	// Authenticate user and show sign in screen if authentication fails
-	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
-				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
-		[self requestAuthenticationFromUser];
-	} else {
-		[self userDidSignIn];
-	}
+	// Synchronize, if needed...
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];
 
 }
 
@@ -225,101 +213,6 @@
 
 
 #pragma mark -
-#pragma mark Authentication
-
-- (void)requestAuthenticationFromUser {
-	// This method is overriden in the device specific AppDelegate classes
-}
-
-
-- (BOOL)validateUsername:(NSString *)usernameValue andPassword:(NSString *)passwordValue {
-	
-	if(usernameValue == nil || passwordValue == nil)
-		return NO;
-	
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@account", self.siteURL]];
-	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
-															cachePolicy:NSURLRequestReloadIgnoringCacheData
-														timeoutInterval:[Connection timeout]];
-	[request setHTTPMethod:@"GET"];
-	[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];	
-	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-	
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-	Response *res = [Connection sendRequest:request withUser:usernameValue andPassword:passwordValue];
-	
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-	
-	if([res isError]) {
-		NSLog(@"Network error: %@", [res.error localizedDescription]);
-		if([res.error code] != 401) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:res.error];
-			self.username = usernameValue;
-			self.password = passwordValue;
-			return YES;
-		}
-		return NO;
-	}
-	
-	self.username = usernameValue;
-	self.password = passwordValue;
-	
-	return YES;
-}
-
-
-- (void)resetUI {
-	// This method is overriden in the device specific AppDelegate classes
-}
-
-
-- (void)resetAppState {
-	NSLog(@"AppDelegate#resetAppState");
-	
-	// Show the player
-	[self showPlayer];
-	
-	// Stop audio playback
-	[self.playerController stopPlayback];
-	[self.playerController clearQueueAndResetPlayer:YES];
-	
-	// Reset the user interface
-	[self resetUI];
-	
-	// Stop operation queue
-	[self.operationQueue cancelAllOperations];
-	
-	// Reset CoreData
-	[managedObjectContext release]; managedObjectContext = nil;
-	[managedObjectModel release]; managedObjectModel = nil;
-	[persistentStoreCoordinator release]; persistentStoreCoordinator = nil;
-	
-	// Send out a ResetAppState message to all controllers
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResetAppState" object:nil];
-}
-
-
-- (void)userDidSignIn {
-	
-	// Save old username
-	NSString *oldUsername = [[NSUserDefaults standardUserDefaults] stringForKey:@"Username"];
-	
-	// If a new user signed in; reset app state
-	if(oldUsername && [oldUsername isEqualToString:self.username] == NO) {
-		[self resetAppState];
-	}
-	
-	// Save the username and password, so that the user doesn't need to sign in the next
-	// time he or she starts the app.
-	[[NSUserDefaults standardUserDefaults] setValue:self.username forKey:@"Username"];
-	[[NSUserDefaults standardUserDefaults] setValue:self.password forKey:@"Password"];
-	
-	// Synchronize, if needed...
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];	
-}
-
-
-#pragma mark -
 #pragma mark Operation queue
 
 
@@ -336,11 +229,11 @@
 #pragma mark Synchronization
 
 - (NSString *)lastReleasesSyncKey {
-	return [NSString stringWithFormat:@"LastReleasesSync-%@", self.username];
+	return @"LastReleasesSync";
 }
 
 - (NSString *)dbVersionKey {
-	return [NSString stringWithFormat:@"DBVersion-%@", self.username];
+	return @"DBVersion";
 }
 
 - (NSDate *)lastSynchronizationDate {
@@ -462,7 +355,7 @@
 #pragma mark Core Data stack
 
 - (NSString *)databaseFilename {
-	return [NSString stringWithFormat:@"bitspace-%@.sqlite", self.username];
+	return @"service.sqlite";
 }
 
 

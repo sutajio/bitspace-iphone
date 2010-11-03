@@ -96,32 +96,11 @@
 - (void)didReceiveMemoryWarning {
 	[smallArtworkImage release]; smallArtworkImage = nil;
 	[largeArtworkImage release]; largeArtworkImage = nil;
-	[biographyCache release]; biographyCache = nil;
 }
 
 - (void)didTurnIntoFault {
 	[smallArtworkImage release]; smallArtworkImage = nil;
 	[largeArtworkImage release]; largeArtworkImage = nil;
-	[biographyCache release]; biographyCache = nil;
-}
-
-- (NSString *)biography {
-	if(self.biographyUrl) {
-		if(biographyCache) {
-			return biographyCache;
-		} else {
-			AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-			biographyCache = [[NSString stringWithContentsOfURL:[ProtectedURL URLWithStringAndCredentials:self.biographyUrl 
-																								withUser:appDelegate.username 
-																							 andPassword:appDelegate.password] 
-													  encoding:NSUTF8StringEncoding 
-														 error:nil] retain];
-			return biographyCache;
-		}
-	} else {
-		return nil;
-	}
-
 }
 
 @end

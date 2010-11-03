@@ -15,7 +15,6 @@
 	UIImage *largeArtworkImage;
 	ArtworkLoader *smallArtworkLoader;
 	ArtworkLoader *largeArtworkLoader;
-	NSString *biographyCache;
 }
 
 @property (nonatomic, retain) NSString *name;
@@ -35,8 +34,6 @@
 @property (nonatomic, retain) UIImage *largeArtworkImage;
 @property (nonatomic, retain) ArtworkLoader *smallArtworkLoader;
 @property (nonatomic, retain) ArtworkLoader *largeArtworkLoader;
-
-@property (nonatomic, readonly) NSString *biography;
 
 - (void)didReceiveMemoryWarning;
 

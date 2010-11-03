@@ -9,18 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@class ArtistsController, ReleasesController, FavoritesController;
+@class ReleasesController, FavoritesController;
 
 @interface AppDelegate_iPhone : AppDelegate {
 	UITabBarController *tabBarController;
 	UIImageView *indicatorImage;
-	ArtistsController *artistsController;
 	ReleasesController *releasesController;
 	FavoritesController *favoritesController;
 }
 
 @property (nonatomic, retain) IBOutlet UITabBarController *tabBarController;
-@property (nonatomic, retain) IBOutlet ArtistsController *artistsController;
 @property (nonatomic, retain) IBOutlet ReleasesController *releasesController;
 @property (nonatomic, retain) IBOutlet FavoritesController *favoritesController;
 

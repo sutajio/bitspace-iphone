@@ -13,8 +13,6 @@
 
 @interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, ReleasesLoaderDelegate> {
 	NSString *siteURL;
-	NSString *username;
-	NSString *password;
 	
 	NSOperationQueue *operationQueue;
 	
@@ -31,8 +29,6 @@
 }
 
 @property (nonatomic, retain) NSString *siteURL;
-@property (nonatomic, retain) NSString *username;
-@property (nonatomic, retain) NSString *password;
 
 @property (nonatomic, retain, readonly) NSOperationQueue *operationQueue;
 
@@ -49,7 +45,6 @@
 
 @property (nonatomic, readonly) NSString *applicationDocumentsDirectory;
 
-- (BOOL)validateUsername:(NSString *)usernameValue andPassword:(NSString *)passwordValue;
 - (void)showPlayer;
 
 @end

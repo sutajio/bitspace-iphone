@@ -166,9 +166,6 @@
 	track.title = (NSString *)[trackJSON valueForKey:@"title"];
 	track.url = (NSString *)[trackJSON valueForKey:@"url"];
 	track.length = (NSNumber *)[trackJSON valueForKey:@"length"];
-	track.nowPlayingUrl = (NSString *)[trackJSON valueForKey:@"now_playing_url"];
-	track.scrobbleUrl = (NSString *)[trackJSON valueForKey:@"scrobble_url"];
-	track.loveUrl = (NSString *)[trackJSON valueForKey:@"love_url"];
 	if([trackJSON valueForKey:@"track_nr"] != [NSNull null]) {
 		track.trackNr = (NSNumber *)[trackJSON valueForKey:@"track_nr"];
 	} else {
@@ -318,7 +315,7 @@
 		[request setHTTPMethod:@"GET"];
 		[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 		[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-		Response *res = [Connection sendRequest:request withUser:appDelegate.username andPassword:appDelegate.password];
+		Response *res = [Connection sendRequest:request];
 		if([res isError]) {
 			NSLog(@"%@", [res.error localizedDescription]);
 			didFail = YES;

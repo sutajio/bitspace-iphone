@@ -19,7 +19,6 @@
 	UILabel *trackNrLabel;
 	UILabel *textLabel;
 	UILabel *detailTextLabel;
-	UIButton *loveButton;
 	UIActivityIndicatorView *downloadActivityIndicator;
 }
 

@@ -61,14 +61,6 @@
 		detailTextLabel.opaque = NO;
 		[self.contentView addSubview:detailTextLabel];
 		
-		self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-		self.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-		
-		loveButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-		loveButton.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
-		[loveButton addTarget:self action:@selector(loveTrack:) forControlEvents:UIControlEventTouchUpInside];
-		self.accessoryView = loveButton;
-		
 		downloadActivityIndicator = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] retain];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self 
@@ -146,12 +138,6 @@
 		detailTextLabel.text = track.artist;
 	}
 	
-	if(track.lovedAt) {
-		[loveButton setImage:[UIImage imageNamed:@"love-on.png"] forState:UIControlStateNormal];
-	} else {
-		[loveButton setImage:[UIImage imageNamed:@"love-off.png"] forState:UIControlStateNormal];
-	}
-	
 	if([track hasCache] == YES && [track isLoading] == NO) {
 		textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
 		detailTextLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
@@ -168,9 +154,10 @@
 	if([track isLoading] == YES) {
 		[downloadActivityIndicator startAnimating];
 		self.accessoryView = downloadActivityIndicator;
+		self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	} else {
 		[downloadActivityIndicator stopAnimating];
-		self.accessoryView = loveButton;
+		self.accessoryType = UITableViewCellAccessoryNone;
 	}
 	
 	if([track hasCache] == NO && track.loader != nil && [track isLoading] == NO) {
@@ -185,22 +172,16 @@
 	}
 }
 
-- (void)loveTrack:(id)sender {
-	[self.track toggleLove];
-}
-
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
 	[super setHighlighted:highlighted animated:animated];
 	
 	trackNrLabel.highlighted = highlighted;
 	textLabel.highlighted = highlighted;
 	detailTextLabel.highlighted = highlighted;
-	loveButton.highlighted = NO;
 }
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[loveButton release];
 	[downloadActivityIndicator release];
 	[super dealloc];
 }
