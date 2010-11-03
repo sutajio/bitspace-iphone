@@ -66,24 +66,6 @@
 												 name:@"ForceSynchronization" 
 											   object:nil];
 	
-	// Watch for shake events
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(requestAuthenticationFromUser) 
-												 name:@"DeviceShaken" 
-											   object:nil];
-	
-	// Watch for authenticate events
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(requestAuthenticationFromUser) 
-												 name:@"Authenticate" 
-											   object:nil];
-	
-	// Watch for sign in events
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(userDidSignIn) 
-												 name:@"UserDidSignIn" 
-											   object:nil];
-	
 	// Watch for network error events
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(handleNetworkError:) 
