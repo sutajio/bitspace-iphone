@@ -167,7 +167,7 @@
 		85065C5011D37597003773DA /* repeat-off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "repeat-off.png"; sourceTree = "<group>"; };
 		85065C5111D37597003773DA /* shuffle-off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shuffle-off.png"; sourceTree = "<group>"; };
 		851B45E91163E1E1007F1E83 /* Player.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Player.xib; sourceTree = "<group>"; };
-		851B46FE1164CB2B007F1E83 /* Bitspace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bitspace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		851B46FE1164CB2B007F1E83 /* Service.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Service.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		851D52E211C8CA9000CAB951 /* ReleasesLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleasesLoader.h; sourceTree = "<group>"; };
 		851D52E311C8CA9000CAB951 /* ReleasesLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleasesLoader.m; sourceTree = "<group>"; };
 		8541AE2911C91C0D0004C4C9 /* cover-art-large.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "cover-art-large.jpg"; sourceTree = "<group>"; };
@@ -388,7 +388,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				851B46FE1164CB2B007F1E83 /* Bitspace.app */,
+				851B46FE1164CB2B007F1E83 /* Service.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -775,9 +775,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Bitspace */ = {
+		1D6058900D05DD3D006BFB54 /* Service */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bitspace" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Service" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -787,9 +787,9 @@
 			);
 			dependencies = (
 			);
-			name = Bitspace;
+			name = Service;
 			productName = "bitspace-iphone";
-			productReference = 851B46FE1164CB2B007F1E83 /* Bitspace.app */;
+			productReference = 851B46FE1164CB2B007F1E83 /* Service.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -797,6 +797,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = Sutajio;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "bitspace-iphone" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
@@ -804,7 +807,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Bitspace */,
+				1D6058900D05DD3D006BFB54 /* Service */,
 			);
 		};
 /* End PBXProject section */
@@ -974,7 +977,7 @@
 				GCC_PREFIX_HEADER = bitspace_iphone_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
-				PRODUCT_NAME = Bitspace;
+				PRODUCT_NAME = Service;
 				SDKROOT = iphoneos4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
@@ -993,7 +996,7 @@
 				GCC_PREFIX_HEADER = bitspace_iphone_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
-				PRODUCT_NAME = Bitspace;
+				PRODUCT_NAME = Service;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BC379640-1A8A-404B-815F-2174A7EFD973";
 				SDKROOT = iphoneos4.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1035,7 +1038,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bitspace" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Service" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
