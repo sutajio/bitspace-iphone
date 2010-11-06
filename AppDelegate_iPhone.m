@@ -8,7 +8,7 @@
 
 #import "AppDelegate_iPhone.h"
 #import "ReleasesController.h"
-#import "FavoritesController.h"
+#import "NewsController.h"
 
 @interface AppDelegate_iPhone ()
 - (void)animateArrowIndicatorToIndex:(int)index;

@@ -125,7 +125,6 @@
 		85AB2EB3122D2B6D000210A1 /* table-button-hilight.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EB2122D2B6D000210A1 /* table-button-hilight.png */; };
 		85AB2EBA122D2D02000210A1 /* all-tracks.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EB8122D2D02000210A1 /* all-tracks.png */; };
 		85AB2EBB122D2D02000210A1 /* all-tracks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EB9122D2D02000210A1 /* all-tracks@2x.png */; };
-		85AB2EEE122D4068000210A1 /* FavoritesHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2EED122D4068000210A1 /* FavoritesHeaderView.xib */; };
 		85AB2F24122D4A19000210A1 /* offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2F22122D4A19000210A1 /* offline.png */; };
 		85AB2F25122D4A19000210A1 /* offline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85AB2F23122D4A19000210A1 /* offline@2x.png */; };
 		85C8930911E2997C00FD030C /* volume-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8930811E2997C00FD030C /* volume-high.png */; };
@@ -137,7 +136,7 @@
 		85D67FF511FCA3D400A74832 /* AppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D67FF411FCA3D400A74832 /* AppDelegate_iPad.m */; };
 		85D67FF811FCA3E200A74832 /* AppDelegate_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D67FF711FCA3E200A74832 /* AppDelegate_iPhone.m */; };
 		85D6802211FCA58200A74832 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85D6802111FCA58200A74832 /* MainWindow-iPad.xib */; };
-		85EA225411E655DF00B1D0EC /* FavoritesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EA225311E655DF00B1D0EC /* FavoritesController.m */; };
+		85EA225411E655DF00B1D0EC /* NewsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EA225311E655DF00B1D0EC /* NewsController.m */; };
 		85EE799111CBAD5A00714380 /* TrackTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85EE799011CBAD5A00714380 /* TrackTableViewCell.m */; };
 		85FE1F4A11EC9831005D1F15 /* Artist.m in Sources */ = {isa = PBXBuildFile; fileRef = 85FE1F4911EC9831005D1F15 /* Artist.m */; };
 		85FE20FA11EF5A1F005D1F15 /* sign-in-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 85FE20F911EF5A1F005D1F15 /* sign-in-bg.png */; };
@@ -333,7 +332,6 @@
 		85AB2EB2122D2B6D000210A1 /* table-button-hilight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table-button-hilight.png"; sourceTree = "<group>"; };
 		85AB2EB8122D2D02000210A1 /* all-tracks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "all-tracks.png"; sourceTree = "<group>"; };
 		85AB2EB9122D2D02000210A1 /* all-tracks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "all-tracks@2x.png"; sourceTree = "<group>"; };
-		85AB2EED122D4068000210A1 /* FavoritesHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FavoritesHeaderView.xib; sourceTree = "<group>"; };
 		85AB2F22122D4A19000210A1 /* offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = offline.png; sourceTree = "<group>"; };
 		85AB2F23122D4A19000210A1 /* offline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "offline@2x.png"; sourceTree = "<group>"; };
 		85C8930811E2997C00FD030C /* volume-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "volume-high.png"; sourceTree = "<group>"; };
@@ -347,8 +345,8 @@
 		85D67FF611FCA3E200A74832 /* AppDelegate_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate_iPhone.h; sourceTree = "<group>"; };
 		85D67FF711FCA3E200A74832 /* AppDelegate_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate_iPhone.m; sourceTree = "<group>"; };
 		85D6802111FCA58200A74832 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "MainWindow-iPad.xib"; sourceTree = "<group>"; };
-		85EA225211E655DF00B1D0EC /* FavoritesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoritesController.h; sourceTree = "<group>"; };
-		85EA225311E655DF00B1D0EC /* FavoritesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoritesController.m; sourceTree = "<group>"; };
+		85EA225211E655DF00B1D0EC /* NewsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsController.h; sourceTree = "<group>"; };
+		85EA225311E655DF00B1D0EC /* NewsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsController.m; sourceTree = "<group>"; };
 		85EE798F11CBAD5A00714380 /* TrackTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackTableViewCell.h; sourceTree = "<group>"; };
 		85EE799011CBAD5A00714380 /* TrackTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackTableViewCell.m; sourceTree = "<group>"; };
 		85FE1F4811EC9831005D1F15 /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
@@ -568,7 +566,7 @@
 				8559192111DE326600583C21 /* PullToRefreshTableViewController.m */,
 				85D0FCE911E762E40030994D /* Player */,
 				85D0FCEA11E762EA0030994D /* Releases */,
-				85D0FCEB11E762F30030994D /* Playlists */,
+				85D0FCEB11E762F30030994D /* News */,
 				85783A3C1200CC9A00991D60 /* LibraryController.h */,
 				85783A3D1200CC9A00991D60 /* LibraryController.m */,
 				85783A3E1200CC9A00991D60 /* LibraryController.xib */,
@@ -731,13 +729,13 @@
 			name = Releases;
 			sourceTree = "<group>";
 		};
-		85D0FCEB11E762F30030994D /* Playlists */ = {
+		85D0FCEB11E762F30030994D /* News */ = {
 			isa = PBXGroup;
 			children = (
-				85EA225211E655DF00B1D0EC /* FavoritesController.h */,
-				85EA225311E655DF00B1D0EC /* FavoritesController.m */,
+				85EA225211E655DF00B1D0EC /* NewsController.h */,
+				85EA225311E655DF00B1D0EC /* NewsController.m */,
 			);
-			name = Playlists;
+			name = News;
 			sourceTree = "<group>";
 		};
 		85EE798E11CBAD2C00714380 /* Views-iPhone */ = {
@@ -758,7 +756,6 @@
 				85AB2E47122D0D02000210A1 /* GradientView.h */,
 				85AB2E48122D0D02000210A1 /* GradientView.m */,
 				85AB2E83122D1D95000210A1 /* ReleasesHeaderView.xib */,
-				85AB2EED122D4068000210A1 /* FavoritesHeaderView.xib */,
 			);
 			name = "Views-iPhone";
 			sourceTree = "<group>";
@@ -802,7 +799,14 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "bitspace-iphone" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* bitspace-iphone */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -886,7 +890,6 @@
 				85AB2EB3122D2B6D000210A1 /* table-button-hilight.png in Resources */,
 				85AB2EBA122D2D02000210A1 /* all-tracks.png in Resources */,
 				85AB2EBB122D2D02000210A1 /* all-tracks@2x.png in Resources */,
-				85AB2EEE122D4068000210A1 /* FavoritesHeaderView.xib in Resources */,
 				85AB2F24122D4A19000210A1 /* offline.png in Resources */,
 				85AB2F25122D4A19000210A1 /* offline@2x.png in Resources */,
 			);
@@ -948,7 +951,7 @@
 				8559190911DE317B00583C21 /* RefreshTableHeaderView.m in Sources */,
 				8559192211DE326600583C21 /* PullToRefreshTableViewController.m in Sources */,
 				8595C9E411E3E63C00C8B8A1 /* TrackLoader.m in Sources */,
-				85EA225411E655DF00B1D0EC /* FavoritesController.m in Sources */,
+				85EA225411E655DF00B1D0EC /* NewsController.m in Sources */,
 				85FE1F4A11EC9831005D1F15 /* Artist.m in Sources */,
 				85D67FF511FCA3D400A74832 /* AppDelegate_iPad.m in Sources */,
 				85D67FF811FCA3E200A74832 /* AppDelegate_iPhone.m in Sources */,
@@ -978,7 +981,7 @@
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PRODUCT_NAME = Service;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 			};
