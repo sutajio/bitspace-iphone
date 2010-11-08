@@ -17,18 +17,20 @@
 @synthesize libraryController;
 
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// Add the tab bar controller's current view as a subview of the window
 	[window addSubview:splitViewController.view];
 	
 	// Call the super class
-	[super applicationDidFinishLaunching:application];
+	[super application:application didFinishLaunchingWithOptions:launchOptions];
 	
 	// Pass self to the controllers
 	libraryController.appDelegate = self;
 	
 	// Show the application window
 	[window makeKeyAndVisible];
+	
+	return YES;
 }
 
 - (BrowserController *)browserController {
