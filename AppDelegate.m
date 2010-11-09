@@ -32,6 +32,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
+	// Show the system status bar
+	[[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
+	
 	// Make sure iOS knows we are playing music
 	[[AVAudioSession sharedInstance] setDelegate: self];
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];

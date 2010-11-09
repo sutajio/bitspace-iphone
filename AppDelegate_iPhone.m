@@ -45,7 +45,11 @@
 		self.tabBarController.selectedIndex = 1;
 		[self animateArrowIndicatorToIndex:[self.tabBarController selectedIndex]];
 	} else {
-		self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
+		if([[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"]) {
+			self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
+		} else {
+			self.tabBarController.selectedIndex = 1;
+		}
 		[self animateArrowIndicatorToIndex:[self.tabBarController selectedIndex]];
 	}
 	
