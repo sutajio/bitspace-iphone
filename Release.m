@@ -28,6 +28,7 @@
 @dynamic largeArtworkUrl;
 @dynamic tracks;
 @dynamic archived;
+@dynamic productId;
 
 @synthesize smallArtworkImage, largeArtworkImage;
 @synthesize smallArtworkLoader, largeArtworkLoader;
