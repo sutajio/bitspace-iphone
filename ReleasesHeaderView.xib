@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="1"/>
+			<integer value="9"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -52,9 +52,9 @@
 								<int key="NSvFlags">290</int>
 								<string key="NSFrame">{{162, 0}, {158, 43}}</string>
 								<reference key="NSSuperview" ref="177885040"/>
-								<object class="NSColor" key="IBUIBackgroundColor">
+								<object class="NSColor" key="IBUIBackgroundColor" id="139252383">
 									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MC45NzQ0NTI1NTQ3AA</bytes>
+									<bytes key="NSWhite">MQA</bytes>
 								</object>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -75,10 +75,7 @@
 									<bytes key="NSWhite">MAA</bytes>
 								</object>
 								<reference key="IBUINormalTitleColor" ref="85459108"/>
-								<object class="NSColor" key="IBUINormalTitleShadowColor" id="139252383">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MQA</bytes>
-								</object>
+								<reference key="IBUINormalTitleShadowColor" ref="139252383"/>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">shuffle-on.png</string>
@@ -93,10 +90,7 @@
 								<int key="NSvFlags">290</int>
 								<string key="NSFrameSize">{161, 43}</string>
 								<reference key="NSSuperview" ref="177885040"/>
-								<object class="NSColor" key="IBUIBackgroundColor">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MC45NzQ0NTI1NTQ3AA</bytes>
-								</object>
+								<reference key="IBUIBackgroundColor" ref="139252383"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
