@@ -20,8 +20,6 @@
 	
 	NSURL *url = [NSURL URLWithString:link];
 	NSURLRequest *requestObj = [NSURLRequest requestWithURL:url];
-	webView.multipleTouchEnabled = YES;
-	webView.scalesPageToFit = YES;
 	[webView loadRequest:requestObj];
 }
 

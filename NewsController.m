@@ -24,11 +24,26 @@
 #pragma mark -
 #pragma mark Pull to refresh
 
+- (void)parseNewsFeedFinished:(NSNumber*)success {
+	if([success boolValue] == YES) {
+		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastNewsSynchronizationDate"];
+		self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
+		[self.tableView reloadData];
+	} else {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Parse error" message:@"Parsing news feed failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		[alertView release];
+	}
+}
+
 - (void)parseNewsFeed {
 	
+	// Clear the lists
+	if (savedNewsList) [savedNewsList removeAllObjects];
+	if (newsList) [newsList removeAllObjects];
+	
 	// Newsfeed
-	NSURL *url = [[NSURL alloc] initWithString:@"http://srvc.se/feed"];
-	//NSURL *url = [[NSURL alloc] initWithString:@"http://perhagman.se/testfeed.xml"];
+	NSURL *url = [[NSURL alloc] initWithString:@"http://srvc.se/category/news/feed"];
 	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:url];
 	[xmlParser setDelegate:self];
 	
@@ -40,37 +55,22 @@
 	if (savedNewsList == NULL) {
 		savedNewsList = newsList;
 	} else {
-		NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-		[dateFormat setDateFormat: @"EEE, dd MMMM yyyy HH:mm:ss Z"];
-		
-		// Get lastest saved date
-		NSDate *lastSavedDate = nil;
-		if ([savedNewsList count] > 0) {
-			lastSavedDate = [NSDate date];
-			for (NSMutableDictionary* savedDict in savedNewsList) {
-				lastSavedDate = [dateFormat dateFromString: [savedDict objectForKey:@"pubDate"]];
-				break;
-			}
-		}
-	
 		// Compare date from new array with saved
-		int i = 0;
 		for (NSMutableDictionary *newDict in newsList) {
-			if (lastSavedDate == nil) {
-				[savedNewsList addObject:newDict];
-			} else {
-				NSDate *date = [dateFormat dateFromString: [newDict objectForKey:@"pubDate"]];
-				NSTimeInterval difference = [date timeIntervalSinceDate: lastSavedDate];
-				if (difference > 0.0f) {
-					// Add new news item at index
-					[savedNewsList insertObject:newDict atIndex:i];
-					//foundNewItems = YES;
-				} else {
-					// End loop if same date or older
+			BOOL not_found = NO;
+			for (NSMutableDictionary *savedDict in savedNewsList) {
+				NSString *link1 = (NSString *)[savedDict objectForKey:@"link"];
+				NSString *link2 = (NSString *)[newDict objectForKey:@"link"];
+				if ([link1 isEqualToString:link2] == YES) {
+					not_found = NO;
 					break;
+				} else {
+					not_found = YES;
 				}
 			}
-			i++;
+			if(not_found == YES) {
+				[savedNewsList insertObject:newDict atIndex:0];
+			}
 		}
 	}
 	
@@ -78,14 +78,7 @@
 	[savedNewsList writeToFile:[self saveFilePath] atomically:YES];
 	
 	[self dataSourceDidFinishLoadingNewData];
-	
-	if(!success) {
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Parse error" message:@"Parsing news feed failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[alertView show];
-		[alertView release];
-	} else {
-		self.refreshHeaderView.lastUpdatedDate = [NSDate date];
-	}
+	[self performSelectorOnMainThread:@selector(parseNewsFeedFinished:) withObject:[NSNumber numberWithBool:success] waitUntilDone:NO];
 }
 
 - (void)reloadTableViewDataSource {
@@ -116,15 +109,15 @@
     [super viewDidLoad];
 	
 	self.navigationBar.tintColor = [UIColor blackColor];
-	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+	self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
 	
-	[self parseNewsFeed];
+	[self reloadTableViewDataSource];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	
-	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+	self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
 }
 
 
