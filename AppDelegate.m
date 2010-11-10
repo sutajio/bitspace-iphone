@@ -30,7 +30,10 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+	
+	// Show the system status bar
+	[[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
 	
 	// Make sure iOS knows we are playing music
 	[[AVAudioSession sharedInstance] setDelegate: self];
@@ -78,9 +81,18 @@
 												 name:@"DatabaseError" 
 											   object:nil];
 	
+	// Register for push notifications
+	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+		(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+	
 	// Synchronize, if needed...
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];
-
+	if([launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"ForceSynchronization" object:nil];
+	} else {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"Synchronize" object:nil];
+	}
+	
+	return YES;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -100,6 +112,38 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	[self applicationDidReceiveMemoryWarning:application];
+}
+
+
+#pragma mark -
+#pragma mark Push notifications
+
+- (void)sendProviderDeviceToken:(NSData *)devToken {
+	NSURL *url = [NSURL	URLWithString:[NSString stringWithFormat:@"%@devices", self.siteURL]];
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+														   cachePolicy:NSURLRequestReloadIgnoringCacheData
+													   timeoutInterval:20.0];
+	[request setHTTPMethod:@"POST"];
+	[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+	[request setHTTPBody:[[NSString stringWithFormat:@"device[apns_token]=%@", [devToken base64Encoding]] dataUsingEncoding:NSUTF8StringEncoding]];
+	[self.syncQueue enqueueRequest:request];
+}
+
+
+- (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
+    [self sendProviderDeviceToken:devToken];
+}
+
+
+- (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Push notification error" message:[err localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[alertView show];
+	[alertView release];
+}
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"ForceSynchronization" object:nil];
 }
 
 
@@ -268,6 +312,7 @@
 
 - (void)loaderDidFinish:(ReleasesLoader *)loader {
 	if([NSThread isMainThread]) {
+		[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 		[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 		[self dismissModalLoadingIndicator];
 		if(loader.didFail == NO) {

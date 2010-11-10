@@ -12,7 +12,6 @@
 #import "ReleaseController.h"
 #import "AppDelegate.h"
 #import "ReleaseTableViewCell.h"
-#import "Aluminium.h"
 #import "PlayerController.h"
 
 
@@ -126,7 +125,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
-	self.navigationBar.tintColor = [UIColor aluminiumColor];
+	self.navigationBar.tintColor = [UIColor blackColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	if(tableHeaderView == nil) {
@@ -154,10 +153,15 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+	[self.navigationController setNavigationBarHidden:YES animated:animated];
     [super viewWillAppear:animated];
 	
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	self.tableView.tableHeaderView = tableHeaderView;
+	
+	if(self.tableView.contentOffset.y == 0) {
+		self.tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height);
+	}
 }
 
 /*
@@ -166,11 +170,11 @@
 }
  */
 
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
+- (void) viewWillDisappear:(BOOL)animated {
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+    [super viewWillDisappear:animated];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];

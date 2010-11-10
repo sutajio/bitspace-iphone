@@ -13,7 +13,6 @@
 #import "PlayerController.h"
 #import "Release.h"
 #import "Track.h"
-#import "Aluminium.h"
 
 
 @implementation NewsController
@@ -116,7 +115,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	self.navigationBar.tintColor = [UIColor aluminiumColor];
+	self.navigationBar.tintColor = [UIColor blackColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	[self parseNewsFeed];

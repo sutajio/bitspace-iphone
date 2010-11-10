@@ -21,13 +21,13 @@
 @synthesize favoritesController;
 
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
 	// Add the tab bar controller's current view as a subview of the window
 	[window addSubview:tabBarController.view];
 	
 	// Call the super class
-	[super applicationDidFinishLaunching:application];
+	[super application:application didFinishLaunchingWithOptions:launchOptions];
 	
 	// Pass self to the controllers
 	releasesController.appDelegate = self;
@@ -40,13 +40,47 @@
 	indicatorImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"arrow.png"]];
 	[[tabBarController tabBar] addSubview:indicatorImage];
 	
-	// Select the correct tab if user has used the app before
-	self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
-	[self animateArrowIndicatorToIndex:[self.tabBarController selectedIndex]];
+	// Select the correct tab if user has used the app before, or if a remote notification is being handled
+	if([launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]) {
+		self.tabBarController.selectedIndex = 1;
+		[self animateArrowIndicatorToIndex:[self.tabBarController selectedIndex]];
+	} else {
+		if([[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"]) {
+			self.tabBarController.selectedIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"TabBarSelectedIndex"];
+		} else {
+			self.tabBarController.selectedIndex = 1;
+		}
+		[self animateArrowIndicatorToIndex:[self.tabBarController selectedIndex]];
+	}
+	
+	return YES;
+}
+
+
+- (void)releasesTabBarItemBadgeValue:(NSString *)value {
+	UITabBarItem *tabBarItem = (UITabBarItem *)[self.tabBarController.tabBar.items objectAtIndex:1];
+	if (tabBarItem) {
+		tabBarItem.badgeValue = value;
+	}
+}
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	[super application:application didReceiveRemoteNotification:userInfo];
+	if (self.tabBarController.selectedIndex != 1) {
+		if ([userInfo objectForKey:@"aps"] && [[userInfo objectForKey:@"aps"] objectForKey:@"badge"]) {
+			[self releasesTabBarItemBadgeValue:[[[userInfo objectForKey:@"aps"] objectForKey:@"badge"] stringValue]];
+		}
+	}
 }
 
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+	
+	// If the releases controller was selected, remove the tab bar item badge
+	if (self.tabBarController.selectedIndex == 1) {
+		[self releasesTabBarItemBadgeValue:nil];
+	}
 	
 	// When we're about to select a view controller, animate the indicator arrow on to that item
 	[self animateArrowIndicatorToIndex:[self.tabBarController selectedIndex]];
@@ -58,7 +92,7 @@
 
 - (void)showPlayer {
 	self.tabBarController.selectedViewController = (UIViewController *)self.playerController;
-	[self animateArrowIndicatorToIndex:0];
+	[self animateArrowIndicatorToIndex:[self.tabBarController selectedIndex]];
 }
 
 

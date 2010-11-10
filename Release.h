@@ -31,6 +31,7 @@
 @property (nonatomic, retain) NSString *largeArtworkUrl;
 @property (nonatomic, retain) NSSet *tracks;
 @property (nonatomic, retain) NSNumber *archived;
+@property (nonatomic, retain) NSString *productId;
 
 @property (nonatomic, retain) UIImage *smallArtworkImage;
 @property (nonatomic, retain) UIImage *largeArtworkImage;
