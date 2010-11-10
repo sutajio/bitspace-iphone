@@ -1,12 +1,13 @@
 //
-//  FavoritesController.m
+//  NewsController.h
 //  bitspace-iphone
 //
-//  Created by Niklas Holmgren on 2010-07-08.
-//  Copyright 2010 Koneko Collective Ltd. All rights reserved.
+//  Created by Fredrik Lundqvist on 11/9/10.
+//  Copyright 2010 Sutajio. All rights reserved.
 //
 
 #import "NewsController.h"
+#import "NewsItemController.h"
 #import "TrackTableViewCell.h"
 #import "AppDelegate.h"
 #import "PlayerController.h"
@@ -25,6 +26,7 @@
 #pragma mark Pull to refresh
 
 - (void)parseNewsFeed {
+	
 	// Newsfeed
 	NSURL *url = [[NSURL alloc] initWithString:@"http://srvc.se/feed"];
 	//NSURL *url = [[NSURL alloc] initWithString:@"http://perhagman.se/testfeed.xml"];
@@ -35,77 +37,60 @@
 	BOOL success = [xmlParser parse];
 	
 	// Compare new arraylist with last entry in the saved news arraylist
-	//savedNewsList = [[NSMutableArray alloc] initWithCapacity:0];
 	savedNewsList = [[NSMutableArray alloc] initWithContentsOfFile:[self saveFilePath]];
-	
-	//NSMutableArray *testArray = [[NSMutableArray alloc] init];
-	NSMutableArray *testArray = [[NSMutableArray alloc] initWithContentsOfFile:[self saveFilePath]];
-	
-	//BOOL foundNewItems = NO;
+	if (savedNewsList == NULL) {
+		savedNewsList = newsList;
+	} else {
+		NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+		[dateFormat setDateFormat: @"EEE, dd MMMM yyyy HH:mm:ss Z"];
 		
-	NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-	[dateFormat setDateFormat: @"EEE, dd MMMM yyyy HH:mm:ss Z"];
-		
-	// Get lastest saved date
-	NSDate *lastSavedDate = nil;
-	if ([savedNewsList count] > 0) {
-		lastSavedDate = [NSDate date];
-		for (NSMutableDictionary* savedDict in savedNewsList) {
-			lastSavedDate = [dateFormat dateFromString: [savedDict objectForKey:@"pubDate"]];
-			break;
-		}
-	}
-	
-	// Compare date from new array with saved
-	int i = 0;
-	for (NSMutableDictionary *newDict in newsList) {
-		//NSLog(@"%@", [newDict objectForKey:@"title"]);
-		if (lastSavedDate == nil) {
-			//NSLog(@"Add add add %@", [newDict objectForKey:@"title"]);
-			[testArray addObject:newDict];
-			NSLog(@"Antal: %d", [testArray count]);
-		} else {
-			NSDate *date = [dateFormat dateFromString: [newDict objectForKey:@"pubDate"]];
-			NSTimeInterval difference = [date timeIntervalSinceDate: lastSavedDate];
-			if (difference > 0.0f) {
-				// Add new news item at index
-				[savedNewsList insertObject:newDict atIndex:i];
-				//foundNewItems = YES;
-			} else {
-				// End loop if same date or older
+		// Get lastest saved date
+		NSDate *lastSavedDate = nil;
+		if ([savedNewsList count] > 0) {
+			lastSavedDate = [NSDate date];
+			for (NSMutableDictionary* savedDict in savedNewsList) {
+				lastSavedDate = [dateFormat dateFromString: [savedDict objectForKey:@"pubDate"]];
 				break;
 			}
 		}
-		i++;
+	
+		// Compare date from new array with saved
+		int i = 0;
+		for (NSMutableDictionary *newDict in newsList) {
+			if (lastSavedDate == nil) {
+				[savedNewsList addObject:newDict];
+			} else {
+				NSDate *date = [dateFormat dateFromString: [newDict objectForKey:@"pubDate"]];
+				NSTimeInterval difference = [date timeIntervalSinceDate: lastSavedDate];
+				if (difference > 0.0f) {
+					// Add new news item at index
+					[savedNewsList insertObject:newDict atIndex:i];
+					//foundNewItems = YES;
+				} else {
+					// End loop if same date or older
+					break;
+				}
+			}
+			i++;
+		}
 	}
 	
-	NSLog(@"Antal i arrayen: %d", [savedNewsList count]);
-	
-	for (NSMutableDictionary *testDict in savedNewsList) {
-		NSLog(@"%@", [testDict objectForKey:@"title"]);
-	}
-	
-	/*if (foundNewItems) {
-		// Save updated news list to file
-		[savedNewsList writeToFile:[self saveFilePath] atomically:YES];
-		NSLog(@"Updated file saved");
-	}*/
-	
-	//[newsList writeToFile:[self saveFilePath] atomically:YES];
+	// Save new array to plist
 	[savedNewsList writeToFile:[self saveFilePath] atomically:YES];
 	
-	if(!success)
-		NSLog(@"Error Error Error!!!");
+	[self dataSourceDidFinishLoadingNewData];
+	
+	if(!success) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Parse error" message:@"Parsing news feed failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		[alertView release];
+	} else {
+		self.refreshHeaderView.lastUpdatedDate = [NSDate date];
 	}
-
-- (void)reloadTableViewDataSource {
-	[self parseNewsFeed];
 }
 
-
-- (void)synchronizationDidFinish {
-	[self dataSourceDidFinishLoadingNewData];
-	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+- (void)reloadTableViewDataSource {
+	[self performSelectorInBackground:@selector(parseNewsFeed) withObject:nil];
 }
 
 
@@ -113,6 +98,9 @@
 #pragma mark Reset view
 
 - (void)resetView {	
+	// Reset the view
+	[self.navigationController popToRootViewControllerAnimated:NO];
+	
 	// Reset the last updated date
 	self.refreshHeaderView.lastUpdatedDate = nil;
 }
@@ -216,7 +204,13 @@
 	// Fill cell data
 	NSDictionary *rowDataDict = [savedNewsList objectAtIndex:indexPath.row];
 	cell.textLabel.text = [rowDataDict objectForKey:@"title"];
-	cell.detailTextLabel.text = [rowDataDict objectForKey:@"pubDate"];
+	
+	NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+	[dateFormat setDateFormat: @"EEE, dd MMMM yyyy HH:mm:ss Z"];
+	NSDate *pubDate = [dateFormat dateFromString: [rowDataDict objectForKey:@"pubDate"]];
+	[dateFormat setDateStyle:NSDateFormatterMediumStyle];
+	NSString *formattedPubDate = [dateFormat stringFromDate:pubDate];
+	cell.detailTextLabel.text = formattedPubDate;
 	return cell;
 }
 
@@ -225,7 +219,17 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	//TODO: Get link and push new view
+	// Get link from array
+	NSMutableDictionary *dict = [savedNewsList objectAtIndex:indexPath.row];
+	NSString *title = [dict objectForKey:@"title"];
+	NSString *link = [dict objectForKey:@"link"];
+	// Set link and push news item
+	NewsItemController *newsItemController = [[NewsItemController alloc] initWithNibName:@"NewsItem" bundle:nil];
+	newsItemController.title = title;
+	newsItemController.link = link;
+	newsItemController.appDelegate = self.appDelegate;
+	[self.navigationController pushViewController:newsItemController animated:YES];
+	[newsItemController release];
 }
 
 
