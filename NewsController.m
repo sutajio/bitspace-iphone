@@ -25,6 +25,7 @@
 #pragma mark Pull to refresh
 
 - (void)parseNewsFeedFinished:(NSNumber*)success {
+	[self dataSourceDidFinishLoadingNewData];
 	if([success boolValue] == YES) {
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastNewsSynchronizationDate"];
 		self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
@@ -37,6 +38,9 @@
 }
 
 - (void)parseNewsFeed {
+	
+	// Create a new autorelease pool for this thread
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	// Clear the lists
 	if (savedNewsList) [savedNewsList removeAllObjects];
@@ -77,8 +81,10 @@
 	// Save new array to plist
 	[savedNewsList writeToFile:[self saveFilePath] atomically:YES];
 	
-	[self dataSourceDidFinishLoadingNewData];
-	[self performSelectorOnMainThread:@selector(parseNewsFeedFinished:) withObject:[NSNumber numberWithBool:success] waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(parseNewsFeedFinished:) withObject:[NSNumber numberWithBool:success] waitUntilDone:YES];
+	
+	// Release the autorelease pool
+	[pool release];
 }
 
 - (void)reloadTableViewDataSource {
@@ -201,14 +207,26 @@
 	
 	// Fill cell data
 	NSDictionary *rowDataDict = [savedNewsList objectAtIndex:indexPath.row];
-	cell.textLabel.text = [rowDataDict objectForKey:@"title"];
 	
-	NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-	[dateFormat setDateFormat: @"EEE, dd MMMM yyyy HH:mm:ss Z"];
-	NSDate *pubDate = [dateFormat dateFromString: [rowDataDict objectForKey:@"pubDate"]];
-	[dateFormat setDateStyle:NSDateFormatterMediumStyle];
-	NSString *formattedPubDate = [dateFormat stringFromDate:pubDate];
+	cell.textLabel.text = [rowDataDict objectForKey:@"title"];
+	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	NSLocale *enUS = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+	[dateFormatter setLocale:enUS];
+	[enUS release];
+	[dateFormatter setDateFormat: @"EEE, dd MMM yyyy HH:mm:ss Z"];
+	NSDate *pubDate = [dateFormatter dateFromString:[rowDataDict objectForKey:@"pubDate"]];
+	[dateFormatter release];
+	
+	dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+	NSString *formattedPubDate = [dateFormatter stringFromDate:pubDate];
+	[dateFormatter release];
+	
+	
 	cell.detailTextLabel.text = formattedPubDate;
+	
 	return cell;
 }
 
