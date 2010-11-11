@@ -26,6 +26,8 @@
 	<string>MainWindow</string>
 	<key>SiteURL</key>
 	<string>http://api.bitspaceapp.com/service/</string>
+	<key>NewsURL</key>
+	<string>http://srvc.se/category/news/feed</string>
 	<key>SynchronizationInterval</key>
 	<string>20</string>
 	<key>UIBackgroundModes</key>

@@ -1,4 +1,4 @@
-    //
+//
 //  NewsItemController.m
 //  bitspace-iphone
 //
@@ -13,6 +13,21 @@
 @implementation NewsItemController
 
 @synthesize appDelegate, webView, link;
+
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Booom!" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[alertView show];
+	[alertView release];
+}
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {

@@ -8,30 +8,52 @@
 
 #import "NewsController.h"
 #import "NewsItemController.h"
-#import "TrackTableViewCell.h"
-#import "AppDelegate.h"
-#import "PlayerController.h"
-#import "Release.h"
-#import "Track.h"
+#import "RSSParser.h"
 
 
 @implementation NewsController
 
 @synthesize appDelegate;
 @synthesize navigationBar;
-@synthesize savedNewsList, newsList, newsItem;
+@synthesize newsItems;
 
 #pragma mark -
 #pragma mark Pull to refresh
 
-- (void)parseNewsFeedFinished:(NSNumber*)success {
+- (void)sortNewsItems {
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pubDate" ascending:NO];
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+	[newsItems sortUsingDescriptors:sortDescriptors];
+	[sortDescriptors release];
+	[sortDescriptor release];
+}
+
+- (void)parseNewsFeedFinishedParsingItem:(NSDictionary *)item {
+	for (NSMutableDictionary *existingItem in newsItems) {
+		NSString *link1 = (NSString *)[item objectForKey:@"link"];
+		NSString *link2 = (NSString *)[existingItem objectForKey:@"link"];
+		if ([link1 isEqualToString:link2] == YES)
+			return;
+	}
+	[newsItems insertObject:item atIndex:0];
+	[self sortNewsItems];
+	[self.tableView reloadData];
+}
+
+- (void)parseNewsFeedFinished {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 	[self dataSourceDidFinishLoadingNewData];
-	if([success boolValue] == YES) {
-		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastNewsSynchronizationDate"];
-		self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
-		[self.tableView reloadData];
-	} else {
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Parse error" message:@"Parsing news feed failed." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[newsItems writeToFile:[self saveFilePath] atomically:YES];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"LastNewsSynchronizationDate"];
+	self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
+	[self.tableView reloadData];
+}
+
+- (void)parseNewsFeedFailed:(NSError *)error {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	[self dataSourceDidFinishLoadingNewData];
+	if([error code] != NSXMLParserPrematureDocumentEndError) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No news for you today" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 		[alertView show];
 		[alertView release];
 	}
@@ -42,52 +64,49 @@
 	// Create a new autorelease pool for this thread
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	// Clear the lists
-	if (savedNewsList) [savedNewsList removeAllObjects];
-	if (newsList) [newsList removeAllObjects];
-	
-	// Newsfeed
-	NSURL *url = [[NSURL alloc] initWithString:@"http://srvc.se/category/news/feed"];
-	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:url];
-	[xmlParser setDelegate:self];
-	
-	// Start parsing the feed
-	BOOL success = [xmlParser parse];
-	
-	// Compare new arraylist with last entry in the saved news arraylist
-	savedNewsList = [[NSMutableArray alloc] initWithContentsOfFile:[self saveFilePath]];
-	if (savedNewsList == NULL) {
-		savedNewsList = newsList;
-	} else {
-		// Compare date from new array with saved
-		for (NSMutableDictionary *newDict in newsList) {
-			BOOL not_found = NO;
-			for (NSMutableDictionary *savedDict in savedNewsList) {
-				NSString *link1 = (NSString *)[savedDict objectForKey:@"link"];
-				NSString *link2 = (NSString *)[newDict objectForKey:@"link"];
-				if ([link1 isEqualToString:link2] == YES) {
-					not_found = NO;
-					break;
-				} else {
-					not_found = YES;
-				}
-			}
-			if(not_found == YES) {
-				[savedNewsList insertObject:newDict atIndex:0];
-			}
+	// Load saved news items for plist-file
+	NSMutableArray *savedNewsList = [[NSMutableArray alloc] initWithContentsOfFile:[self saveFilePath]];
+	if (savedNewsList) {
+		for (NSMutableDictionary *item in savedNewsList) {
+			[self performSelectorOnMainThread:@selector(parseNewsFeedFinishedParsingItem:) withObject:item waitUntilDone:YES];
 		}
 	}
 	
-	// Save new array to plist
-	[savedNewsList writeToFile:[self saveFilePath] atomically:YES];
+	// Setup RSS parser
+	NSString *newsUrl = (NSString *)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"NewsURL"];
+	NSURL *url = [[NSURL alloc] initWithString:newsUrl];
+	NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:url];
+	RSSParser *rssParser = [[RSSParser alloc] init];
+	[xmlParser setDelegate:rssParser];
 	
-	[self performSelectorOnMainThread:@selector(parseNewsFeedFinished:) withObject:[NSNumber numberWithBool:success] waitUntilDone:YES];
+	// Start parsing the feed
+	if ([xmlParser parse] == NO) {
+		// Failed parsing the feed
+		NSError *error = [xmlParser parserError];
+		[self performSelectorOnMainThread:@selector(parseNewsFeedFailed:) withObject:error waitUntilDone:YES];
+		return;
+	}
+	
+	// Loop through all the items from the RSS feed
+	for (NSMutableDictionary *item in rssParser.items) {
+		[self performSelectorOnMainThread:@selector(parseNewsFeedFinishedParsingItem:) withObject:item waitUntilDone:YES];
+	}
+	
+	// Finished
+	[self performSelectorOnMainThread:@selector(parseNewsFeedFinished) withObject:nil waitUntilDone:YES];
+	
+	// Release objects
+	[url release];
+	[xmlParser release];
+	[rssParser release];
+	[savedNewsList release];
 	
 	// Release the autorelease pool
 	[pool release];
 }
 
 - (void)reloadTableViewDataSource {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 	[self performSelectorInBackground:@selector(parseNewsFeed) withObject:nil];
 }
 
@@ -117,6 +136,8 @@
 	self.navigationBar.tintColor = [UIColor blackColor];
 	self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
 	
+	self.newsItems = [[NSMutableArray alloc] init];
+	
 	[self reloadTableViewDataSource];
 }
 
@@ -143,49 +164,6 @@
 
 
 #pragma mark -
-#pragma mark Xml parser
-
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName
-  namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName
-	attributes:(NSDictionary *)attributeDict {
-	
-	if([elementName isEqualToString:@"channel"]) {
-		// Initialize the news array
-		newsList = [[NSMutableArray alloc] init];
-	}
-	else if([elementName isEqualToString:@"item"]) {
-		// Initialize the news hash
-		newsItem = [[NSMutableDictionary alloc] init];
-	}
-}
-
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
-	if(!currentElementValue)
-		currentElementValue = [[NSMutableString alloc] initWithString:string];
-	else
-		[currentElementValue appendString:string];
-}
-
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName 
-  namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
-	
-	if([elementName isEqualToString:@"channel"])
-		return;
-	
-	if([elementName isEqualToString:@"item"]) {
-		[newsList addObject:newsItem];
-	}
-	else if ([elementName isEqualToString:@"title"] || [elementName isEqualToString:@"link"] || [elementName isEqualToString:@"pubDate"]) {
-		NSString *elementValue = [currentElementValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		[newsItem setObject:elementValue forKey:elementName];
-	}
-	
-	[currentElementValue release];
-	currentElementValue = nil;
-}
-
-
-#pragma mark -
 #pragma mark Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -193,7 +171,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return savedNewsList.count;
+    return newsItems.count;
 }
 
 
@@ -206,24 +184,15 @@
 	}
 	
 	// Fill cell data
-	NSDictionary *rowDataDict = [savedNewsList objectAtIndex:indexPath.row];
+	NSDictionary *rowDataDict = [newsItems objectAtIndex:indexPath.row];
 	
 	cell.textLabel.text = [rowDataDict objectForKey:@"title"];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-	NSLocale *enUS = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-	[dateFormatter setLocale:enUS];
-	[enUS release];
-	[dateFormatter setDateFormat: @"EEE, dd MMM yyyy HH:mm:ss Z"];
-	NSDate *pubDate = [dateFormatter dateFromString:[rowDataDict objectForKey:@"pubDate"]];
-	[dateFormatter release];
-	
-	dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-	NSString *formattedPubDate = [dateFormatter stringFromDate:pubDate];
+	NSString *formattedPubDate = [dateFormatter stringFromDate:[rowDataDict objectForKey:@"pubDate"]];
 	[dateFormatter release];
-	
 	
 	cell.detailTextLabel.text = formattedPubDate;
 	
@@ -236,7 +205,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	// Get link from array
-	NSMutableDictionary *dict = [savedNewsList objectAtIndex:indexPath.row];
+	NSMutableDictionary *dict = [newsItems objectAtIndex:indexPath.row];
 	NSString *title = [dict objectForKey:@"title"];
 	NSString *link = [dict objectForKey:@"link"];
 	// Set link and push news item
@@ -266,6 +235,7 @@
 
 
 - (void)dealloc {
+	[newsItems release];
     [super dealloc];
 }
 

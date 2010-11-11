@@ -12,24 +12,17 @@
 @class AppDelegate;
 //@class NewsItemController;
 
-@interface NewsController : PullToRefreshTableViewController <UITableViewDataSource, UITableViewDelegate, NSXMLParserDelegate> {
+@interface NewsController : PullToRefreshTableViewController <UITableViewDataSource, UITableViewDelegate> {
 	AppDelegate *appDelegate;
 	IBOutlet UINavigationBar *navigationBar;
 	
-	//NewsItemController *newsItemViewController;
-	NSMutableArray *savedNewsList;
-	NSMutableArray *newsList;
-	NSMutableDictionary *newsItem;
-	NSMutableString *currentElementValue;
+	NSMutableArray *newsItems;
 }
 
 @property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, readonly) UINavigationBar *navigationBar;
 
-//@property (nonatomic, retain) NewsItemController *newsItemController;
-@property (nonatomic, retain) NSMutableArray *savedNewsList;
-@property (nonatomic, retain) NSMutableArray *newsList;
-@property (nonatomic, retain) NSMutableDictionary *newsItem;
+@property (nonatomic, retain) NSMutableArray *newsItems;
 
 - (NSString *)saveFilePath;
 

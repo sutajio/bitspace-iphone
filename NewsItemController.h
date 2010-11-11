@@ -10,7 +10,7 @@
 
 @class AppDelegate;
 
-@interface NewsItemController : UIViewController {
+@interface NewsItemController : UIViewController <UIWebViewDelegate> {
 	AppDelegate *appDelegate;
 	IBOutlet UIWebView *webView;
 	NSString *link;
