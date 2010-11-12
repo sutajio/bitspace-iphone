@@ -25,7 +25,7 @@
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>SiteURL</key>
-	<string>http://api.bitspaceapp.com/service/</string>
+	<string>http://api.bitspaceapp.com/serviceapp/</string>
 	<key>NewsURL</key>
 	<string>http://srvc.se/category/news/feed</string>
 	<key>SynchronizationInterval</key>
@@ -39,7 +39,7 @@
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>UIPrerenderedIcon</key>
-	<false/>
+	<true/>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
