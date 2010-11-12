@@ -29,6 +29,11 @@
 	[alertView release];
 }
 
+-(BOOL) webView:(UIWebView *)inWeb shouldStartLoadWithRequest:(NSURLRequest *)inRequest navigationType:(UIWebViewNavigationType)inType {
+    [[UIApplication sharedApplication] openURL:[inRequest URL]];
+    return NO;
+}
+
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
