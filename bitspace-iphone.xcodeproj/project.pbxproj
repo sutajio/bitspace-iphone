@@ -68,6 +68,7 @@
 		854A9A9A10C507F00007D0F8 /* NSString+XMLSerializableSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7710C507F00007D0F8 /* NSString+XMLSerializableSupport.m */; };
 		854A9A9B10C507F00007D0F8 /* ObjectiveResourceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7C10C507F00007D0F8 /* ObjectiveResourceConfig.m */; };
 		854A9A9C10C507F00007D0F8 /* Response.m in Sources */ = {isa = PBXBuildFile; fileRef = 854A9A7E10C507F00007D0F8 /* Response.m */; };
+		854BF63E1291362C00DDE069 /* Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 854BF63D1291362C00DDE069 /* Theme.m */; };
 		8558A61C121D7B81002ECB40 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8558A61B121D7B81002ECB40 /* AVFoundation.framework */; };
 		8559112F11D946B200583C21 /* ReleaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8559112E11D946B200583C21 /* ReleaseTableViewCell.m */; };
 		8559162E11DBF2FB00583C21 /* BitspaceWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8559162D11DBF2FB00583C21 /* BitspaceWindow.m */; };
@@ -254,6 +255,8 @@
 		854A9A7C10C507F00007D0F8 /* ObjectiveResourceConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveResourceConfig.m; sourceTree = "<group>"; };
 		854A9A7D10C507F00007D0F8 /* Response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Response.h; sourceTree = "<group>"; };
 		854A9A7E10C507F00007D0F8 /* Response.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Response.m; sourceTree = "<group>"; };
+		854BF63C1291362C00DDE069 /* Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Theme.h; sourceTree = "<group>"; };
+		854BF63D1291362C00DDE069 /* Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Theme.m; sourceTree = "<group>"; };
 		8558A61B121D7B81002ECB40 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8559112D11D946B200583C21 /* ReleaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseTableViewCell.h; sourceTree = "<group>"; };
 		8559112E11D946B200583C21 /* ReleaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseTableViewCell.m; sourceTree = "<group>"; };
@@ -734,6 +737,8 @@
 				85AB2E48122D0D02000210A1 /* GradientView.m */,
 				85AB2E83122D1D95000210A1 /* ReleasesHeaderView.xib */,
 				35910C2B128B26460063EFFE /* NewsItem.xib */,
+				854BF63C1291362C00DDE069 /* Theme.h */,
+				854BF63D1291362C00DDE069 /* Theme.m */,
 			);
 			name = "Views-iPhone";
 			sourceTree = "<group>";
@@ -931,6 +936,7 @@
 				85AB2E49122D0D02000210A1 /* GradientView.m in Sources */,
 				35910C2F128B26460063EFFE /* NewsItemController.m in Sources */,
 				856DFE8D128C2BC400B13D40 /* RSSParser.m in Sources */,
+				854BF63E1291362C00DDE069 /* Theme.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

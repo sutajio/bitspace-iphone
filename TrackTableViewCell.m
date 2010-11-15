@@ -12,6 +12,7 @@
 #import "AppDelegate.h"
 #import "PlayerController.h"
 #import "GradientView.h"
+#import "Theme.h"
 
 
 @implementation TrackTableViewCell
@@ -22,7 +23,7 @@
 	if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 	
 		bgView = [[GradientView alloc] initWithFrame:self.frame];
-		bgView.backgroundColor = [UIColor whiteColor];
+		bgView.backgroundColor = [Theme backgroundColor];
 		bgView.gradientEnabled = NO;
 		self.backgroundView = bgView;
 		[bgView release];
@@ -36,7 +37,7 @@
 		trackNrLabel = [[[UILabel alloc] init] autorelease];
 		trackNrLabel.font = [UIFont systemFontOfSize:16.0f];
 		trackNrLabel.frame = CGRectMake(0.0f, 10.0f, 40.0f, 22.0f);
-		trackNrLabel.textColor = [UIColor blackColor];
+		trackNrLabel.textColor = [Theme darkTextColor];
 		trackNrLabel.highlightedTextColor = [UIColor whiteColor];
 		trackNrLabel.backgroundColor = [UIColor clearColor];
 		trackNrLabel.textAlignment = UITextAlignmentCenter;
@@ -46,7 +47,7 @@
 		textLabel = [[[UILabel alloc] init] autorelease];
 		textLabel.font = [UIFont boldSystemFontOfSize:16.0f];
 		textLabel.frame = CGRectMake(40.0f, 10.0f, 220.0f, 22.0f);
-		textLabel.textColor = [UIColor darkTextColor];
+		textLabel.textColor = [Theme darkTextColor];
 		textLabel.highlightedTextColor = [UIColor whiteColor];
 		textLabel.backgroundColor = [UIColor clearColor];
 		textLabel.opaque = NO;
@@ -55,7 +56,7 @@
 		detailTextLabel = [[[UILabel alloc] init] autorelease];
 		detailTextLabel.font = [UIFont systemFontOfSize:14.0f];
 		detailTextLabel.frame = CGRectMake(40.0f, 28.0f, 220.0f, 22.0f);
-		detailTextLabel.textColor = [UIColor lightGrayColor];
+		detailTextLabel.textColor = [Theme darkTextColor];
 		detailTextLabel.highlightedTextColor = [UIColor whiteColor];
 		detailTextLabel.backgroundColor = [UIColor clearColor];
 		detailTextLabel.opaque = NO;
@@ -106,9 +107,9 @@
 	track = value;
 	
 	if(self.index % 2) {
-		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:1.0f alpha:1.0f];
+		bgView.backgroundColor = [Theme evenBackgroundColor];
 	} else {
-		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.97f alpha:1.0f];
+		bgView.backgroundColor = [Theme oddBackgroundColor];
 	}
 	
 	if([[(AppDelegate *)[[UIApplication sharedApplication] delegate] playerController] currentTrack] == track) {
@@ -139,15 +140,15 @@
 	}
 	
 	if([track hasCache] == YES && [track isLoading] == NO) {
-		textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
-		detailTextLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
-		trackNrLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
-		bgView.backgroundColor = [UIColor colorWithHue:0.36f saturation:0.03f brightness:1.0f alpha:1.0f];
+		textLabel.textColor = [Theme offlineTextColor];
+		detailTextLabel.textColor = [Theme offlineTextColor];
+		trackNrLabel.textColor = [Theme offlineTextColor];
+		bgView.backgroundColor = [Theme offlineBackgroundColor];
 		bgView.gradientEnabled = YES;
 	} else {
-		textLabel.textColor = [UIColor darkTextColor];
-		detailTextLabel.textColor = [UIColor darkTextColor];
-		trackNrLabel.textColor = [UIColor darkTextColor];
+		textLabel.textColor = [Theme darkTextColor];
+		detailTextLabel.textColor = [Theme darkTextColor];
+		trackNrLabel.textColor = [Theme darkTextColor];
 		bgView.gradientEnabled = NO;
 	}
 	
@@ -164,7 +165,7 @@
 		trackNrLabel.alpha = 0.3f;
 		textLabel.alpha = 0.3f;
 		detailTextLabel.alpha = 0.3f;
-		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:0.9f alpha:1.0f];
+		bgView.backgroundColor = [Theme loadingBackgroundColor];
 	} else {
 		trackNrLabel.alpha = 1.0f;
 		textLabel.alpha = 1.0f;

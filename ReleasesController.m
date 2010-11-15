@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "ReleaseTableViewCell.h"
 #import "PlayerController.h"
+#import "Theme.h"
 
 
 @implementation ReleasesController
@@ -125,7 +126,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
-	self.navigationBar.tintColor = [UIColor blackColor];
+	self.navigationBar.tintColor = [Theme navigationBarColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	if(tableHeaderView == nil) {

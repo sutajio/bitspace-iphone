@@ -9,6 +9,7 @@
 #import "NewsController.h"
 #import "NewsItemController.h"
 #import "RSSParser.h"
+#import "Theme.h"
 
 
 @implementation NewsController
@@ -133,7 +134,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	self.navigationBar.tintColor = [UIColor blackColor];
+	self.navigationBar.tintColor = [Theme navigationBarColor];
 	self.refreshHeaderView.lastUpdatedDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastNewsSynchronizationDate"];
 	
 	self.newsItems = [[NSMutableArray alloc] init];
@@ -195,6 +196,11 @@
 	[dateFormatter release];
 	
 	cell.detailTextLabel.text = formattedPubDate;
+	
+	cell.textLabel.textColor = [Theme darkTextColor];
+	cell.textLabel.backgroundColor = [Theme backgroundColor];
+	cell.detailTextLabel.textColor = [Theme darkTextColor];
+	cell.detailTextLabel.backgroundColor = [Theme backgroundColor];
 	
 	return cell;
 }
