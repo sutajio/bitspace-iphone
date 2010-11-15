@@ -30,8 +30,12 @@
 }
 
 -(BOOL) webView:(UIWebView *)inWeb shouldStartLoadWithRequest:(NSURLRequest *)inRequest navigationType:(UIWebViewNavigationType)inType {
-    [[UIApplication sharedApplication] openURL:[inRequest URL]];
-    return NO;
+	if (inType == UIWebViewNavigationTypeLinkClicked) {
+		[[UIApplication sharedApplication] openURL:[inRequest URL]];
+		return NO;
+	} else {
+		return YES;
+	}
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
