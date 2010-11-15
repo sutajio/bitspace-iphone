@@ -110,6 +110,10 @@
     [super viewWillAppear:animated];
 	
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
+	
+	if(self.tableView.contentOffset.y == 0) {
+		self.tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height);
+	}
 }
 
 /*
