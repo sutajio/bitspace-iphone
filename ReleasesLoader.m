@@ -308,7 +308,8 @@
 		// Request a page from the server...
 		NSLog(@"Requesting page #%d", page);
 		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?simple=no&page=%d&since=%@", appDelegate.siteURL, page, since]];
+		NSString *apiKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"APIKey"];
+		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?user_credentials=%@&simple=no&page=%d&since=%@", appDelegate.siteURL, apiKey, page, since]];
 		NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
 																cachePolicy:NSURLRequestReloadIgnoringCacheData
 															timeoutInterval:[Connection timeout]];

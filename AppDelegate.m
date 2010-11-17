@@ -119,7 +119,8 @@
 #pragma mark Push notifications
 
 - (void)sendProviderDeviceToken:(NSData *)devToken {
-	NSURL *url = [NSURL	URLWithString:[NSString stringWithFormat:@"%@devices", self.siteURL]];
+	NSString *apiKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"APIKey"];
+	NSURL *url = [NSURL	URLWithString:[NSString stringWithFormat:@"%@devices?user_credentials=%@", self.siteURL, apiKey]];
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
 														   cachePolicy:NSURLRequestReloadIgnoringCacheData
 													   timeoutInterval:20.0];

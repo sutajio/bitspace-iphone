@@ -24,6 +24,8 @@
 	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
+	<key>APIKey</key>
+	<string>TOJBm4cIZCIRn51wM7q4</string>
 	<key>SiteURL</key>
 	<string>http://api.bitspaceapp.com/serviceapp/</string>
 	<key>NewsURL</key>
