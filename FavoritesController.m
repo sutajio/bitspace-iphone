@@ -12,7 +12,7 @@
 #import "PlayerController.h"
 #import "Release.h"
 #import "Track.h"
-#import "Aluminium.h"
+#import "Theme.h"
 
 
 @implementation FavoritesController
@@ -114,7 +114,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
-	self.navigationBar.tintColor = [UIColor aluminiumColor];
+	self.navigationBar.tintColor = [Theme navigationBarColor];
 	self.refreshHeaderView.lastUpdatedDate = self.appDelegate.lastSynchronizationDate;
 	
 	if(tableHeaderView == nil) {

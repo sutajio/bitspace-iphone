@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "Artist.h"
 #import "ArtistController.h"
-#import "Aluminium.h"
+#import "Theme.h"
 
 
 @implementation ArtistsController
@@ -79,7 +79,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
-	self.navigationBar.tintColor = [UIColor aluminiumColor];
+	self.navigationBar.tintColor = [Theme navigationBarColor];
 	
 	searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0,0,320,44)];
 	searchBar.delegate = self;

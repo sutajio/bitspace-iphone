@@ -10,6 +10,7 @@
 #import "Release.h"
 #import "Track.h"
 #import "GradientView.h"
+#import "Theme.h"
 
 
 @implementation ReleaseTableViewCell
@@ -20,7 +21,7 @@
 	if(self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 		
 		bgView = [[GradientView alloc] initWithFrame:self.frame];
-		bgView.backgroundColor = [UIColor whiteColor];
+		bgView.backgroundColor = [Theme backgroundColor];
 		bgView.gradientEnabled = NO;
 		self.backgroundView = bgView;
 		[bgView release];
@@ -99,16 +100,16 @@
 	}
 	
 	if([release hasOfflineTracks] == YES) {
-		self.textLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+		self.textLabel.textColor = [Theme offlineTextColor];
 		self.textLabel.backgroundColor = [UIColor clearColor];
-		self.detailTextLabel.textColor = [UIColor colorWithRed:0.0f green:0.5f blue:0.0f alpha:1.0f];
+		self.detailTextLabel.textColor = [Theme offlineTextColor];
 		self.detailTextLabel.backgroundColor = [UIColor clearColor];
-		bgView.backgroundColor = [UIColor colorWithHue:0.36f saturation:0.03f brightness:1.0f alpha:1.0f];
+		bgView.backgroundColor = [Theme offlineBackgroundColor];
 		bgView.gradientEnabled = YES;
 	} else {
-		self.textLabel.textColor = [UIColor darkTextColor];
-		self.detailTextLabel.textColor = [UIColor darkTextColor];
-		bgView.backgroundColor = [UIColor colorWithHue:0.0f saturation:0.0f brightness:1.0f alpha:1.0f];
+		self.textLabel.textColor = [Theme darkTextColor];
+		self.detailTextLabel.textColor = [Theme darkTextColor];
+		bgView.backgroundColor = [Theme backgroundColor];
 		bgView.gradientEnabled = NO;
 	}
 	
