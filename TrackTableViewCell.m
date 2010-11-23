@@ -62,11 +62,11 @@
 		detailTextLabel.opaque = NO;
 		[self.contentView addSubview:detailTextLabel];
 		
-		self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+		self.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 		self.editingAccessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 		
 		loveButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-		loveButton.frame = CGRectMake(0.0f, 0.0f, 44.0f, 44.0f);
+		loveButton.frame = CGRectMake(0.0f, 0.0f, 21.0f, 21.0f);
 		[loveButton addTarget:self action:@selector(loveTrack:) forControlEvents:UIControlEventTouchUpInside];
 		self.accessoryView = loveButton;
 		
@@ -143,8 +143,10 @@
 	
 	if(self.showAlbumArtist && track.artist == nil) {
 		detailTextLabel.text = track.parent.artist;
-	} else {
+	} else if(track.artist) {
 		detailTextLabel.text = track.artist;
+	} else {
+		detailTextLabel.text = nil;
 	}
 	
 	if(track.lovedAt) {
