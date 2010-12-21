@@ -126,7 +126,7 @@
 													   timeoutInterval:20.0];
 	[request setHTTPMethod:@"POST"];
 	[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-	[request setHTTPBody:[[NSString stringWithFormat:@"device[apns_token]=%@", [devToken base64Encoding]] dataUsingEncoding:NSUTF8StringEncoding]];
+	[request setHTTPBody:[[NSString stringWithFormat:@"device[apns_token]=%@", [[devToken base64Encoding] stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"]] dataUsingEncoding:NSUTF8StringEncoding]];
 	[self.syncQueue enqueueRequest:request];
 }
 
