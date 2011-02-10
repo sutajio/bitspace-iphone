@@ -309,7 +309,7 @@
 		NSLog(@"Requesting page #%d", page);
 		AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 		NSString *apiKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"APIKey"];
-		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@releases?user_credentials=%@&simple=no&page=%d&since=%@", appDelegate.siteURL, apiKey, page, since]];
+		NSURL *url = [NSURL URLWithString:[[NSString stringWithFormat:@"%@releases?user_credentials=%@&simple=no&page=%d&since=%@", appDelegate.siteURL, apiKey, page, since] stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
 		NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
 																cachePolicy:NSURLRequestReloadIgnoringCacheData
 															timeoutInterval:[Connection timeout]];
