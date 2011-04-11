@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>APIKey</key>
+	<string>TOJBm4cIZCIRn51wM7q4</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
@@ -22,26 +24,24 @@
 	<string>1.0.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NewsURL</key>
+	<string>http://serviceapp.tumblr.com/rss</string>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
-	<key>APIKey</key>
-	<string>TOJBm4cIZCIRn51wM7q4</string>
 	<key>SiteURL</key>
 	<string>http://api.bitspaceapp.com/serviceapp/</string>
-	<key>NewsURL</key>
-	<string>http://srvc.se/category/news/feed</string>
 	<key>SynchronizationInterval</key>
 	<string>20</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
 	</array>
-	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleBlackOpaque</string>
-	<key>UIStatusBarHidden</key>
-	<true/>
 	<key>UIPrerenderedIcon</key>
 	<true/>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleBlackOpaque</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
