@@ -160,9 +160,6 @@
 		85D3745F12F9F9FD0009F6A0 /* DTGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D3745C12F9F9FD0009F6A0 /* DTGridViewController.m */; };
 		85D374B312FA042F0009F6A0 /* CollectionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D374B212FA042F0009F6A0 /* CollectionsController.m */; };
 		85D3751412FA0CAA0009F6A0 /* CollectionGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D3751312FA0CAA0009F6A0 /* CollectionGridViewCell.m */; };
-		85D426ED139D681500B627ED /* PickerSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D426EC139D681500B627ED /* PickerSheet.m */; };
-		85D426F1139D689400B627ED /* SourcePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D426EF139D689300B627ED /* SourcePickerController.m */; };
-		85D426F2139D689400B627ED /* SourcePicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85D426F0139D689300B627ED /* SourcePicker.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -398,11 +395,6 @@
 		85D374B212FA042F0009F6A0 /* CollectionsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CollectionsController.m; path = src/app/controllers/CollectionsController.m; sourceTree = "<group>"; };
 		85D3751212FA0CAA0009F6A0 /* CollectionGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CollectionGridViewCell.h; path = src/app/views/ipad/CollectionGridViewCell.h; sourceTree = "<group>"; };
 		85D3751312FA0CAA0009F6A0 /* CollectionGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CollectionGridViewCell.m; path = src/app/views/ipad/CollectionGridViewCell.m; sourceTree = "<group>"; };
-		85D426EB139D681500B627ED /* PickerSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickerSheet.h; sourceTree = "<group>"; };
-		85D426EC139D681500B627ED /* PickerSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickerSheet.m; sourceTree = "<group>"; };
-		85D426EE139D689300B627ED /* SourcePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourcePickerController.h; sourceTree = "<group>"; };
-		85D426EF139D689300B627ED /* SourcePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourcePickerController.m; sourceTree = "<group>"; };
-		85D426F0139D689300B627ED /* SourcePicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SourcePicker.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -569,10 +561,6 @@
 				852D0C5212DA409100C1BFA2 /* SignInController.m */,
 				85D374B112FA042F0009F6A0 /* CollectionsController.h */,
 				85D374B212FA042F0009F6A0 /* CollectionsController.m */,
-				85D426EB139D681500B627ED /* PickerSheet.h */,
-				85D426EC139D681500B627ED /* PickerSheet.m */,
-				85D426EE139D689300B627ED /* SourcePickerController.h */,
-				85D426EF139D689300B627ED /* SourcePickerController.m */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -717,7 +705,6 @@
 				852D0D0312DA442F00C1BFA2 /* ReleasesHeaderView.xib */,
 				852D0CF912DA43AE00C1BFA2 /* Player.xib */,
 				852D0D1B12DA449000C1BFA2 /* MainWindow-iphone.xib */,
-				85D426F0139D689300B627ED /* SourcePicker.xib */,
 			);
 			name = iphone;
 			sourceTree = "<group>";
@@ -1069,7 +1056,6 @@
 				852D0D1712DA446300C1BFA2 /* Loading.xib in Resources */,
 				852D0D1812DA446300C1BFA2 /* SignIn.xib in Resources */,
 				852D0D1C12DA449000C1BFA2 /* MainWindow-iphone.xib in Resources */,
-				85D426F2139D689400B627ED /* SourcePicker.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1148,8 +1134,6 @@
 				85D3745F12F9F9FD0009F6A0 /* DTGridViewController.m in Sources */,
 				85D374B312FA042F0009F6A0 /* CollectionsController.m in Sources */,
 				85D3751412FA0CAA0009F6A0 /* CollectionGridViewCell.m in Sources */,
-				85D426ED139D681500B627ED /* PickerSheet.m in Sources */,
-				85D426F1139D689400B627ED /* SourcePickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
