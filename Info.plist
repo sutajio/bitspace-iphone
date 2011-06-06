@@ -22,8 +22,10 @@
 	<string>1.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
+	<key>NSMainNibFile~iphone</key>
+	<string>MainWindow-iPhone</string>
+	<key>NSMainNibFile~ipad</key>
+	<string>MainWindow-iPad</string>
 	<key>SiteURL</key>
 	<string>http://api.bitspaceapp.com/</string>
 	<key>SynchronizationInterval</key>
@@ -43,5 +45,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UILaunchImageFile~iphone</key>
+	<string>Default.png</string>
+	<key>UILaunchImageFile~ipad</key>
+	<string>Default-iPad.png</string>
 </dict>
 </plist>

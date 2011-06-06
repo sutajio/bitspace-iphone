@@ -7,32 +7,21 @@
 //
 
 #import "AppDelegate_iPad.h"
-#import "LibraryController.h"
-#import "BrowserController.h"
 
 
 @implementation AppDelegate_iPad
 
-@synthesize splitViewController;
-@synthesize libraryController;
-
+@synthesize navigationController;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
 	// Add the tab bar controller's current view as a subview of the window
-	[window addSubview:splitViewController.view];
+	[window addSubview:navigationController.view];
 	
 	// Call the super class
 	[super applicationDidFinishLaunching:application];
 	
-	// Pass self to the controllers
-	libraryController.appDelegate = self;
-	
 	// Show the application window
 	[window makeKeyAndVisible];
-}
-
-- (BrowserController *)browserController {
-	return (BrowserController *)self.playerController;
 }
 
 

@@ -19,6 +19,7 @@
 @implementation ReleasesController
 
 @synthesize appDelegate, fetchedResultsController;
+@synthesize source;
 @synthesize navigationBar;
 @synthesize searchResultsController;
 @synthesize searchBar, searchController;
@@ -162,6 +163,8 @@
 	if(self.tableView.contentOffset.y == 0) {
 		self.tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height);
 	}
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Inbox" style:UIBarButtonItemStylePlain target:self action:@selector(showSourcePicker)];
 }
 
 /*
@@ -198,6 +201,32 @@
 
 - (void)viewDidUnload {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+#pragma mark Source methods
+
+- (void)showSourcePicker {
+    sourcePicker = [[SourcePickerController alloc] initWithNibName:@"SourcePicker" bundle:nil];
+    sourcePicker.delegate = self;
+    sourcePicker.selectedSource = self.source;
+    [sourcePicker showInView:self.view.window];
+    [sourcePicker release];
+}
+
+
+#pragma mark PickerSheetProtocol Methods
+
+- (void)pickerSheet:(PickerSheet *)pickerSheet pickedObjects:(NSArray *)objects {
+	if (pickerSheet == sourcePicker) {
+		self.source = [objects objectAtIndex:0];
+	}
+	[self.fetchedResultsController performFetch:nil];
+	[self.tableView reloadData];
+}
+
+- (void)pickerSheetCancel:(PickerSheet *)pickerSheet {
+	
 }
 
 

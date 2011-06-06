@@ -8,14 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "PullToRefreshTableViewController.h"
+#import "SourcePickerController.h"
 
 @class AppDelegate;
 
-@interface ReleasesController : PullToRefreshTableViewController <NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {
+@interface ReleasesController : PullToRefreshTableViewController <NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate, PickerSheetProtocol> {
 	AppDelegate *appDelegate;
 	NSFetchedResultsController *fetchedResultsController;
 	NSFetchedResultsController *searchResultsController;
 	
+    SourcePickerController *sourcePicker;
+    NSString *source;
+    
 	IBOutlet UINavigationBar *navigationBar;
 	IBOutlet UIView *tableHeaderView;
 	IBOutlet UISearchBar *searchBar;
@@ -25,6 +29,8 @@
 @property (nonatomic, retain) AppDelegate *appDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSFetchedResultsController *searchResultsController;
+
+@property (nonatomic, retain) NSString *source;
 
 @property (nonatomic, readonly) UINavigationBar *navigationBar;
 
