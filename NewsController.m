@@ -160,7 +160,7 @@
 
 - (NSString *)saveFilePath {
 	NSArray *pathArray = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	return [[pathArray objectAtIndex:0] stringByAppendingPathComponent:@"news.plist"];
+	return [[pathArray objectAtIndex:0] stringByAppendingPathComponent:@"tumblr.plist"];
 }
 
 
