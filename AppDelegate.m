@@ -32,6 +32,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
+    // Set default connection timeout
+    [Connection setTimeout:20.0f];
+    
 	// Show the system status bar
 	[[UIApplication sharedApplication] setStatusBarHidden:NO animated:YES];
 	
