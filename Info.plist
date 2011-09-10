@@ -21,13 +21,13 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.1</string>
+	<string>1.0.2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NewsURL</key>
-	<string>http://serviceapp.tumblr.com/rss</string>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
+	<key>NewsURL</key>
+	<string>http://serviceapp.tumblr.com/rss</string>
 	<key>SiteURL</key>
 	<string>http://api.bitspaceapp.com/serviceapp/</string>
 	<key>SynchronizationInterval</key>
