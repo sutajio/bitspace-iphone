@@ -36,6 +36,7 @@
 - (NSString *)cachedFilePath;
 - (void)enableOfflineMode;
 - (void)clearCache;
+- (void)clearCacheIfMissing;
 - (void)touch;
 - (BOOL)wasTouched;
 

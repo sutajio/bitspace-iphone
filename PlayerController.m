@@ -48,7 +48,10 @@
 	[self destroyStreamer];
 	
 	NSLog(@"Creating streamer...");
-	if([track hasCache]) {
+    
+    [track clearCacheIfMissing];
+	
+    if([track hasCache]) {
 		streamer = [[AudioStreamer alloc] initWithFileAtPath:[track cachedFilePath]];
 	} else {
 		streamer = [[AudioStreamer alloc] initWithURL:[NSURL URLWithString:track.url]];
