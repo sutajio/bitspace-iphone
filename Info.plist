@@ -22,10 +22,10 @@
 	<string>1.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile~iphone</key>
-	<string>MainWindow-iPhone</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow-iPad</string>
+	<key>NSMainNibFile~iphone</key>
+	<string>MainWindow-iPhone</string>
 	<key>SiteURL</key>
 	<string>http://api.bitspaceapp.com/</string>
 	<key>SynchronizationInterval</key>
@@ -34,10 +34,18 @@
 	<array>
 		<string>audio</string>
 	</array>
-	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleBlackOpaque</string>
+	<key>UILaunchImageFile~ipad</key>
+	<string>Default-iPad.png</string>
+	<key>UILaunchImageFile~iphone</key>
+	<string>Default.png</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleBlackOpaque</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -45,9 +53,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UILaunchImageFile~iphone</key>
-	<string>Default.png</string>
-	<key>UILaunchImageFile~ipad</key>
-	<string>Default-iPad.png</string>
 </dict>
 </plist>
