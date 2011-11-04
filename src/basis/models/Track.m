@@ -128,6 +128,12 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"TrackLoveStateDidChange" object:self];
 }
 
+- (void)clearCacheIfMissing {
+    if ([self hasCache] && [[NSFileManager defaultManager] fileExistsAtPath:[self cachedFilePath]] == NO) {
+        [self clearCache];
+    }
+}
+
 - (void)touch {
 	self.touched = [NSNumber numberWithBool:YES];
 }

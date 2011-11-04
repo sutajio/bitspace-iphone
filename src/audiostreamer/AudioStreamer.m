@@ -234,7 +234,7 @@ void ASReadStreamCallBack
 }
 
 //
-// initWithInputStream
+// initWithFileAtPath
 //
 // Init method for the object.
 //
@@ -715,8 +715,9 @@ void ASReadStreamCallBack
 		if (!CFReadStreamOpen(stream))
 		{
 			CFRelease(stream);
+            stream = nil;
 			[self presentAlertWithTitle:NSLocalizedStringFromTable(@"File Error", @"Errors", nil)
-								message:NSLocalizedStringFromTable(@"Unable to configure network read stream.", @"Errors", nil)];
+								message:NSLocalizedStringFromTable(@"Unable to open read stream.", @"Errors", nil)];
 			return NO;
 		}
 		

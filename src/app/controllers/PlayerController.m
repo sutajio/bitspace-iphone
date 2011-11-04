@@ -48,6 +48,9 @@
 	[self destroyStreamer];
 	
 	NSLog(@"Creating streamer...");
+    
+    [track clearCacheIfMissing];
+    
 	if([track hasCache]) {
 		streamer = [[AudioStreamer alloc] initWithFileAtPath:[track cachedFilePath]];
 	} else {
