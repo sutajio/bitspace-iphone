@@ -12,7 +12,7 @@
 @implementation Theme
 
 + (UIColor *)navigationBarColor {
-	return [UIColor darkGrayColor];
+	return [UIColor blackColor];
 }
 
 + (UIColor *)darkTextColor {
