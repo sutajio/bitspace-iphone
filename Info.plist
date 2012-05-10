@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.3</string>
+	<string>1.0.4</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -29,7 +29,7 @@
 	<key>NewsURL</key>
 	<string>http://serviceapp.tumblr.com/rss</string>
 	<key>SiteURL</key>
-	<string>http://api.bitspaceapp.com/serviceapp/</string>
+	<string>http://bitspace.sutajio.se/serviceapp/</string>
 	<key>SynchronizationInterval</key>
 	<string>20</string>
 	<key>UIBackgroundModes</key>
