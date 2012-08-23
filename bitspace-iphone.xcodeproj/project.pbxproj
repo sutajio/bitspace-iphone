@@ -155,6 +155,11 @@
 		858B4C491205D94100A5DD9F /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 858B4C481205D94100A5DD9F /* iTunesArtwork */; };
 		85933C2D121EBD810087F575 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85933C2C121EBD810087F575 /* SystemConfiguration.framework */; };
 		85933C61121EC1C80087F575 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 85933C60121EC1C80087F575 /* Reachability.m */; };
+		85C8F9BD15E633A900297374 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9B815E633A900297374 /* Icon-72@2x.png */; };
+		85C8F9BE15E633A900297374 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9B915E633A900297374 /* Icon-Small-50.png */; };
+		85C8F9BF15E633A900297374 /* Icon-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9BA15E633A900297374 /* Icon-Small-50@2x.png */; };
+		85C8F9C015E633A900297374 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9BB15E633A900297374 /* Icon-Small.png */; };
+		85C8F9C115E633A900297374 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9BC15E633A900297374 /* Icon-Small@2x.png */; };
 		85D3745D12F9F9FD0009F6A0 /* DTGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D3745712F9F9FD0009F6A0 /* DTGridView.m */; };
 		85D3745E12F9F9FD0009F6A0 /* DTGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D3745912F9F9FD0009F6A0 /* DTGridViewCell.m */; };
 		85D3745F12F9F9FD0009F6A0 /* DTGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D3745C12F9F9FD0009F6A0 /* DTGridViewController.m */; };
@@ -168,7 +173,7 @@
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AB4B0D9B1048005BE974 /* bitspace_iphone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitspace_iphone_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		851B46FE1164CB2B007F1E83 /* Bitspace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bitspace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		851B46FE1164CB2B007F1E83 /* Digger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Digger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		852D0B5812DA38F100C1BFA2 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioStreamer.h; path = src/audiostreamer/AudioStreamer.h; sourceTree = "<group>"; };
 		852D0B5912DA38F100C1BFA2 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioStreamer.m; path = src/audiostreamer/AudioStreamer.m; sourceTree = "<group>"; };
 		852D0B6312DA397300C1BFA2 /* all-tracks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "all-tracks.png"; path = "img/all-tracks.png"; sourceTree = "<group>"; };
@@ -384,6 +389,11 @@
 		85933C2C121EBD810087F575 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		85933C5F121EC1C80087F575 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		85933C60121EC1C80087F575 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		85C8F9B815E633A900297374 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "img/Icon-72@2x.png"; sourceTree = "<group>"; };
+		85C8F9B915E633A900297374 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "img/Icon-Small-50.png"; sourceTree = "<group>"; };
+		85C8F9BA15E633A900297374 /* Icon-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50@2x.png"; path = "img/Icon-Small-50@2x.png"; sourceTree = "<group>"; };
+		85C8F9BB15E633A900297374 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "img/Icon-Small.png"; sourceTree = "<group>"; };
+		85C8F9BC15E633A900297374 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "img/Icon-Small@2x.png"; sourceTree = "<group>"; };
 		85D3745612F9F9FD0009F6A0 /* DTGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTGridView.h; sourceTree = "<group>"; };
 		85D3745712F9F9FD0009F6A0 /* DTGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTGridView.m; sourceTree = "<group>"; };
 		85D3745812F9F9FD0009F6A0 /* DTGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTGridViewCell.h; sourceTree = "<group>"; };
@@ -422,7 +432,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				851B46FE1164CB2B007F1E83 /* Bitspace.app */,
+				851B46FE1164CB2B007F1E83 /* Digger.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -579,6 +589,11 @@
 		852D0B5B12DA38FD00C1BFA2 /* img */ = {
 			isa = PBXGroup;
 			children = (
+				85C8F9B815E633A900297374 /* Icon-72@2x.png */,
+				85C8F9B915E633A900297374 /* Icon-Small-50.png */,
+				85C8F9BA15E633A900297374 /* Icon-Small-50@2x.png */,
+				85C8F9BB15E633A900297374 /* Icon-Small.png */,
+				85C8F9BC15E633A900297374 /* Icon-Small@2x.png */,
 				852D0B6312DA397300C1BFA2 /* all-tracks.png */,
 				852D0B6412DA397300C1BFA2 /* all-tracks@2x.png */,
 				852D0B6512DA397300C1BFA2 /* arrow.png */,
@@ -935,9 +950,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Bitspace */ = {
+		1D6058900D05DD3D006BFB54 /* Digger */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bitspace" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Digger" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -947,9 +962,9 @@
 			);
 			dependencies = (
 			);
-			name = Bitspace;
+			name = Digger;
 			productName = "bitspace-iphone";
-			productReference = 851B46FE1164CB2B007F1E83 /* Bitspace.app */;
+			productReference = 851B46FE1164CB2B007F1E83 /* Digger.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -974,7 +989,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Bitspace */,
+				1D6058900D05DD3D006BFB54 /* Digger */,
 			);
 		};
 /* End PBXProject section */
@@ -1059,6 +1074,11 @@
 				852D0D1712DA446300C1BFA2 /* Loading.xib in Resources */,
 				852D0D1812DA446300C1BFA2 /* SignIn.xib in Resources */,
 				852D0D1C12DA449000C1BFA2 /* MainWindow-iphone.xib in Resources */,
+				85C8F9BD15E633A900297374 /* Icon-72@2x.png in Resources */,
+				85C8F9BE15E633A900297374 /* Icon-Small-50.png in Resources */,
+				85C8F9BF15E633A900297374 /* Icon-Small-50@2x.png in Resources */,
+				85C8F9C015E633A900297374 /* Icon-Small.png in Resources */,
+				85C8F9C115E633A900297374 /* Icon-Small@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1159,7 +1179,7 @@
 				GCC_PREFIX_HEADER = bitspace_iphone_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
-				PRODUCT_NAME = Bitspace;
+				PRODUCT_NAME = Digger;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
@@ -1181,8 +1201,8 @@
 				GCC_PREFIX_HEADER = bitspace_iphone_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
-				PRODUCT_NAME = Bitspace;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BC379640-1A8A-404B-815F-2174A7EFD973";
+				PRODUCT_NAME = Digger;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4A6418F6-96D8-4A1B-BE30-1EB06518DAB9";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
@@ -1229,7 +1249,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bitspace" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Digger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
