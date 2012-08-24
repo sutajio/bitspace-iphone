@@ -21,13 +21,13 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2A001</string>
+	<string>8</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow-iPad</string>
 	<key>NSMainNibFile~iphone</key>
-	<string>MainWindow-iPhone</string>
+	<string>MainWindow-iphone</string>
 	<key>SiteURL</key>
 	<string>http://bitspace.sutajio.se/</string>
 	<key>SynchronizationInterval</key>
