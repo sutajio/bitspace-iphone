@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Bitspace.app"
+               BuildableName = "Digger.app"
                BlueprintName = "Digger"
                ReferencedContainer = "container:bitspace-iphone.xcodeproj">
             </BuildableReference>
@@ -40,12 +40,13 @@
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
+      enableOpenGLFrameCaptureMode = "0"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Bitspace.app"
+            BuildableName = "Digger.app"
             BlueprintName = "Digger"
             ReferencedContainer = "container:bitspace-iphone.xcodeproj">
          </BuildableReference>
@@ -65,7 +66,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Bitspace.app"
+            BuildableName = "Digger.app"
             BlueprintName = "Digger"
             ReferencedContainer = "container:bitspace-iphone.xcodeproj">
          </BuildableReference>

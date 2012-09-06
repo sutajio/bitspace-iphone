@@ -46,6 +46,9 @@
 	// Never accept cookies
 	[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyNever];
 	
+    // Set connection timeout interval
+    [Connection setTimeout:[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"TimeoutInterval"] floatValue]];
+    
 	// Set the site URL, which is the Bitspace API end-point where all data is loaded from
 	self.siteURL = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SiteURL"];
 	
