@@ -6,8 +6,6 @@
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
 	<string>${PRODUCT_NAME}</string>
-	<key>TimeoutInterval</key>
-	<integer>30</integer>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
@@ -34,6 +32,8 @@
 	<string>http://bitspace.sutajio.se/</string>
 	<key>SynchronizationInterval</key>
 	<string>86400</string>
+	<key>TimeoutInterval</key>
+	<integer>30</integer>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

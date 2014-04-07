@@ -155,6 +155,11 @@
 		858B4C491205D94100A5DD9F /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 858B4C481205D94100A5DD9F /* iTunesArtwork */; };
 		85933C2D121EBD810087F575 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85933C2C121EBD810087F575 /* SystemConfiguration.framework */; };
 		85933C61121EC1C80087F575 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 85933C60121EC1C80087F575 /* Reachability.m */; };
+		85B6C85215F8D599005B2CAB /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 85B6C84B15F8D599005B2CAB /* base64.c */; };
+		85B6C85315F8D599005B2CAB /* NSData+SRB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 85B6C84E15F8D599005B2CAB /* NSData+SRB64Additions.m */; };
+		85B6C85415F8D599005B2CAB /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 85B6C85115F8D599005B2CAB /* SRWebSocket.m */; };
+		85B6C85615F8D5D0005B2CAB /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 85B6C85515F8D5D0005B2CAB /* libicucore.dylib */; };
+		85B6C85815F8D602005B2CAB /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85B6C85715F8D602005B2CAB /* Security.framework */; };
 		85C8F9BD15E633A900297374 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9B815E633A900297374 /* Icon-72@2x.png */; };
 		85C8F9BE15E633A900297374 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9B915E633A900297374 /* Icon-Small-50.png */; };
 		85C8F9BF15E633A900297374 /* Icon-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85C8F9BA15E633A900297374 /* Icon-Small-50@2x.png */; };
@@ -389,6 +394,14 @@
 		85933C2C121EBD810087F575 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		85933C5F121EC1C80087F575 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		85933C60121EC1C80087F575 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		85B6C84B15F8D599005B2CAB /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
+		85B6C84C15F8D599005B2CAB /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
+		85B6C84D15F8D599005B2CAB /* NSData+SRB64Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SRB64Additions.h"; sourceTree = "<group>"; };
+		85B6C84E15F8D599005B2CAB /* NSData+SRB64Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SRB64Additions.m"; sourceTree = "<group>"; };
+		85B6C85015F8D599005B2CAB /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
+		85B6C85115F8D599005B2CAB /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
+		85B6C85515F8D5D0005B2CAB /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		85B6C85715F8D602005B2CAB /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		85C8F9B815E633A900297374 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "img/Icon-72@2x.png"; sourceTree = "<group>"; };
 		85C8F9B915E633A900297374 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "img/Icon-Small-50.png"; sourceTree = "<group>"; };
 		85C8F9BA15E633A900297374 /* Icon-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50@2x.png"; path = "img/Icon-Small-50@2x.png"; sourceTree = "<group>"; };
@@ -413,6 +426,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85B6C85815F8D602005B2CAB /* Security.framework in Frameworks */,
+				85B6C85615F8D5D0005B2CAB /* libicucore.dylib in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -475,6 +490,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				85B6C85715F8D602005B2CAB /* Security.framework */,
+				85B6C85515F8D5D0005B2CAB /* libicucore.dylib */,
 				8559191B11DE322100583C21 /* QuartzCore.framework */,
 				854357581173508E00438D2D /* CoreData.framework */,
 				854356C4116D315D00438D2D /* CFNetwork.framework */,
@@ -494,6 +511,7 @@
 			children = (
 				852D0B5012DA385B00C1BFA2 /* app */,
 				85D3745512F9F9FD0009F6A0 /* DTGridView */,
+				85B6C84A15F8D599005B2CAB /* SocketRocket */,
 				852D0B4F12DA385200C1BFA2 /* audiostreamer */,
 				852D0C6E12DA42F500C1BFA2 /* objective_resource */,
 				852D0B4E12DA384D00C1BFA2 /* basis */,
@@ -933,6 +951,20 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
+		85B6C84A15F8D599005B2CAB /* SocketRocket */ = {
+			isa = PBXGroup;
+			children = (
+				85B6C84B15F8D599005B2CAB /* base64.c */,
+				85B6C84C15F8D599005B2CAB /* base64.h */,
+				85B6C84D15F8D599005B2CAB /* NSData+SRB64Additions.h */,
+				85B6C84E15F8D599005B2CAB /* NSData+SRB64Additions.m */,
+				85B6C85015F8D599005B2CAB /* SRWebSocket.h */,
+				85B6C85115F8D599005B2CAB /* SRWebSocket.m */,
+			);
+			name = SocketRocket;
+			path = src/SocketRocket;
+			sourceTree = "<group>";
+		};
 		85D3745512F9F9FD0009F6A0 /* DTGridView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1157,6 +1189,9 @@
 				85D3745F12F9F9FD0009F6A0 /* DTGridViewController.m in Sources */,
 				85D374B312FA042F0009F6A0 /* CollectionsController.m in Sources */,
 				85D3751412FA0CAA0009F6A0 /* CollectionGridViewCell.m in Sources */,
+				85B6C85215F8D599005B2CAB /* base64.c in Sources */,
+				85B6C85315F8D599005B2CAB /* NSData+SRB64Additions.m in Sources */,
+				85B6C85415F8D599005B2CAB /* SRWebSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

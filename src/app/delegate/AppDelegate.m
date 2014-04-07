@@ -15,7 +15,7 @@
 #import "LoadingController.h"
 #import "AVFoundation/AVAudioSession.h"
 
-#define DB_VERSION_STRING @"1.1"
+#define DB_VERSION_STRING @"1.2"
 
 
 @interface AppDelegate ()
@@ -38,7 +38,7 @@
 #pragma mark Application lifecycle
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {
-	
+    
 	// Make sure iOS knows we are playing music
 	[[AVAudioSession sharedInstance] setDelegate: self];
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
@@ -51,7 +51,7 @@
     
 	// Set the site URL, which is the Bitspace API end-point where all data is loaded from
 	self.siteURL = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SiteURL"];
-	
+    
 	// Begin receiving remote control events
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if ([[UIApplication sharedApplication]
@@ -105,15 +105,8 @@
 											 selector:@selector(handleDatabaseError:) 
 												 name:@"DatabaseError" 
 											   object:nil];
-	
-	// Authenticate user and show sign in screen if authentication fails
-	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
-				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
-		[self requestAuthenticationFromUser];
-	} else {
-		[self userDidSignIn];
-	}
-
+    
+    [self openChannel];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -133,6 +126,63 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	[self applicationDidReceiveMemoryWarning:application];
+}
+
+
+#pragma mark -
+#pragma mark Network channel
+
+- (SRWebSocket *)openChannel {
+	if(channel == nil) {
+        // Open network channel
+        channel = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:self.siteURL] protocols:[NSArray arrayWithObjects:@"WAMP/1.0", nil]];
+        channel.delegate = self;
+        [channel open];
+	}
+	return channel;
+}
+
+
+#pragma mark -
+#pragma mark SRWebSocketDelegate
+
+- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
+    NSLog(@"webSocketDidReceiveMessage: %@", (NSString *)message);
+}
+
+- (void)webSocketDidOpen:(SRWebSocket *)webSocket {
+    NSLog(@"webSocketDidOpen");
+    [webSocket send:@"[1, \"auth\", \"http://digger.sutajio.se/auth#\"]"];
+    [webSocket send:@"[1, \"sync\", \"http://digger.sutajio.se/sync#\"]"];
+    
+    // Authenticate user and show sign in screen if authentication fails
+	if([self validateUsername:[[NSUserDefaults standardUserDefaults] stringForKey:@"Username"]
+				  andPassword:[[NSUserDefaults standardUserDefaults] stringForKey:@"Password"]] == NO) {
+		[self requestAuthenticationFromUser];
+	} else {
+		[self userDidSignIn];
+	}
+}
+
+- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Network error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
+}
+
+- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
+    NSLog(@"webSocketDidCloseWithCode: %@", reason);
+}
+
+
+#pragma mark -
+#pragma mark WAMP
+
+- (void)wampCall:(NSString *)procUri withArguments:(NSArray *)args {
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef callId = [(NSString *)CFUUIDCreateString(NULL, theUUID) autorelease];
+    CFRelease(theUUID);
+    [channel send:[NSString stringWithFormat:@"[2, \"%@\", \"%@\", \"user\", \"pass\"]", callId, procUri]];
 }
 
 
@@ -240,29 +290,30 @@
 	if(usernameValue == nil || passwordValue == nil)
 		return NO;
 	
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@account", self.siteURL]];
-	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
-															cachePolicy:NSURLRequestReloadIgnoringCacheData
-														timeoutInterval:[Connection timeout]];
-	[request setHTTPMethod:@"GET"];
-	[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];	
-	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-	
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-	Response *res = [Connection sendRequest:request withUser:usernameValue andPassword:passwordValue];
-	
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-	
-	if([res isError]) {
-		NSLog(@"Network error: %@", [res.error localizedDescription]);
-		if([res.error code] != 401) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:res.error];
-			self.username = usernameValue;
-			self.password = passwordValue;
-			return YES;
-		}
-		return NO;
-	}
+    [self wampCall:@"http://digger.sutajio.se/auth#login" withArguments:[NSArray arrayWithObjects:@"user", @"pass", nil]];
+    
+//	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@account", self.siteURL]];
+//	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url
+//															cachePolicy:NSURLRequestReloadIgnoringCacheData
+//														timeoutInterval:[Connection timeout]];
+//	[request setHTTPMethod:@"GET"];
+//	[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];	
+//	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+//	
+//	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+//	Response *res = [Connection sendRequest:request withUser:usernameValue andPassword:passwordValue];
+//	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+//	
+//	if([res isError]) {
+//		NSLog(@"Network error: %@", [res.error localizedDescription]);
+//		if([res.error code] != 401) {
+//			[[NSNotificationCenter defaultCenter] postNotificationName:@"NetworkError" object:res.error];
+//			self.username = usernameValue;
+//			self.password = passwordValue;
+//			return YES;
+//		}
+//		return NO;
+//	}
 	
 	self.username = usernameValue;
 	self.password = passwordValue;

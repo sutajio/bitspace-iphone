@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SRWebSocket.h"
 #import "ReleasesLoader.h"
 
 @class PlayerController, SyncQueue, LoadingController;
 
-@interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, ReleasesLoaderDelegate> {
+@interface AppDelegate : NSObject <UIApplicationDelegate, UITabBarControllerDelegate, ReleasesLoaderDelegate, SRWebSocketDelegate> {
 	NSString *siteURL;
 	NSString *username;
 	NSString *password;
@@ -28,6 +29,8 @@
 	SyncQueue *syncQueue;
 	ReleasesLoader *releasesLoader;
 	LoadingController *modalLoadingIndicator;
+
+    SRWebSocket *channel;
 }
 
 @property (nonatomic, retain) NSString *siteURL;
